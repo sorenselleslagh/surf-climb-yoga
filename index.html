@@ -76,11 +76,6 @@ button:disabled{opacity:.35}
   --sky-ink:#fff; --sky-muted:rgba(255,255,255,.85);
   color:var(--sky-ink);
 }
-.sky-dots{display:flex;gap:7px;margin-bottom:14px}
-.sky-dots span{width:8px;height:8px;border-radius:50%;display:block}
-.sky-dots .d1{background:var(--scarlet)}
-.sky-dots .d2{background:var(--orange)}
-.sky-dots .d3{background:var(--lavender)}
 
 .panel{
   background:var(--panel);
@@ -99,17 +94,11 @@ button:disabled{opacity:.35}
 .home-title{
   font-weight:800;font-size:clamp(2.85rem,12vw,3.6rem);
   letter-spacing:-0.04em;line-height:0.9;
-  position:relative;z-index:1;margin:4px 0 12px;
+  position:relative;z-index:1;margin:10px 0 14px;
 }
 .home-title .ink{color:#1F1F1F}
 .home-title .sky-soft{color:var(--ink-mid)}
 .home-title .soft{opacity:.75}
-
-
-
-
-
-
 
 .panel-head{
   display:flex;justify-content:space-between;align-items:baseline;
@@ -165,6 +154,23 @@ button:disabled{opacity:.35}
   margin-top:18px;font-family:var(--mono);font-size:.72rem;
   letter-spacing:0.14em;text-transform:uppercase;opacity:.8;
 }
+.start-card.done{
+  background:linear-gradient(165deg,#D8D4CE 0%,#C4C0BA 45%,#A8A49E 100%);
+  color:#3A3A3A;
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+  cursor:default;
+  pointer-events:none;
+  opacity:.92;
+}
+.start-card.done:active{transform:none}
+.start-card.done .grain{opacity:.12}
+.start-card.done .start-title{max-width:14ch}
+.start-card .done-check{
+  display:inline-block;margin-left:6px;font-weight:700;
+  opacity:.85;font-size:.85em;
+}
+.deck-dots{gap:7px}
+
 
 /* Reveal */
 #screen-reveal{background:#1A1A1A}
@@ -173,7 +179,7 @@ button:disabled{opacity:.35}
   padding:calc(24px + var(--safe-top)) 24px calc(28px + var(--safe-bot));
   position:relative;min-height:100dvh;color:#fff;
   background:linear-gradient(180deg,#F0C098 0%,#FF8A4A 45%,#E8483A 100%);
-  transition:background .35s ease;
+  transition:background .45s ease,color .35s ease;
 }
 .reveal-sky .grain{opacity:.25}
 .reveal-hint{position:relative;z-index:1;opacity:.8;color:inherit;margin-bottom:18px}
@@ -188,7 +194,18 @@ button:disabled{opacity:.35}
 }
 .reveal-slot.landed{
   background:rgba(255,255,255,.22);
-  transform:scale(1.02);
+}
+.reveal-slot.settle{
+  animation:reveal-settle .48s cubic-bezier(0.34, 1.45, 0.64, 1) both;
+}
+@keyframes reveal-settle{
+  0%{transform:scale(0.97) translateY(4px)}
+  55%{transform:scale(1.04) translateY(-2px)}
+  100%{transform:scale(1) translateY(0)}
+}
+@media (prefers-reduced-motion: reduce){
+  .reveal-slot.settle{animation:none}
+  .reveal-sky{transition:opacity .35s ease, background .2s ease}
 }
 .reveal-name{
   font-weight:800;font-size:clamp(2rem,9vw,2.6rem);
@@ -207,8 +224,50 @@ button:disabled{opacity:.35}
   background:none;border:none;
 }
 .text-link:active{opacity:.6}
-.reveal-not-today{position:relative;z-index:1;color:rgba(255,255,255,.75);margin-top:22px}
-.preview-not-today{margin-top:4px;margin-bottom:4px}
+.reveal-actions{
+  position:relative;z-index:2;
+  display:flex;gap:10px;align-items:center;justify-content:center;
+  flex-wrap:wrap;margin-top:22px;padding:0 8px;
+  opacity:0;transform:translateY(8px);
+  transition:opacity .28s ease, transform .28s ease;
+  pointer-events:none;
+}
+.reveal-actions.show{
+  opacity:1;transform:translateY(0);pointer-events:auto;
+}
+.reveal-actions[hidden]{display:none!important}
+.reveal-roll,.reveal-go{
+  appearance:none;border:0;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:.95rem;
+  letter-spacing:-0.02em;
+  min-height:48px;padding:0 18px;border-radius:999px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+/* Primary: solid off-white pill, dark text — readable on every sky */
+.reveal-go{
+  background:#F7F5F2;color:#1A1A1A;
+  box-shadow:0 10px 24px rgba(0,0,0,.22);
+}
+/* Secondary: glass outline with explicit ink */
+.reveal-roll{
+  background:rgba(255,255,255,.28);
+  color:#FFFFFF;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7), 0 6px 16px rgba(0,0,0,.12);
+  text-shadow:0 1px 2px rgba(0,0,0,.25);
+}
+.reveal-roll .dice{flex-shrink:0;color:currentColor}
+.sky-light .reveal-go{
+  background:#F7F5F2;color:#1A1A1A;
+  box-shadow:0 10px 24px rgba(0,0,0,.16);
+}
+.sky-light .reveal-roll{
+  background:rgba(255,255,255,.55);
+  color:#1A1A1A;
+  box-shadow:inset 0 0 0 1.5px rgba(31,31,31,.35), 0 6px 16px rgba(0,0,0,.08);
+  text-shadow:none;
+}
 
 
 /* Nav */
@@ -449,7 +508,6 @@ button:disabled{opacity:.35}
 <div class="app" id="app">
   <section class="screen active" id="screen-home">
     <div class="home-hero" id="home-hero">
-      <div class="sky-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
       <div class="home-title">
         <span class="ink">Stretch</span><br/>
         <span class="ink">Daily</span><br/>
@@ -459,7 +517,7 @@ button:disabled{opacity:.35}
     </div>
     <div class="panel home-panel">
       <div class="panel-head">
-        <div class="mono-label" id="home-round-label">Round 1 · 0 of 5</div>
+        <div class="mono-label" id="home-round-label">Round 1 · 0 of 7</div>
         <div class="date" id="home-date"></div>
       </div>
       <div class="deck-dots" id="deck-dots" aria-label="Round progress"></div>
@@ -487,7 +545,21 @@ button:disabled{opacity:.35}
         <div class="reveal-name" id="reveal-name"></div>
         <div class="reveal-foot" id="reveal-foot"></div>
       </div>
-      <button class="text-link reveal-not-today" id="btn-not-today-reveal" type="button" hidden>Not today</button>
+      <div class="reveal-actions" id="reveal-actions" hidden>
+        <button class="reveal-roll" id="btn-roll-again" type="button">
+          <svg class="dice" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <rect x="2.5" y="2.5" width="19" height="19" rx="4.5" fill="currentColor" opacity=".14"/>
+            <rect x="2.5" y="2.5" width="19" height="19" rx="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/>
+            <circle cx="8" cy="8" r="1.55" fill="currentColor"/>
+            <circle cx="16" cy="8" r="1.55" fill="currentColor"/>
+            <circle cx="12" cy="12" r="1.55" fill="currentColor"/>
+            <circle cx="8" cy="16" r="1.55" fill="currentColor"/>
+            <circle cx="16" cy="16" r="1.55" fill="currentColor"/>
+          </svg>
+          <span>Roll again</span>
+        </button>
+        <button class="reveal-go" id="btn-reveal-go" type="button">Let's go</button>
+      </div>
       <div class="reveal-tap mono-label" id="reveal-tap-hint">Tap to skip</div>
     </div>
   </section>
@@ -518,7 +590,6 @@ button:disabled{opacity:.35}
         <div class="player-session" id="preview-theme">Preview</div>
         <div style="width:40px"></div>
       </div>
-      <div class="sky-dots" style="margin-top:4px"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
       <div class="preview-hero" id="preview-hero"></div>
     </div>
     <div class="panel">
@@ -532,7 +603,6 @@ button:disabled{opacity:.35}
         <button class="btn btn-secondary" id="btn-shuffle" type="button">Shuffle</button>
         <button class="btn btn-primary" id="btn-begin" type="button" style="flex:1.35">Start</button>
       </div>
-      <button class="text-link preview-not-today" id="btn-not-today-preview" type="button">Not today</button>
     </div>
   </section>
 
@@ -607,7 +677,7 @@ button:disabled{opacity:.35}
   </section>
 
   <nav class="nav" id="main-nav">
-    <button type="button" data-nav="home" class="tab active" aria-label="Today">Today<span class="sup" id="nav-sessions-count">5</span></button>
+    <button type="button" data-nav="home" class="tab active" aria-label="Today">Today</button>
     <button type="button" data-nav="history" class="tab" aria-label="History">History<span class="sup" id="nav-history-count">0</span></button>
     <button type="button" class="icon-btn" id="btn-settings" aria-label="Settings">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
@@ -618,7 +688,7 @@ button:disabled{opacity:.35}
 
 <script>
 const POSES = [{"id":"cat-cow","name":"Cat-Cow","bilateral":false,"dur":55,"cues":["On all fours: inhale arch (cow), exhale round (cat).","Move slowly with the breath."],"helps":"Warms the spine for surf & climb","areas":["spine","core"],"sports":["surf","climb"],"intensity":1,"position":"floor","phase":["warmup"]},{"id":"neck-rolls","name":"Gentle Neck Rolls","bilateral":false,"dur":40,"cues":["Slow half-circles or full circles with the head.","Keep shoulders soft; no forcing."],"helps":"Releases neck tension from paddling & looking up","areas":["neck"],"sports":["surf","climb"],"intensity":1,"position":"standing","phase":["warmup","cooldown"]},{"id":"shoulder-cars","name":"Shoulder CARs","bilateral":false,"dur":55,"cues":["Draw large, slow arm circles from the shoulder joint.","Keep ribs quiet; one arm then the other."],"helps":"Full shoulder range for paddling","areas":["shoulders"],"sports":["surf"],"intensity":1,"position":"standing","phase":["warmup"]},{"id":"wrist-circles","name":"Wrist Circles","bilateral":false,"dur":40,"cues":["Circle each wrist slowly both ways.","Shake out residual tension."],"helps":"Warms wrists before loading","areas":["wrists","forearms"],"sports":["climb","surf"],"intensity":1,"position":"standing","phase":["warmup"]},{"id":"chin-tucks","name":"Chin Tucks","bilateral":false,"dur":35,"cues":["Draw the chin straight back (gentle double-chin).","Hold a few breaths; repeat."],"helps":"Resets forward-head posture","areas":["neck"],"sports":["climb","surf"],"intensity":1,"position":"standing","phase":["warmup","cooldown"]},{"id":"down-dog","name":"Downward-Facing Dog","bilateral":false,"dur":55,"cues":["Hips high; pedal the feet; long spine.","Press the floor away through the hands."],"helps":"Shoulders, hamstrings & full posterior chain","areas":["shoulders","hamstrings","calves"],"sports":["surf","climb"],"intensity":2,"position":"floor","phase":["warmup","peak"]},{"id":"child-pose","name":"Child's Pose","bilateral":false,"dur":50,"cues":["Hips toward heels; forehead to mat; arms forward or alongside.","Breathe into the back body."],"helps":"Settles the nervous system","areas":["spine","shoulders","hips"],"sports":["surf","climb"],"intensity":1,"position":"floor","phase":["warmup","cooldown"]},{"id":"child-pose-long","name":"Child's Pose (arms long)","bilateral":false,"dur":50,"cues":["Arms stretched forward; walk hands slightly left and right.","Let the shoulders decompress."],"helps":"Shoulder decompression after paddling","areas":["shoulders","lats"],"sports":["surf"],"intensity":1,"position":"floor","phase":["cooldown","peak"]},{"id":"low-lunge","name":"Low Lunge","bilateral":true,"dur":50,"cues":["Front foot planted; back knee down.","Tuck the pelvis slightly; reach arms up if comfortable."],"helps":"Hip flexors for a clean pop-up & high steps","areas":["hips","hip-flexors"],"sports":["surf","climb"],"intensity":2,"position":"kneeling","phase":["warmup","peak"]},{"id":"lizard","name":"Lizard Pose","bilateral":true,"dur":55,"cues":["From low lunge, walk the front foot outside the hand.","Forearms down if it feels good; hips heavy."],"helps":"Deep hip opener for board stance","areas":["hips","hip-flexors"],"sports":["surf","climb"],"intensity":3,"position":"floor","phase":["peak"]},{"id":"pigeon","name":"Pigeon Pose","bilateral":true,"dur":70,"cues":["Front shin across the mat; back leg long.","Square the hips; fold forward only as far as comfortable."],"helps":"External rotation & glutes for surfing stance","areas":["hips","glutes"],"sports":["surf","climb"],"intensity":3,"position":"floor","phase":["peak"]},{"id":"hip-cars","name":"Half-Kneeling Hip CARs","bilateral":true,"dur":40,"cues":["Kneel on the opposite knee; planted foot forward.","Slow, full-range hip circles both directions."],"helps":"Controlled hip mobility for pop-up & turns","areas":["hips"],"sports":["surf","climb"],"intensity":2,"position":"kneeling","phase":["warmup","peak"]},{"id":"malasana","name":"Malasana","bilateral":false,"dur":55,"cues":["Feet wide, toes out; sink into a deep squat.","Elbows press knees open; chest lifts."],"helps":"Deep squat for pop-up base & rest positions","areas":["hips","ankles"],"sports":["surf","climb"],"intensity":2,"position":"standing","phase":["peak"]},{"id":"figure-four","name":"Supine Figure-Four","bilateral":true,"dur":45,"cues":["Lie on back; ankle crosses opposite knee.","Pull the uncrossed thigh toward you; sacrum grounded."],"helps":"Glute & outer hip for stance and drop-knees","areas":["hips","glutes"],"sports":["surf","climb"],"intensity":2,"position":"floor","phase":["peak","cooldown"]},{"id":"happy-baby","name":"Happy Baby","bilateral":false,"dur":45,"cues":["On back; hold outer feet or big toes; knees wide.","Gently rock side to side."],"helps":"Hip & groin release after climbing","areas":["hips","groin"],"sports":["climb"],"intensity":2,"position":"floor","phase":["peak","cooldown"]},{"id":"frog","name":"Frog Pose","bilateral":false,"dur":70,"cues":["On forearms and inner knees/shins; feet flared.","Hips sink back; stop at a strong stretch — never force."],"helps":"Inner thighs & hip turnout for stemming","areas":["hips","groin"],"sports":["climb"],"intensity":3,"position":"floor","phase":["peak"]},{"id":"half-splits","name":"Half Splits","bilateral":true,"dur":50,"cues":["From low lunge, hips back over the rear knee; straighten the front leg.","Fold with a long spine; flex the front foot."],"helps":"Hamstring length for high feet & heel hooks","areas":["hamstrings"],"sports":["climb","surf"],"intensity":2,"position":"kneeling","phase":["peak"]},{"id":"forward-fold","name":"Standing Forward Fold","bilateral":false,"dur":45,"cues":["Feet hip-width; hinge at the hips; soft knees.","Let the head hang heavy."],"helps":"Hamstrings & reset","areas":["hamstrings","spine"],"sports":["surf","climb"],"intensity":2,"position":"standing","phase":["peak","cooldown"]},{"id":"wide-fold","name":"Wide-Legged Forward Fold","bilateral":false,"dur":55,"cues":["Feet wide; toes slightly in; hinge forward.","Hands to floor or shins; soft knees OK."],"helps":"Adductors & hamstrings for wide bridging","areas":["hamstrings","hips","groin"],"sports":["climb"],"intensity":2,"position":"standing","phase":["peak"]},{"id":"seated-fold","name":"Seated Forward Fold","bilateral":false,"dur":55,"cues":["Legs together; hinge from the hips.","Hold feet or shins; keep the spine long."],"helps":"Hamstrings for heel hooks & high steps","areas":["hamstrings"],"sports":["climb"],"intensity":2,"position":"floor","phase":["peak","cooldown"]},{"id":"janu","name":"Janu Sirsasana","bilateral":true,"dur":50,"cues":["One sole to the opposite inner thigh; fold over the extended leg.","Square the torso toward the long leg."],"helps":"Hamstring + hip for one-leg high steps","areas":["hamstrings","hips"],"sports":["climb"],"intensity":2,"position":"floor","phase":["peak"]},{"id":"thread-needle","name":"Thread the Needle","bilateral":true,"dur":50,"cues":["On all fours; slide one arm under the other.","Rest the shoulder and temple; optional top-arm reach."],"helps":"Thoracic rotation for paddle reach & reachy moves","areas":["thoracic","shoulders"],"sports":["surf","climb"],"intensity":2,"position":"floor","phase":["warmup","peak"]},{"id":"puppy","name":"Puppy Pose","bilateral":false,"dur":55,"cues":["From all fours, walk hands forward; hips stay over knees.","Chest melts toward the mat; arms active."],"helps":"Shoulder flexion & thoracic extension","areas":["shoulders","thoracic"],"sports":["surf","climb"],"intensity":2,"position":"floor","phase":["peak"]},{"id":"sphinx","name":"Sphinx Pose","bilateral":false,"dur":45,"cues":["Lie on belly; forearms down, elbows under shoulders.","Press the pubic bone down; lift the chest gently."],"helps":"Upper back strength for paddle posture","areas":["spine","thoracic"],"sports":["surf"],"intensity":2,"position":"floor","phase":["warmup","peak"]},{"id":"cobra","name":"Cobra Pose","bilateral":false,"dur":40,"cues":["Hands under shoulders; press up lightly.","Elbows soft; legs engaged; gaze forward."],"helps":"Spinal extension after duck dives","areas":["spine"],"sports":["surf"],"intensity":2,"position":"floor","phase":["peak"]},{"id":"eagle-arms","name":"Eagle Arms","bilateral":true,"dur":40,"cues":["Wrap one arm under the other; lift the elbows.","If the wrap is hard, cross forearms and hold opposite shoulders."],"helps":"Rear shoulder & upper back for paddle recovery","areas":["shoulders","upper-back"],"sports":["surf","climb"],"intensity":2,"position":"standing","phase":["peak"]},{"id":"cow-face-arms","name":"Cow Face Arms","bilateral":true,"dur":45,"cues":["One arm up, bend the elbow; other hand reaches up the back.","Use a strap or towel if hands don't meet."],"helps":"Internal/external shoulder rotation","areas":["shoulders"],"sports":["surf"],"intensity":2,"position":"standing","phase":["peak"]},{"id":"chest-opener","name":"Chest Opener","bilateral":false,"dur":45,"cues":["Stand; clasp hands behind the back.","Lift the fists gently and open the chest."],"helps":"Counteracts rounded paddling posture","areas":["chest","shoulders"],"sports":["surf"],"intensity":2,"position":"standing","phase":["peak","cooldown"]},{"id":"gate","name":"Gate Pose","bilateral":true,"dur":45,"cues":["Kneel; extend one leg to the side.","Reach the opposite arm overhead toward the long leg."],"helps":"Lat & side-body length for paddle reach","areas":["lats","side-body"],"sports":["surf"],"intensity":2,"position":"kneeling","phase":["peak"]},{"id":"wrist-flexor","name":"Wrist Flexor Stretch","bilateral":true,"dur":40,"cues":["Arm forward, palm up; gently pull fingers toward you.","Keep the elbow soft."],"helps":"Finger flexors after climbing & gripping","areas":["wrists","forearms"],"sports":["climb","surf"],"intensity":2,"position":"standing","phase":["peak","cooldown"]},{"id":"wrist-extensor","name":"Wrist Extensor Stretch","bilateral":true,"dur":40,"cues":["Arm forward, palm down; gently press the back of the hand down.","Fingers point toward you."],"helps":"Extensors for balanced forearm health","areas":["wrists","forearms"],"sports":["climb"],"intensity":2,"position":"standing","phase":["peak","cooldown"]},{"id":"prayer-stretch","name":"Prayer Stretch","bilateral":false,"dur":40,"cues":["Palms together at chest; slowly lower hands while pressing palms.","Keep elbows lifting slightly."],"helps":"Wrist extension for jamming & board feel","areas":["wrists"],"sports":["climb","surf"],"intensity":2,"position":"standing","phase":["peak"]},{"id":"reverse-prayer","name":"Reverse Prayer","bilateral":false,"dur":35,"cues":["Backs of hands together behind or at low back — or gentle fist stretch.","Only go as far as comfortable."],"helps":"Wrist flexion mobility","areas":["wrists"],"sports":["climb"],"intensity":2,"position":"standing","phase":["peak"]},{"id":"forearm-massage","name":"Forearm Soft Tissue","bilateral":false,"dur":40,"cues":["Use the opposite thumb to gently massage forearm flexors.","Switch arms halfway."],"helps":"Soft tissue reset after pump","areas":["forearms"],"sports":["climb"],"intensity":1,"position":"standing","phase":["cooldown"]},{"id":"neck-side","name":"Seated Neck Stretch","bilateral":true,"dur":35,"cues":["Sit tall; gently tilt ear toward shoulder.","Optional light hand weight; both sit bones grounded."],"helps":"Neck release after looking up the wall / at the lineup","areas":["neck"],"sports":["climb","surf"],"intensity":1,"position":"floor","phase":["cooldown","warmup"]},{"id":"supine-twist","name":"Supine Twist","bilateral":true,"dur":40,"cues":["Knees to chest, then drop both to one side.","Arms in a T; opposite gaze if comfortable."],"helps":"Spinal reset after mobility work","areas":["spine"],"sports":["surf","climb"],"intensity":1,"position":"floor","phase":["cooldown"]},{"id":"savasana","name":"Savasana","bilateral":false,"dur":50,"cues":["Lie flat; arms by sides, palms up.","Let the whole body melt into the floor."],"helps":"Full rest & integration","areas":["full"],"sports":["surf","climb"],"intensity":1,"position":"floor","phase":["cooldown"]}];
-const THEMES = [{"id":"hips-popup","name":"Hips & Pop-up","focus":"Hip flexors, rotation & pop-up mobility","tags":["surf"],"preferAreas":["hips","hip-flexors","glutes","ankles"],"preferSports":["surf"],"boostIds":["low-lunge","lizard","pigeon","hip-cars","malasana","figure-four","cat-cow"]},{"id":"shoulders-paddle","name":"Shoulders & Paddle","focus":"Shoulders, thoracic extension, lats & chest","tags":["surf"],"preferAreas":["shoulders","thoracic","lats","chest","upper-back","side-body"],"preferSports":["surf"],"boostIds":["shoulder-cars","thread-needle","puppy","sphinx","eagle-arms","cow-face-arms","chest-opener","gate","down-dog"]},{"id":"climbers-hips","name":"Climber's Hips & Hamstrings","focus":"Frog, deep squat, turnout & hamstrings","tags":["climb"],"preferAreas":["hips","hamstrings","groin","glutes","ankles"],"preferSports":["climb"],"boostIds":["frog","malasana","half-splits","wide-fold","seated-fold","janu","happy-baby","lizard","pigeon"]},{"id":"forearms-wrists","name":"Forearms, Wrists & Upper Back","focus":"Finger/wrist flexors & extensors, neck, thoracic","tags":["climb","surf"],"preferAreas":["wrists","forearms","neck","thoracic","shoulders","upper-back"],"preferSports":["climb","surf"],"boostIds":["wrist-circles","wrist-flexor","wrist-extensor","prayer-stretch","thread-needle","eagle-arms","puppy","neck-side","chin-tucks"]},{"id":"full-body","name":"Full Body Flow","focus":"Balanced mobility for surf & climb days","tags":["surf","climb"],"preferAreas":["hips","shoulders","hamstrings","spine","thoracic"],"preferSports":["surf","climb"],"boostIds":["cat-cow","low-lunge","lizard","puppy","thread-needle","malasana","pigeon","down-dog"]},{"id":"surprise","name":"Surprise Me","focus":"Mixed surf & climb mobility — freshly shuffled","tags":["surf","climb"],"preferAreas":[],"preferSports":["surf","climb"],"boostIds":[]}];
+const THEMES = [{"id":"hips-popup","name":"Hips & Pop-up","focus":"Hip flexors, rotation & pop-up mobility","tags":["surf"],"preferAreas":["hips","hip-flexors","glutes","ankles"],"preferSports":["surf"],"boostIds":["low-lunge","lizard","pigeon","hip-cars","malasana","figure-four","cat-cow"]},{"id":"shoulders-paddle","name":"Shoulders & Paddle","focus":"Shoulders, thoracic extension, lats & chest","tags":["surf"],"preferAreas":["shoulders","thoracic","lats","chest","upper-back","side-body"],"preferSports":["surf"],"boostIds":["shoulder-cars","thread-needle","puppy","sphinx","eagle-arms","cow-face-arms","chest-opener","gate","down-dog"]},{"id":"climbers-hips","name":"Climber's Hips & Hamstrings","focus":"Frog, deep squat, turnout & hamstrings","tags":["climb"],"preferAreas":["hips","hamstrings","groin","glutes","ankles"],"preferSports":["climb"],"boostIds":["frog","malasana","half-splits","wide-fold","seated-fold","janu","happy-baby","lizard","pigeon"]},{"id":"forearms-wrists","name":"Forearms, Wrists & Upper Back","focus":"Finger/wrist flexors & extensors, neck, thoracic","tags":["climb","surf"],"preferAreas":["wrists","forearms","neck","thoracic","shoulders","upper-back"],"preferSports":["climb","surf"],"boostIds":["wrist-circles","wrist-flexor","wrist-extensor","prayer-stretch","thread-needle","eagle-arms","puppy","neck-side","chin-tucks"]},{"id":"full-body","name":"Full Body Flow","focus":"Balanced mobility for surf & climb days","tags":["surf","climb"],"preferAreas":["hips","shoulders","hamstrings","spine","thoracic"],"preferSports":["surf","climb"],"boostIds":["cat-cow","low-lunge","lizard","puppy","thread-needle","malasana","pigeon","down-dog"]},{"id":"spine-twists","name":"Spine & Twists","focus":"Thoracic and spinal mobility, rotation & backbends for paddling and reaching","tags":["surf","climb"],"preferAreas":["spine","thoracic","shoulders","lats","side-body"],"preferSports":["surf","climb"],"boostIds":["cat-cow","thread-needle","puppy","sphinx","cobra","chest-opener","gate","supine-twist","seated-fold","child-pose"]},{"id":"slow-recovery","name":"Slow Recovery","focus":"Gentle restorative flow for sore days — longer soft holds","tags":["rest"],"preferAreas":["spine","hips","neck","hamstrings","full"],"preferSports":["surf","climb"],"boostIds":["child-pose","child-pose-long","neck-rolls","neck-side","figure-four","happy-baby","supine-twist","forward-fold","seated-fold","janu","savasana"],"longerHolds":true},{"id":"surprise","name":"Surprise Me","focus":"Mixed surf & climb mobility — freshly shuffled","tags":["surf","climb"],"preferAreas":[],"preferSports":["surf","climb"],"boostIds":[]}];
 function mulberry32(a){return function(){let t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
 function hashSeed(str){let h=2166136261>>>0;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
 const TARGET_SEC=900,WARM_RANGE=[150,210],COOL_RANGE=[150,210],TRANSITION_SEC=6;
@@ -743,6 +813,11 @@ function generateSession(themeId,seed,avoidSig,recentPoseIds){
       steps=buildSteps(result.poses,transitionSec);total=stepsDuration(steps);sig=signature(steps);
     }
   }
+  if(theme.longerHolds){
+    steps=steps.map(s=>Object.assign({},s,{dur:Math.round(s.dur*1.28)}));
+    total=stepsDuration(steps);
+    sig=signature(steps);
+  }
   return{themeId:theme.id,name:theme.name,focus:theme.focus,tags:theme.tags.slice(),seed,transitionSec,steps,totalSec:total,minutes:Math.round(total/60),signature:sig,poseIds:result.poses.map(p=>p.id)};
 }
 function validateSession(session){
@@ -771,6 +846,8 @@ const THEME_VISUAL={
   'climbers-hips':{sky:'linear-gradient(180deg,#9A7AD0 0%,#D878B0 55%,#E890B8 100%)',line1:"Climber's",line2:'Hips',foot:'Climb · 15 min',swatch:'#D878B0',light:false},
   'forearms-wrists':{sky:'linear-gradient(180deg,#5A7AB8 0%,#8898D0 50%,#A898D0 100%)',line1:'Forearms',line2:'& Wrists',foot:'Climb · Surf',swatch:'#8898D0',light:false},
   'full-body':{sky:'linear-gradient(180deg,#FF8A3A 0%,#F05830 55%,#D83828 100%)',line1:'Full Body',line2:'Flow',foot:'Surf · Climb',swatch:'#F05830',light:false},
+  'spine-twists':{sky:'linear-gradient(180deg,#1B3A5C 0%,#2A6B7C 48%,#3A9A8E 100%)',line1:'Spine &',line2:'Twists',foot:'Surf · Climb',swatch:'#2F7F8A',light:false},
+  'slow-recovery':{sky:'linear-gradient(180deg,#E4E0EA 0%,#C9C2D4 50%,#A89BB8 100%)',line1:'Slow',line2:'Recovery',foot:'Rest · soft',swatch:'#A89BB8',light:true},
   'surprise':{sky:'linear-gradient(180deg,#F0C098 0%,#D8A8D0 50%,#98A8D8 100%)',line1:'Surprise',line2:'Me',foot:'Mixed · 15 min',swatch:'#D8A8D0',light:true}
 };
 function themeColor(id){return THEME_VISUAL[id]||THEME_VISUAL['surprise']}
@@ -837,11 +914,13 @@ const STORAGE_KEY='surfClimbYoga.history.v1';
 const SETTINGS_KEY='surfClimbYoga.settings.v1';
 const LAST_SIG_KEY='surfClimbYoga.lastSig.v1';
 const DECK_KEY='surfClimbYoga.deck.v1';
-const FOCUS_IDS=['hips-popup','shoulders-paddle','climbers-hips','forearms-wrists','full-body'];
+const FOCUS_IDS=['hips-popup','shoulders-paddle','climbers-hips','forearms-wrists','full-body','spine-twists','slow-recovery'];
 
 const params=new URLSearchParams(location.search);
 const SPEED=Math.max(1,parseFloat(params.get('speed')||'1')||1);
 const DEMO=params.get('demo')==='1';
+const UNLOCK_DAILY=params.get('unlock')==='1';
+let testTodayKey=null; // test override for local date
 function loadSettings(){try{const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');return{sound:s.sound!==false}}catch(e){return{sound:true}}}
 function saveSettings(){if(!DEMO)localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings))}
 const settings=loadSettings();
@@ -861,7 +940,7 @@ function getDemoHistory(){
 function getEntries(){if(DEMO){if(!demoCache)demoCache=getDemoHistory();return demoCache}return loadHistory()}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
 function dayKey(iso){const d=new Date(iso);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
-function localTodayKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function localTodayKey(){if(testTodayKey)return testTodayKey;const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function computeStreaks(entries){
   const days=new Set(entries.map(e=>dayKey(e.datetime)));if(!days.size)return{current:0,best:0};
   const sorted=Array.from(days).sort();let best=1,run=1;
@@ -886,6 +965,8 @@ function soundStart(){if(!settings.sound)return;tone(880,0.12,0.1,'sine');setTim
 function soundEnd(){if(!settings.sound)return;tone(392,0.18,0.11,'sine');setTimeout(()=>tone(294,0.22,0.09,'triangle'),100);vibe(50)}
 function soundTick(){if(!settings.sound)return;tone(660,0.06,0.055,'sine');vibe(25)}
 function soundComplete(){if(!settings.sound)return;tone(523,0.14,0.1,'sine');setTimeout(()=>tone(659,0.14,0.1,'sine'),150);setTimeout(()=>tone(784,0.14,0.1,'sine'),300);setTimeout(()=>tone(1047,0.28,0.09,'triangle'),460);vibe([40,50,40,50,120])}
+function soundRevealTick(){if(!settings.sound)return;tone(720,0.025,0.022,'sine')}
+function soundRevealLand(){if(!settings.sound)return;tone(523,0.11,0.055,'sine');setTimeout(()=>tone(784,0.16,0.045,'triangle'),70);vibe(16)}
 function vibe(pattern){if(navigator.vibrate){try{navigator.vibrate(pattern)}catch(e){}}}
 let wakeLock=null;
 async function requestWake(){if(!('wakeLock' in navigator))return;try{wakeLock=await navigator.wakeLock.request('screen')}catch(e){}}
@@ -1026,26 +1107,31 @@ function defaultDeckState(){
   const queue=shuffleInPlace(FOCUS_IDS.slice());
   return{version:1,round:1,queue:queue,done:[],lastCompleted:null};
 }
+function migrateDeck(d){
+  if(!d||!Array.isArray(d.queue)||!Array.isArray(d.done)) return defaultDeckState();
+  // migrate: drop surprise/unknown, append any new FOCUS_IDS into remaining queue
+  d.queue=d.queue.filter(id=>FOCUS_IDS.includes(id));
+  d.done=d.done.filter(id=>FOCUS_IDS.includes(id));
+  const seen=new Set(d.queue.concat(d.done));
+  FOCUS_IDS.forEach(id=>{if(!seen.has(id)) d.queue.push(id)});
+  if(!d.queue.length&&d.done.length>=FOCUS_IDS.length){
+    reshuffleQueue(d);
+  }
+  if(!d.round) d.round=1;
+  if(!d.version) d.version=1;
+  return d;
+}
 function loadDeck(){
   if(DEMO){
     if(!deckMem) deckMem=defaultDeckState();
+    else deckMem=migrateDeck(deckMem);
     return deckMem;
   }
   try{
     const raw=localStorage.getItem(DECK_KEY);
     if(!raw){const s=defaultDeckState();saveDeck(s);return s}
-    const d=JSON.parse(raw);
-    if(!d||!Array.isArray(d.queue)||!Array.isArray(d.done)){const s=defaultDeckState();saveDeck(s);return s}
-    // migrate: drop surprise, ensure only FOCUS_IDS
-    d.queue=d.queue.filter(id=>FOCUS_IDS.includes(id));
-    d.done=d.done.filter(id=>FOCUS_IDS.includes(id));
-    const seen=new Set(d.queue.concat(d.done));
-    FOCUS_IDS.forEach(id=>{if(!seen.has(id)) d.queue.push(id)});
-    if(!d.queue.length&&d.done.length===FOCUS_IDS.length){
-      // round finished but not reshuffled — reshuffle now
-      reshuffleQueue(d);
-    }
-    if(!d.round) d.round=1;
+    const d=migrateDeck(JSON.parse(raw));
+    saveDeck(d);
     return d;
   }catch(e){const s=defaultDeckState();saveDeck(s);return s}
 }
@@ -1114,88 +1200,201 @@ function startReveal(themeId){
   const nameEl=document.getElementById('reveal-name');
   const footEl=document.getElementById('reveal-foot');
   const slot=document.getElementById('reveal-slot');
-  const notBtn=document.getElementById('btn-not-today-reveal');
+  const actions=document.getElementById('reveal-actions');
   const hint=document.getElementById('reveal-tap-hint');
   if(!screen||!nameEl){openPreview(themeId);return}
+
+  const reduceMotion=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   revealSkipping=false;
   if(revealTimer){clearTimeout(revealTimer);revealTimer=null}
-  notBtn.hidden=true; notBtn.setAttribute('hidden',''); notBtn.style.display='none';
-  hint.textContent='Tap to skip';
-  slot.classList.remove('landed');
+  const timers=[];
+  function clearRevealTimers(){
+    timers.forEach(id=>clearTimeout(id));
+    timers.length=0;
+    if(revealTimer){clearTimeout(revealTimer);revealTimer=null}
+  }
+  function later(fn,ms){const id=setTimeout(fn,ms);timers.push(id);revealTimer=id;return id}
+
+  if(actions){
+    actions.hidden=true; actions.setAttribute('hidden','');
+    actions.classList.remove('show');
+    actions.removeAttribute('data-ready');
+  }
+  hint.textContent=reduceMotion?'':'Tap to skip';
+  slot.classList.remove('landed','settle');
   showScreen('reveal');
   unlockAudio();
 
   const target=THEMES.find(t=>t.id===themeId)||THEMES[0];
   const v=themeColor(themeId);
-  const ink=v.light?'#1F1F1F':'#FFFFFF';
-  sky.style.background=v.sky;
-  sky.style.color=ink;
-  sky.classList.toggle('sky-light',!!v.light);
+  const focusList=FOCUS_IDS.map(id=>THEMES.find(t=>t.id===id)).filter(Boolean);
 
-  const names=FOCUS_IDS.map(id=>THEMES.find(t=>t.id===id)).filter(Boolean);
-  let i=0;
-  const started=performance.now();
-  const DURATION=1200;
+  const log={chosenId:themeId,landedId:null,changes:[],holdMs:0,spinMs:0,reduced:!!reduceMotion,intervals:[]};
+  window.__yogaLastReveal=log;
 
-  function paint(th){
+  function paint(th, opts){
+    opts=opts||{};
     const vv=themeColor(th.id);
     sky.style.background=vv.sky;
     sky.style.color=vv.light?'#1F1F1F':'#FFFFFF';
+    sky.classList.toggle('sky-light',!!vv.light);
     nameEl.innerHTML=stackHeadline(th.name);
-    footEl.textContent=(vv.foot||'~15 min')+' · tap to skip';
+    footEl.textContent=opts.foot!=null?opts.foot:((vv.foot||'~15 min')+(opts.skipHint?' · tap to skip':''));
   }
-  paint(names[0]);
 
-  function tick(){
-    if(revealSkipping){finish();return}
-    const elapsed=performance.now()-started;
-    if(elapsed>=DURATION){finish();return}
-    i=(i+1)%names.length;
-    // bias toward target near the end
-    const th=(elapsed>DURATION*0.72)?target:names[i];
-    paint(th);
-    const pace=elapsed<400?55:elapsed<800?85:110;
-    revealTimer=setTimeout(tick,pace);
-  }
   let landed=false;
-  function finish(){
+  let actionsReady=false;
+  const HOLD_MS=1350;
+
+  function showActions(){
+    actionsReady=true;
+    log.holdMs=HOLD_MS;
+    hint.textContent='';
+    if(actions){
+      actions.hidden=false; actions.removeAttribute('hidden');
+      actions.classList.remove('show');
+      actions.removeAttribute('data-ready');
+      void actions.offsetWidth;
+      actions.classList.add('show');
+      later(()=>{ if(actions) actions.setAttribute('data-ready','1'); }, 320);
+    }
+  }
+
+  function goPreview(){
+    clearRevealTimers();
+    if(sky) sky.onclick=null;
+    openPreview(themeId);
+  }
+
+  function land(fromSkip){
     if(landed) return;
     landed=true;
-    if(revealTimer){clearTimeout(revealTimer);revealTimer=null}
-    paint(target);
-    nameEl.innerHTML=stackHeadline(target.name);
-    footEl.textContent=(v.foot||'~15 min');
-    slot.classList.add('landed');
-    notBtn.hidden=false; notBtn.removeAttribute('hidden'); notBtn.style.display='';
-    hint.textContent='';
-    revealTimer=setTimeout(()=>{openPreview(themeId)},380);
+    clearRevealTimers();
+    paint(target,{foot:(v.foot||'~15 min'),skipHint:false});
+    log.landedId=target.id;
+    log.spinMs=performance.now()-(log._t0||performance.now());
+    slot.classList.remove('settle');
+    void slot.offsetWidth;
+    slot.classList.add('landed','settle');
+    soundRevealLand();
+    // Hold on the card, then reveal Roll again + Let's go (no auto-advance)
+    later(showActions, HOLD_MS);
   }
-  revealTimer=setTimeout(tick,50);
 
-  function skipNow(){
-    if(revealSkipping) return;
-    revealSkipping=true;
-    finish();
+  function onTap(ev){
+    if(ev.target.closest&&ev.target.closest('#reveal-actions')) return;
+    if(!landed){
+      revealSkipping=true;
+      land(true);
+      return;
+    }
+    // After landing: only buttons advance — ignore ambient taps
   }
-  sky.onclick=function(ev){
-    if(ev.target.closest&&ev.target.closest('#btn-not-today-reveal')) return;
-    skipNow();
-  };
+  sky.onclick=onTap;
+
+  if(reduceMotion){
+    log._t0=performance.now();
+    paint(target,{foot:(v.foot||'~15 min'),skipHint:false});
+    slot.classList.add('landed');
+    sky.style.opacity='0';
+    requestAnimationFrame(()=>{sky.style.transition='opacity .35s ease';sky.style.opacity='1'});
+    later(()=>land(false), 40);
+    return;
+  }
+
+  // Geometric ease-out: first ~68ms, last ~400ms, ~2.5s total, mono-increasing
+  const STEPS=14, FIRST_I=68, LAST_I=400, r=1.2;
+  const B=(LAST_I-FIRST_I)/(Math.pow(r,STEPS-1)-1);
+  const A=FIRST_I-B;
+  const intervals=[];
+  for(let i=0;i<STEPS;i++) intervals.push(A+B*Math.pow(r,i));
+  log.intervals=intervals.map(x=>Math.round(x*10)/10);
+
+  const seq=[];
+  let idx=Math.floor(Math.random()*focusList.length);
+  for(let i=0;i<STEPS;i++){
+    if(i===STEPS-1){ seq.push(target); break; }
+    let th=focusList[idx%focusList.length];
+    if(i===STEPS-2&&th.id===target.id&&focusList.length>1){
+      th=focusList[(idx+1)%focusList.length];
+      idx++;
+    }
+    seq.push(th);
+    idx++;
+  }
+  if(seq[seq.length-1].id!==target.id) seq[seq.length-1]=target;
+
+  let startTh=focusList[Math.floor(Math.random()*focusList.length)];
+  if(startTh.id===seq[0].id&&focusList.length>1) startTh=focusList[(focusList.indexOf(startTh)+1)%focusList.length];
+  paint(startTh,{skipHint:true});
+  log._t0=performance.now();
+  log.changes.push({t:0,id:startTh.id,label:'start'});
+
+  let step=0;
+  function scheduleNext(delay){
+    later(function(){
+      if(landed||revealSkipping){ if(!landed) land(true); return; }
+      const th=seq[step];
+      const isLast=step===seq.length-1;
+      const now=performance.now();
+      paint(th,{skipHint:true});
+      if(!isLast) soundRevealTick();
+      log.changes.push({t:Math.round(now-log._t0), id:th.id});
+      step++;
+      if(isLast){
+        land(false);
+        return;
+      }
+      scheduleNext(intervals[step]);
+    }, delay);
+  }
+  scheduleNext(intervals[0]);
 }
 
-function onNotToday(){
+function onRollAgain(){
   const next=skipFocusNotToday();
-  toast('Swapped · '+((THEMES.find(t=>t.id===next)||{}).name||'next'));
+  soundRevealTick();
   startReveal(next);
+}
+function onRevealGo(){
+  const id=(window.__yogaLastReveal&&window.__yogaLastReveal.landedId)||peekFocus();
+  const sky=document.getElementById('reveal-sky');
+  if(sky) sky.onclick=null;
+  openPreview(id);
+}
+
+
+function didSessionToday(){
+  if(UNLOCK_DAILY) return false;
+  const today=localTodayKey();
+  return getEntries().some(e=>e&&e.datetime&&dayKey(e.datetime)===today);
+}
+function updateStartCard(){
+  const btn=document.getElementById('btn-start-today');
+  if(!btn) return;
+  const locked=didSessionToday();
+  btn.classList.toggle('done', locked);
+  btn.disabled=!!locked;
+  btn.setAttribute('aria-disabled', locked?'true':'false');
+  const kicker=btn.querySelector('.start-kicker');
+  const title=btn.querySelector('.start-title');
+  const meta=btn.querySelector('.start-meta');
+  if(locked){
+    if(kicker) kicker.textContent='Come back tomorrow';
+    if(title) title.innerHTML='Done for today <span class="done-check" aria-hidden="true">✓</span>';
+    if(meta) meta.textContent='See you tomorrow';
+  }else{
+    if(kicker) kicker.textContent='Ready when you are';
+    if(title) title.textContent="Start today's stretch";
+    if(meta) meta.textContent='~15 min';
+  }
 }
 
 function renderHome(){
   const entries=getEntries();
   const state=loadDeck();
   updateHomeDate();
-  const navS=document.getElementById('nav-sessions-count');
   const navH=document.getElementById('nav-history-count');
-  if(navS) navS.textContent=String(Math.max(0, FOCUS_IDS.length - state.done.length) || FOCUS_IDS.length);
   if(navH) navH.textContent=String(entries.length);
   const label=document.getElementById('home-round-label');
   if(label) label.textContent='Round '+state.round+' · '+state.done.length+' of '+FOCUS_IDS.length;
@@ -1253,11 +1452,11 @@ document.getElementById('btn-mark-done').addEventListener('click',()=>{unlockAud
 document.getElementById('btn-close-preview').addEventListener('click',()=>showScreen('home'));
 document.getElementById('btn-shuffle').addEventListener('click',shuffleDraft);
 document.getElementById('btn-begin').addEventListener('click',()=>{unlockAudio();startPlayerFromDraft()});
-document.getElementById('btn-start-today').addEventListener('click',()=>{unlockAudio();startReveal(peekFocus())});
-const ntR=document.getElementById('btn-not-today-reveal');
-if(ntR) ntR.addEventListener('click',(e)=>{e.stopPropagation();onNotToday()});
-const ntP=document.getElementById('btn-not-today-preview');
-if(ntP) ntP.addEventListener('click',()=>onNotToday());
+document.getElementById('btn-start-today').addEventListener('click',()=>{if(didSessionToday())return;unlockAudio();startReveal(peekFocus())});
+const btnRoll=document.getElementById('btn-roll-again');
+if(btnRoll) btnRoll.addEventListener('click',(e)=>{e.stopPropagation();onRollAgain()});
+const btnGo=document.getElementById('btn-reveal-go');
+if(btnGo) btnGo.addEventListener('click',(e)=>{e.stopPropagation();onRevealGo()});
 
 document.getElementById('btn-settings').addEventListener('click',()=>{syncToggles();showScreen('settings')});
 document.getElementById('btn-settings-back').addEventListener('click',()=>showScreen('home'));
@@ -1269,7 +1468,19 @@ document.querySelectorAll('#main-nav button[data-nav]').forEach(btn=>btn.addEven
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&player.playing)requestWake()});
 if('serviceWorker' in navigator&&!DEMO){navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{})}
 syncToggles();renderHome();if(DEMO)renderHistory();
-window.__yoga={THEMES,POSES,FOCUS_IDS,get draft(){return draft},player,SPEED,DEMO,settings,openPreview,makeDraft,getEntries,generateSession:window.YogaCore.generateSession,validateSession:window.YogaCore.validateSession,loadDeck,saveDeck,peekFocus,advanceDeckOnComplete,skipFocusNotToday,startReveal,reshuffleQueue,defaultDeckState,get celebrateUntil(){return celebrateUntil},setCelebrate(ms){celebrateUntil=(ms===0||ms===false)?0:(Date.now()+(ms==null?5000:ms))}};
+function scheduleDailyLockCheck(){
+  updateStartCard();
+  // wake shortly after local midnight
+  const now=new Date();
+  const next=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,2);
+  const ms=Math.max(1000, next-now);
+  setTimeout(()=>{updateStartCard();scheduleDailyLockCheck()}, Math.min(ms, 6*60*60*1000));
+}
+scheduleDailyLockCheck();
+setInterval(updateStartCard, 60000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')updateStartCard()});
+window.addEventListener('focus', updateStartCard);
+window.__yoga={THEMES,POSES,FOCUS_IDS,get draft(){return draft},player,SPEED,DEMO,settings,openPreview,makeDraft,getEntries,generateSession:window.YogaCore.generateSession,validateSession:window.YogaCore.validateSession,loadDeck,saveDeck,peekFocus,advanceDeckOnComplete,skipFocusNotToday,startReveal,reshuffleQueue,defaultDeckState,migrateDeck,get celebrateUntil(){return celebrateUntil},setCelebrate(ms){celebrateUntil=(ms===0||ms===false)?0:(Date.now()+(ms==null?5000:ms))},get lastReveal(){return window.__yogaLastReveal||null},onRollAgain,onRevealGo,didSessionToday,updateStartCard,localTodayKey,dayKey,get UNLOCK_DAILY(){return UNLOCK_DAILY},setTestToday(k){testTodayKey=k||null;updateStartCard();return localTodayKey()}};
 })();
 
 </script>
