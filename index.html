@@ -351,12 +351,214 @@ button:disabled{opacity:.35}
   min-height:42vh;display:flex;flex-direction:column;
   padding-bottom:12px;
 }
+/* Breathing sky — obvious but calm: 4s inhale / 6s exhale */
+.player-shell .sky .sky-breath-bright,
+.player-shell .sky .sky-breath-glow{
+  pointer-events:none;position:absolute;z-index:0;
+  will-change:transform, opacity;
+}
+/* Brighter sunrise wash crossfades over the deep theme sky */
+.player-shell .sky .sky-breath-bright{
+  inset:0;
+  background:var(--breath-bright, linear-gradient(180deg,#F7F0FF 0%,#FFE6CC 48%,#FFD0A8 100%));
+  opacity:0;
+  transition:opacity .9s ease;
+}
+/* Soft warm glow behind the pose — grows from ~35% to fill the sky */
+.player-shell .sky .sky-breath-glow{
+  left:50%; top:48%;
+  width:100%; height:100%;
+  transform:translate(-50%,-50%) scale(0.35);
+  border-radius:50%;
+  background:radial-gradient(circle,
+    var(--breath-glow-core, rgba(255,244,230,0.92)) 0%,
+    var(--breath-glow-mid, rgba(255,220,185,0.70)) 42%,
+    rgba(255,210,170,0.20) 68%,
+    transparent 78%);
+  opacity:0;
+  transition:transform .9s ease, opacity .9s ease;
+}
+.player-shell .sky .grain{z-index:1}
+.player-shell .sky .top-row{position:relative;z-index:3}
+.player-shell .sky .pose-fig-wrap{position:relative;z-index:2}
+/* Soft halo ring around the pose card (wrap overflow must allow it) */
+.player-shell .sky .pose-fig-wrap::after{
+  content:'';
+  position:absolute;
+  inset:-14px;
+  border-radius:36px;
+  pointer-events:none;
+  z-index:-1;
+  opacity:0;
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,0.15),
+    0 0 18px 6px rgba(255,230,200,0.20);
+  transform:scale(0.94);
+  transition:opacity .9s ease, transform .9s ease, box-shadow .9s ease;
+  will-change:transform, opacity, box-shadow;
+}
+.player-shell .sky.breath-active .sky-breath-bright{
+  transition:none;
+  animation:sky-breathe-bright 10s ease-in-out infinite;
+}
+.player-shell .sky.breath-active .sky-breath-glow{
+  transition:none;
+  animation:sky-breathe-glow 10s ease-in-out infinite;
+}
+.player-shell .sky.breath-active .pose-fig-wrap::after{
+  transition:none;
+  animation:sky-breathe-halo 10s ease-in-out infinite;
+}
+.player-shell .sky.breath-active.breath-paused .sky-breath-bright,
+.player-shell .sky.breath-active.breath-paused .sky-breath-glow,
+.player-shell .sky.breath-active.breath-paused .pose-fig-wrap::after{
+  animation-play-state:paused;
+}
+/* 0% exhale bottom → 40% (=4s) inhale peak → 100% exhale */
+@keyframes sky-breathe-bright{
+  0%{opacity:0}
+  40%{opacity:0.85}
+  100%{opacity:0}
+}
+@keyframes sky-breathe-glow{
+  0%{transform:translate(-50%,-50%) scale(0.35); opacity:0.30}
+  40%{transform:translate(-50%,-50%) scale(1.08); opacity:0.92}
+  100%{transform:translate(-50%,-50%) scale(0.35); opacity:0.30}
+}
+@keyframes sky-breathe-halo{
+  0%{
+    opacity:0.12;
+    transform:scale(0.94);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.18),
+      0 0 14px 4px rgba(255,230,200,0.18);
+  }
+  40%{
+    opacity:1;
+    transform:scale(1.1);
+    box-shadow:
+      0 0 0 3px rgba(255,255,255,0.55),
+      0 0 40px 18px rgba(255,232,200,0.70),
+      0 0 72px 28px rgba(255,210,170,0.35);
+  }
+  100%{
+    opacity:0.12;
+    transform:scale(0.94);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.18),
+      0 0 14px 4px rgba(255,230,200,0.18);
+  }
+}
+
+/* Static poses for screenshots / pause scrubbing */
+.player-shell .sky.breath-pose-inhale .sky-breath-bright{
+  animation:none !important; opacity:0.85 !important;
+}
+.player-shell .sky.breath-pose-inhale .sky-breath-glow{
+  animation:none !important;
+  transform:translate(-50%,-50%) scale(1.08) !important;
+  opacity:0.95 !important;
+}
+.player-shell .sky.breath-pose-inhale .pose-fig-wrap::after{
+  animation:none !important;
+  opacity:1 !important;
+  transform:scale(1.1) !important;
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,0.55),
+    0 0 40px 18px rgba(255,232,200,0.70),
+    0 0 72px 28px rgba(255,210,170,0.35) !important;
+}
+.player-shell .sky.breath-pose-exhale .sky-breath-bright{
+  animation:none !important; opacity:0 !important;
+}
+.player-shell .sky.breath-pose-exhale .sky-breath-glow{
+  animation:none !important;
+  transform:translate(-50%,-50%) scale(0.35) !important;
+  opacity:0.28 !important;
+}
+.player-shell .sky.breath-pose-exhale .pose-fig-wrap::after{
+  animation:none !important;
+  opacity:0.1 !important;
+  transform:scale(0.94) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.15),
+    0 0 12px 3px rgba(255,230,200,0.15) !important;
+}
+@media (prefers-reduced-motion: reduce){
+  .player-shell .sky.breath-active .sky-breath-bright{
+    animation:sky-breathe-bright-soft 10s ease-in-out infinite;
+  }
+  .player-shell .sky.breath-active .sky-breath-glow{
+    animation:sky-breathe-glow-soft 10s ease-in-out infinite;
+    transform:translate(-50%,-50%) scale(0.85) !important;
+  }
+  .player-shell .sky.breath-active .pose-fig-wrap::after{
+    animation:sky-breathe-halo-soft 10s ease-in-out infinite;
+    transform:none !important;
+  }
+  @keyframes sky-breathe-bright-soft{
+    0%,100%{opacity:0}
+    40%{opacity:0.45}
+  }
+  @keyframes sky-breathe-glow-soft{
+    0%,100%{opacity:0.2}
+    40%{opacity:0.55}
+  }
+  @keyframes sky-breathe-halo-soft{
+    0%,100%{opacity:0.1}
+    40%{opacity:0.45}
+  }
+}
+.player-shell .sky .pose-fig-wrap{position:relative;z-index:2}
+.player-shell .sky.breath-active .sky-breath{
+  transition:none;
+  animation:sky-breathe-swell 10s ease-in-out infinite;
+}
+.player-shell .sky.breath-active .sky-breath-veil{
+  transition:none;
+  animation:sky-breathe-veil 10s ease-in-out infinite;
+}
+.player-shell .sky.breath-active.breath-paused .sky-breath,
+.player-shell .sky.breath-active.breath-paused .sky-breath-veil{
+  animation-play-state:paused;
+}
+@keyframes sky-breathe-swell{
+  0%{transform:scale(1);opacity:.42}
+  40%{transform:scale(1.18);opacity:1} /* 4s inhale of 10s */
+  100%{transform:scale(1);opacity:.42} /* 6s exhale */
+}
+@keyframes sky-breathe-veil{
+  0%{opacity:0}
+  40%{opacity:.62}
+  100%{opacity:0}
+}
+@media (prefers-reduced-motion: reduce){
+  .player-shell .sky.breath-active .sky-breath{
+    animation:sky-breathe-soft 10s ease-in-out infinite;
+    transform:none !important;
+  }
+  .player-shell .sky.breath-active .sky-breath-veil{
+    animation:sky-breathe-veil-soft 10s ease-in-out infinite;
+  }
+  @keyframes sky-breathe-soft{
+    0%,100%{opacity:.4}
+    40%{opacity:.7}
+  }
+  @keyframes sky-breathe-veil-soft{
+    0%,100%{opacity:0}
+    40%{opacity:.22}
+  }
+}
 .player-shell .sky .pose-fig-wrap{
   width:min(68vw,260px);height:min(68vw,260px);
-  margin:4px auto 0;position:relative;z-index:1;
+  margin:4px auto 0;position:relative;z-index:2;
   background:#FAD7BA;border-radius:24px;
   box-shadow:0 8px 32px rgba(40,30,20,0.10);
-  display:grid;place-items:center;overflow:hidden;
+  display:grid;place-items:center;overflow:visible;
+}
+.player-shell .sky .pose-fig-wrap img{
+  border-radius:24px;
+  overflow:hidden;
 }
 .player-shell .sky .pose-fig-wrap:has(.strength-fig),
 .player-shell .sky .pose-fig-wrap.strength-mode{
@@ -714,6 +916,8 @@ button:disabled{opacity:.35}
   <section class="screen" id="screen-player">
     <div class="player-shell" id="player-shell">
       <div class="sky" id="player-sky">
+        <div class="sky-breath-bright" aria-hidden="true"></div>
+        <div class="sky-breath-glow" aria-hidden="true"></div>
         <div class="grain"></div>
         <div class="top-row">
           <button class="icon-btn" id="btn-close-player" type="button" aria-label="Close">
@@ -1201,6 +1405,16 @@ function applySky(el, themeId){
   el.style.setProperty('--theme-sky', v.sky);
   el.style.setProperty('--sky-ink', ink);
   el.style.setProperty('--sky-muted', muted);
+  // Breath wash/glow: warmer light tint for light skies, soft peach for dark
+  if(v.light){
+    el.style.setProperty('--breath-bright', 'linear-gradient(180deg,#FFFCF8 0%,#FFEFD9 45%,#FFD9B0 100%)');
+    el.style.setProperty('--breath-glow-core', 'rgba(255,252,245,0.95)');
+    el.style.setProperty('--breath-glow-mid', 'rgba(255,228,190,0.78)');
+  }else{
+    el.style.setProperty('--breath-bright', 'linear-gradient(180deg,#E8D8F8 0%,#FFD8B8 50%,#FFC090 100%)');
+    el.style.setProperty('--breath-glow-core', 'rgba(255,240,220,0.92)');
+    el.style.setProperty('--breath-glow-mid', 'rgba(255,210,170,0.72)');
+  }
   el.classList.toggle('sky-light', !!v.light);
 }
 
@@ -1372,6 +1586,17 @@ function soundComplete(){if(!settings.sound)return;tone(523,0.14,0.1,'sine');set
 
 /* —— Soft synth roulette (works with AudioContext + OfflineAudioContext) —— */
 const REVEAL_PENT=[261.63,293.66,329.63,392.00,440.00,523.25,587.33,659.25,783.99,880.00]; // C maj pent ~2 oct
+/** Two roulette voices: stretch (airy glass) vs strength (punchier analog). */
+const ROULETTE_VOICES={
+  stretch:{kind:'glass',desc:'soft airy glassy bell-pluck',gain:1.00,bell:0.38},
+  strength:{kind:'analog',desc:'punchy filtered detuned-saw pluck',gain:0.84,bell:0.42}
+};
+function resolveRouletteMode(mode){
+  return mode==='strength'?'strength':'stretch';
+}
+function getRouletteVoice(mode){
+  return ROULETTE_VOICES[resolveRouletteMode(mode)];
+}
 function buildRevealIntervals(){
   const STEPS=14, FIRST_I=68, LAST_I=400, r=1.2;
   const B=(LAST_I-FIRST_I)/(Math.pow(r,STEPS-1)-1);
@@ -1386,66 +1611,127 @@ function revealPluckFreq(stepIndex){
   const i=stepIndex%n;
   return REVEAL_PENT[wave===0?i:(n-1-i)];
 }
-function scheduleRevealPluck(ctx, when, stepIndex, intervalMs){
-  if(!ctx) return;
+/** Realistic 14-card focus sequence ending on landId (visual only; voice is per roulette mode). */
+function buildRevealFocusSeq(landId, mode){
+  const ids=(mode==='strength'?STRENGTH_FOCUS_IDS:FOCUS_IDS).slice();
+  const STEPS=14;
+  const seq=[];
+  let idx=Math.max(0, ids.indexOf(landId));
+  idx=(idx+3)%Math.max(ids.length,1);
+  for(let i=0;i<STEPS;i++){
+    if(i===STEPS-1){ seq.push(landId); break; }
+    let id=ids[idx%ids.length];
+    if(i===STEPS-2&&id===landId&&ids.length>1){
+      id=ids[(idx+1)%ids.length];
+      idx++;
+    }
+    seq.push(id);
+    idx++;
+  }
+  if(seq[seq.length-1]!==landId) seq[seq.length-1]=landId;
+  return seq;
+}
+/**
+ * Schedule one soft note in a roulette voice (stretch|strength).
+ * opts: {decay, peak, land, forceBell}
+ */
+function scheduleVoiceNote(ctx, when, freq, mode, opts){
+  opts=opts||{};
   const bus=ensureYogaBus(ctx);
   if(!bus) return;
+  const voice=getRouletteVoice(mode);
+  const kind=voice.kind;
+  const decay=opts.decay==null?0.12:opts.decay;
+  const peak=(opts.peak==null?0.095:opts.peak)*(voice.gain==null?1:voice.gain);
+  const f=Math.max(40, freq||440);
+  const stopAt=when+decay+0.1;
+  const dest=bus.master;
+
+  function envGain(g, pk, dcy, atk){
+    atk=atk==null?0.004:atk;
+    g.gain.setValueAtTime(0.0001, when);
+    g.gain.exponentialRampToValueAtTime(Math.max(0.0002, pk), when+atk);
+    g.gain.exponentialRampToValueAtTime(0.0001, when+dcy);
+  }
+  function addSineBell(amount){
+    if(!(amount>0.01)) return;
+    const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
+    const h2=ctx.createOscillator(); h2.type='sine'; h2.frequency.value=f*2;
+    const g=ctx.createGain();
+    const g2=ctx.createGain(); g2.gain.value=0.22*amount;
+    envGain(g, peak*0.55*amount, Math.min(decay, opts.land?0.95:decay), 0.006);
+    o.connect(g); h2.connect(g2); g2.connect(g); g.connect(dest);
+    o.start(when); h2.start(when);
+    o.stop(stopAt); h2.stop(stopAt);
+  }
+
+  if(kind==='glass'){
+    // Soft airy glassy bell-pluck: FM sparkle + warm sine body
+    const car=ctx.createOscillator(); car.type='sine'; car.frequency.value=f;
+    const mod=ctx.createOscillator(); mod.type='sine'; mod.frequency.value=f*2.005;
+    const modG=ctx.createGain();
+    modG.gain.setValueAtTime(f*1.8, when);
+    modG.gain.exponentialRampToValueAtTime(Math.max(1, f*0.12), when+decay);
+    mod.connect(modG); modG.connect(car.frequency);
+    const body=ctx.createOscillator(); body.type='triangle';
+    body.frequency.value=f*Math.pow(2, 4/1200);
+    const bodyG=ctx.createGain(); bodyG.gain.value=0.28;
+    const filter=ctx.createBiquadFilter();
+    filter.type='lowpass'; filter.Q.value=0.7;
+    filter.frequency.setValueAtTime(4200, when);
+    filter.frequency.exponentialRampToValueAtTime(1100, when+decay);
+    const g=ctx.createGain(); envGain(g, peak, decay, 0.003);
+    car.connect(filter); body.connect(bodyG); bodyG.connect(filter);
+    filter.connect(g); g.connect(dest);
+    car.start(when); mod.start(when); body.start(when);
+    car.stop(stopAt); mod.stop(stopAt); body.stop(stopAt);
+  }else if(kind==='analog'){
+    // Punchier filtered detuned-saw pluck (still gentle)
+    const filter=ctx.createBiquadFilter();
+    filter.type='lowpass'; filter.Q.value=1.05;
+    filter.frequency.setValueAtTime(2800, when);
+    filter.frequency.exponentialRampToValueAtTime(420, when+decay);
+    const g=ctx.createGain(); envGain(g, peak, decay, 0.003);
+    const o1=ctx.createOscillator(); o1.type='sawtooth'; o1.frequency.value=f;
+    const o2=ctx.createOscillator(); o2.type='sawtooth';
+    o2.frequency.value=f*Math.pow(2, 9/1200);
+    const g2=ctx.createGain(); g2.gain.value=0.55;
+    // soft square whisper for brightness without harshness
+    const o3=ctx.createOscillator(); o3.type='square'; o3.frequency.value=f;
+    const g3=ctx.createGain(); g3.gain.value=0.12;
+    o1.connect(filter); o2.connect(g2); g2.connect(filter); o3.connect(g3); g3.connect(filter);
+    filter.connect(g); g.connect(dest);
+    o1.start(when); o2.start(when); o3.start(when);
+    o1.stop(stopAt); o2.stop(stopAt); o3.stop(stopAt);
+  }else{
+    scheduleVoiceNote(ctx, when, f, 'stretch', opts);
+    return;
+  }
+
+  const bellAmt=(opts.forceBell?Math.max(0.35, voice.bell||0):0)+(opts.land?(voice.bell||0)*0.45:0);
+  if(bellAmt>0.05) addSineBell(Math.min(1, bellAmt));
+}
+function scheduleRevealPluck(ctx, when, stepIndex, intervalMs, mode){
+  if(!ctx) return;
+  if(!ensureYogaBus(ctx)) return;
   const f=revealPluckFreq(stepIndex|0);
   const ms=intervalMs==null?90:intervalMs;
-  // Longer decay as the spin slows (80–140ms)
   const decay=Math.min(0.14, Math.max(0.08, 0.07 + (ms/450)*0.07));
-  const peak=0.095;
-  const filter=ctx.createBiquadFilter();
-  filter.type='lowpass'; filter.Q.value=0.65;
-  const startCut=1800, endCut=520;
-  filter.frequency.setValueAtTime(startCut, when);
-  filter.frequency.exponentialRampToValueAtTime(endCut, when+decay);
-  const g=ctx.createGain();
-  g.gain.setValueAtTime(0.0001, when);
-  g.gain.exponentialRampToValueAtTime(peak, when+0.004);
-  g.gain.exponentialRampToValueAtTime(0.0001, when+decay);
-  const o1=ctx.createOscillator(); o1.type='sine'; o1.frequency.value=f;
-  const o2=ctx.createOscillator(); o2.type='triangle';
-  o2.frequency.value=f*Math.pow(2, 5/1200); // ~5 cents
-  const g2=ctx.createGain(); g2.gain.value=0.32;
-  o1.connect(filter); o2.connect(g2); g2.connect(filter);
-  filter.connect(g); g.connect(bus.master);
-  o1.start(when); o2.start(when);
-  o1.stop(when+decay+0.06); o2.stop(when+decay+0.06);
+  scheduleVoiceNote(ctx, when, f, mode, {decay:decay, peak:0.095, land:false, forceBell:false});
 }
-function scheduleRevealLand(ctx, when){
+function scheduleRevealLand(ctx, when, mode){
   if(!ctx) return;
-  const bus=ensureYogaBus(ctx);
-  if(!bus) return;
-  // Bright happy resolution above the rattle: G5 → C6 → E6 sparkle, then bell sustain on E6
+  if(!ensureYogaBus(ctx)) return;
   const arp=[783.99, 1046.50, 1318.51]; // G5, C6, E6
   const gap=0.065;
   arp.forEach((f,i)=>{
     const t=when+i*gap;
-    const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
-    // soft 2x + quiet 3x partials for bell color
-    const h2=ctx.createOscillator(); h2.type='sine'; h2.frequency.value=f*2;
-    const h3=ctx.createOscillator(); h3.type='sine'; h3.frequency.value=f*3;
-    const g2=ctx.createGain(); g2.gain.value=0.22;
-    const g3=ctx.createGain(); g3.gain.value=0.08;
-    const filter=ctx.createBiquadFilter();
-    filter.type='lowpass'; filter.Q.value=0.7;
-    filter.frequency.setValueAtTime(5200, t);
-    filter.frequency.exponentialRampToValueAtTime(1800, t+0.35);
-    const g=ctx.createGain();
-    const peak=0.055;
     const decay=i===arp.length-1?0.95:0.28;
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(peak, t+0.008);
-    g.gain.exponentialRampToValueAtTime(0.0001, t+decay);
-    o.connect(filter); h2.connect(g2); g2.connect(filter); h3.connect(g3); g3.connect(filter);
-    filter.connect(g); g.connect(bus.master);
-    o.start(t); h2.start(t); h3.start(t);
-    o.stop(t+decay+0.08); h2.stop(t+decay+0.08); h3.stop(t+decay+0.08);
+    scheduleVoiceNote(ctx, t, f, mode, {decay:decay, peak:0.055, land:true, forceBell:true});
   });
-  // Very quiet low pad under the sparkle (not the star)
-  const padF=[261.63, 329.63]; // soft C4 E4
-  padF.forEach((f,i)=>{
+  const bus=ensureYogaBus(ctx);
+  const padF=[261.63, 329.63];
+  padF.forEach((f)=>{
     const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
     const filter=ctx.createBiquadFilter();
     filter.type='lowpass'; filter.frequency.value=900;
@@ -1457,20 +1743,22 @@ function scheduleRevealLand(ctx, when){
     o.start(when); o.stop(when+1.15);
   });
 }
-function soundRevealTick(stepIndex, intervalMs){
+function soundRevealTick(stepIndex, intervalMs, mode){
   if(!settings.sound) return;
   const ctx=ensureAudio(); if(!ctx) return;
-  scheduleRevealPluck(ctx, ctx.currentTime+0.001, stepIndex|0, intervalMs);
+  scheduleRevealPluck(ctx, ctx.currentTime+0.001, stepIndex|0, intervalMs, mode);
 }
-function soundRevealLand(){
+function soundRevealLand(mode){
   if(!settings.sound) return;
   const ctx=ensureAudio(); if(!ctx) return;
-  scheduleRevealLand(ctx, ctx.currentTime+0.001);
+  scheduleRevealLand(ctx, ctx.currentTime+0.001, mode);
   vibe(16);
 }
-/** Offline render of one full spin + landing (same interval schedule as the UI). */
-async function renderRoulettePreviewBuffer(sampleRate){
+/** Offline render of one full spin + landing. opts.mode: 'stretch'|'strength'. */
+async function renderRoulettePreviewBuffer(sampleRate, opts){
+  opts=opts||{};
   const sr=sampleRate||44100;
+  const mode=resolveRouletteMode(opts.mode||'stretch');
   const intervals=buildRevealIntervals();
   const spinSec=intervals.reduce((a,b)=>a+b,0)/1000;
   const totalSec=spinSec+1.7;
@@ -1480,8 +1768,8 @@ async function renderRoulettePreviewBuffer(sampleRate){
   let t=0;
   for(let i=0;i<intervals.length;i++){
     t+=intervals[i]/1000;
-    if(i<intervals.length-1) scheduleRevealPluck(ctx, t, i, intervals[i]);
-    else scheduleRevealLand(ctx, t);
+    if(i<intervals.length-1) scheduleRevealPluck(ctx, t, i, intervals[i], mode);
+    else scheduleRevealLand(ctx, t, mode);
   }
   const buf=await ctx.startRendering();
   let peak=0;
@@ -1489,7 +1777,57 @@ async function renderRoulettePreviewBuffer(sampleRate){
     const d=buf.getChannelData(c);
     for(let i=0;i<d.length;i++){ const a=Math.abs(d[i]); if(a>peak) peak=a; }
   }
-  return {buffer:buf, peak:peak, peakDb: peak>0?20*Math.log10(peak):-Infinity, intervals:intervals.map(x=>Math.round(x*10)/10), durationSec:totalSec};
+  return {buffer:buf, peak:peak, peakDb: peak>0?20*Math.log10(peak):-Infinity, intervals:intervals.map(x=>Math.round(x*10)/10), durationSec:totalSec, mode:mode};
+}
+/** Several spin+land sequences back-to-back (voices preview). */
+async function renderVoicesPreviewBuffer(sampleRate, segments, gapSec){
+  const sr=sampleRate||44100;
+  gapSec=gapSec==null?0.8:gapSec;
+  const intervals=buildRevealIntervals();
+  const spinSec=intervals.reduce((a,b)=>a+b,0)/1000;
+  const oneSec=spinSec+1.7;
+  const segs=segments&&segments.length?segments:[
+    {mode:'stretch'},{mode:'strength'},{mode:'stretch'},{mode:'strength'}
+  ];
+  const totalSec=segs.length*oneSec+(segs.length-1)*gapSec+0.15;
+  const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  const ctx=new Offline(2, Math.ceil(sr*totalSec), sr);
+  ensureYogaBus(ctx);
+  const meta=[];
+  let cursor=0.05;
+  for(let s=0;s<segs.length;s++){
+    const mode=resolveRouletteMode(segs[s].mode||'stretch');
+    const start=cursor;
+    let t=cursor;
+    for(let i=0;i<intervals.length;i++){
+      t+=intervals[i]/1000;
+      if(i<intervals.length-1) scheduleRevealPluck(ctx, t, i, intervals[i], mode);
+      else scheduleRevealLand(ctx, t, mode);
+    }
+    meta.push({mode, startSec:start, landSec:t, endSec:cursor+oneSec});
+    cursor+=oneSec;
+    if(s<segs.length-1) cursor+=gapSec;
+  }
+  const buf=await ctx.startRendering();
+  let peak=0;
+  for(let c=0;c<buf.numberOfChannels;c++){
+    const d=buf.getChannelData(c);
+    for(let i=0;i<d.length;i++){ const a=Math.abs(d[i]); if(a>peak) peak=a; }
+  }
+  const segStats=meta.map(m=>{
+    const a=Math.floor(m.startSec*sr), b=Math.min(buf.length, Math.floor(m.endSec*sr));
+    let sum=0, n=0, p=0;
+    for(let i=a;i<b;i++){
+      let s=0;
+      for(let c=0;c<buf.numberOfChannels;c++) s+=buf.getChannelData(c)[i];
+      s/=buf.numberOfChannels;
+      sum+=s*s; n++;
+      const aa=Math.abs(s); if(aa>p) p=aa;
+    }
+    const rms=n?Math.sqrt(sum/n):0;
+    return {mode:m.mode, peak:p, peakDb:p>0?20*Math.log10(p):-Infinity, rms:rms, rmsDb:rms>0?20*Math.log10(rms):-Infinity, startSec:m.startSec, landSec:m.landSec, endSec:m.endSec};
+  });
+  return {buffer:buf, peak:peak, peakDb:peak>0?20*Math.log10(peak):-Infinity, durationSec:totalSec, segments:meta, segStats:segStats, oneSec:oneSec, gapSec:gapSec};
 }
 function vibe(pattern){if(navigator.vibrate){try{navigator.vibrate(pattern)}catch(e){}}}
 let wakeLock=null;
@@ -1640,13 +1978,51 @@ function renderPlayer(){
   }
   if(pctEl) pctEl.textContent=pct+'%';
   applySky(document.getElementById('player-sky'), sess.themeId);
+  updatePlayerBreath();
   document.getElementById('icon-play').style.display=player.playing?'none':'block';
   document.getElementById('icon-pause').style.display=player.playing?'block':'none';
+}
+/** Breath only on active hold work; freeze on pause; still on rest/transition. */
+function updatePlayerBreath(){
+  const sky=document.getElementById('player-sky');
+  if(!sky) return;
+  const onHold=!player.finished && player.mode==='hold';
+  if(onHold){
+    sky.classList.add('breath-active');
+    sky.classList.toggle('breath-paused', !player.playing);
+  }else{
+    sky.classList.remove('breath-active','breath-paused','breath-pose-inhale','breath-pose-exhale');
+    // Snap breath layers to rest (no lingering crossfade from a freeze/pose)
+    sky.querySelectorAll('.sky-breath-bright,.sky-breath-glow').forEach(el=>{
+      el.style.animation='none';
+      el.style.opacity='';
+      el.style.transform='';
+    });
+  }
+}
+/** Freeze breath at inhale peak (progress≈0.4) or exhale bottom (0). For previews. */
+function freezePlayerBreath(progress){
+  const sky=document.getElementById('player-sky');
+  if(!sky) return;
+  const t=Math.max(0, Math.min(1, progress==null?0:progress));
+  sky.classList.add('breath-active','breath-paused');
+  sky.classList.remove('breath-pose-inhale','breath-pose-exhale');
+  sky.querySelectorAll('.sky-breath-bright,.sky-breath-glow').forEach(el=>{ el.style.animation='none'; });
+  // Map: >=0.25 → inhale peak pose, else exhale bottom
+  sky.classList.add(t>=0.25?'breath-pose-inhale':'breath-pose-exhale');
+}
+function clearPlayerBreathFreeze(){
+  const sky=document.getElementById('player-sky');
+  if(!sky) return;
+  sky.classList.remove('breath-pose-inhale','breath-pose-exhale');
+  sky.removeAttribute('data-breath-t');
+  sky.style.removeProperty('--breath-delay');
+  sky.querySelectorAll('.sky-breath-bright,.sky-breath-glow').forEach(el=>{ el.style.animation=''; });
 }
 function startPlayerFromDraft(){unlockAudio();if(draft&&draft.type) sessionMode=draft.type;player.session=draft;player.stepIndex=0;player.finished=false;player.holdElapsedTotal=0;player.playing=false;saveLastSig(draft.themeId,draft.signature);showScreen('player');enterStep(0);play()}
 function skip(){if(player.finished)return;if(player.mode==='transition'){beginSegment('hold',currentStep().dur);if(player.playing)player.segStartPerf=performance.now();return}soundEnd();const rem=segRemaining();player.holdElapsedTotal+=Math.max(0,currentStep().dur-rem);const next=player.stepIndex+1;if(next>=player.session.steps.length){finishSession(true);return}enterStep(next);if(player.playing)player.segStartPerf=performance.now()}
 function back(){if(player.finished)return;if(player.mode==='hold'){beginSegment('transition',currentStep().transition||6);if(player.playing)player.segStartPerf=performance.now();return}if(player.stepIndex<=0){beginSegment('transition',currentStep().transition||6);if(player.playing)player.segStartPerf=performance.now();return}player.stepIndex-=1;let elapsed=0;for(let i=0;i<player.stepIndex;i++)elapsed+=player.session.steps[i].dur;player.holdElapsedTotal=elapsed;beginSegment('transition',currentStep().transition||6);if(player.playing)player.segStartPerf=performance.now()}
-function finishSession(completed){player.playing=false;player.finished=true;if(player.raf)cancelAnimationFrame(player.raf);releaseWake();let minutes=Math.max(1,Math.round(player.holdElapsedTotal/60));if(completed){minutes=Math.max(minutes,Math.round(player.session.totalSec/60));soundComplete()}if(player.session&&player.session.themeId){
+function finishSession(completed){player.playing=false;player.finished=true;if(player.raf)cancelAnimationFrame(player.raf);releaseWake();updatePlayerBreath();let minutes=Math.max(1,Math.round(player.holdElapsedTotal/60));if(completed){minutes=Math.max(minutes,Math.round(player.session.totalSec/60));soundComplete()}if(player.session&&player.session.themeId){
     if(player.session.type==='strength') advanceStrengthDeckOnComplete(player.session.themeId);
     else advanceDeckOnComplete(player.session.themeId);
   }
@@ -1943,7 +2319,7 @@ function startReveal(themeId, mode){
     slot.classList.remove('settle');
     void slot.offsetWidth;
     slot.classList.add('landed','settle');
-    soundRevealLand();
+    soundRevealLand(isStrength?'strength':'stretch');
     // Hold on the card, then reveal Roll again + Let's go (no auto-advance)
     later(showActions, HOLD_MS);
   }
@@ -2005,7 +2381,7 @@ function startReveal(themeId, mode){
       const isLast=step===seq.length-1;
       const now=performance.now();
       paint(th,{skipHint:true});
-      if(!isLast) soundRevealTick(step, intervals[step]);
+      if(!isLast) soundRevealTick(step, intervals[step], isStrength?'strength':'stretch');
       log.changes.push({t:Math.round(now-log._t0), id:th.id});
       step++;
       if(isLast){
@@ -2178,7 +2554,7 @@ scheduleDailyLockCheck();
 setInterval(updateStartCard, 60000);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')updateStartCard()});
 window.addEventListener('focus', updateStartCard);
-window.__yoga={THEMES,POSES,FOCUS_IDS,STRENGTH_THEMES,STRENGTH_EXERCISES,STRENGTH_FOCUS_IDS,get draft(){return draft},player,SPEED,DEMO,settings,openPreview,makeDraft,makeStrengthDraft,getEntries,generateSession:window.YogaCore.generateSession,validateSession:window.YogaCore.validateSession,generateStrengthSession,validateStrengthSession,loadDeck,saveDeck,peekFocus,advanceDeckOnComplete,skipFocusNotToday,loadStrengthDeck,saveStrengthDeck,peekStrengthFocus,advanceStrengthDeckOnComplete,skipStrengthFocusNotToday,startReveal,reshuffleQueue,defaultDeckState,migrateDeck,get celebrateUntil(){return celebrateUntil},setCelebrate(ms){celebrateUntil=(ms===0||ms===false)?0:(Date.now()+(ms==null?5000:ms))},get lastReveal(){return window.__yogaLastReveal||null},onRollAgain,onRevealGo,didSessionToday,updateStartCard,localTodayKey,dayKey,get UNLOCK_DAILY(){return UNLOCK_DAILY},get DAILY_LIMIT(){return DAILY_LIMIT},setTestToday(k){testTodayKey=k||null;updateStartCard();return localTodayKey()},buildRevealIntervals,scheduleRevealPluck,scheduleRevealLand,renderRoulettePreviewBuffer,unlockAudio,get sessionMode(){return sessionMode},setSessionMode(m){sessionMode=m}};
+window.__yoga={THEMES,POSES,FOCUS_IDS,STRENGTH_THEMES,STRENGTH_EXERCISES,STRENGTH_FOCUS_IDS,get draft(){return draft},player,SPEED,DEMO,settings,openPreview,makeDraft,makeStrengthDraft,getEntries,generateSession:window.YogaCore.generateSession,validateSession:window.YogaCore.validateSession,generateStrengthSession,validateStrengthSession,loadDeck,saveDeck,peekFocus,advanceDeckOnComplete,skipFocusNotToday,loadStrengthDeck,saveStrengthDeck,peekStrengthFocus,advanceStrengthDeckOnComplete,skipStrengthFocusNotToday,startReveal,reshuffleQueue,defaultDeckState,migrateDeck,get celebrateUntil(){return celebrateUntil},setCelebrate(ms){celebrateUntil=(ms===0||ms===false)?0:(Date.now()+(ms==null?5000:ms))},get lastReveal(){return window.__yogaLastReveal||null},onRollAgain,onRevealGo,didSessionToday,updateStartCard,localTodayKey,dayKey,get UNLOCK_DAILY(){return UNLOCK_DAILY},get DAILY_LIMIT(){return DAILY_LIMIT},setTestToday(k){testTodayKey=k||null;updateStartCard();return localTodayKey()},ROULETTE_VOICES,getRouletteVoice,buildRevealIntervals,buildRevealFocusSeq,scheduleRevealPluck,scheduleRevealLand,scheduleVoiceNote,renderRoulettePreviewBuffer,renderVoicesPreviewBuffer,updatePlayerBreath,freezePlayerBreath,clearPlayerBreathFreeze,unlockAudio,get sessionMode(){return sessionMode},setSessionMode(m){sessionMode=m}};
 })();
 
 </script>
