@@ -149,9 +149,10 @@ button:disabled{opacity:.35}
 .start-card{
   position:relative;display:block;width:100%;
   border-radius:28px;min-height:156px;overflow:hidden;
-  text-align:left;color:#1F1F1F;
-  background:linear-gradient(165deg,#F0C098 0%,#FF8A4A 42%,#E8483A 100%);
-  box-shadow:0 14px 36px rgba(232,72,58,.22);
+  text-align:left;color:#1A1820;
+  /* Soft apricot / peach-horizon sky (ref set 2) */
+  background:linear-gradient(165deg,#D8E4EC 0%,#F0D8C0 42%,#F4C898 72%,#ECC090 100%);
+  box-shadow:0 14px 36px rgba(200,160,120,.18);
   margin-top:4px;
 }
 .start-card:active{opacity:.92}
@@ -472,7 +473,7 @@ button:disabled{opacity:.35}
   color:var(--sky-ink,#fff);
   overflow:hidden;
 }
-.preview-shell .grain{z-index:1;opacity:.2}
+.preview-shell .grain{z-index:1;opacity:.12}
 .preview-shell .top-row{z-index:3;margin-bottom:8px}
 .preview-shell .player-session{color:var(--sky-ink);opacity:.85}
 .preview-shell.sky-light .icon-btn{background:rgba(255,255,255,.55);color:#1F1F1F}
@@ -602,7 +603,7 @@ button:disabled{opacity:.35}
   will-change:opacity;
   transition:opacity .85s ease;
 }
-.player-shell .grain{z-index:1;opacity:.2}
+.player-shell .grain{z-index:1;opacity:.12}
 .player-content{
   position:relative;z-index:2;
   flex:1;min-height:0;
@@ -754,7 +755,16 @@ button:disabled{opacity:.35}
   backdrop-filter:blur(8px);
 }
 .player-shell.sky-light .ctrl{
-  background:rgba(255,255,255,.7);border-color:rgba(0,0,0,.08);color:#1F1F1F;
+  background:rgba(255,255,255,.78);border-color:rgba(0,0,0,.1);color:#1A1820;
+  box-shadow:0 2px 10px rgba(40,30,20,.08);
+}
+.player-shell.sky-light .pose-fig-wrap{
+  background:#F7EFE4;
+  box-shadow:0 12px 28px rgba(40,30,20,.12);
+}
+.player-shell.sky-light .top-row .icon-btn{
+  background:rgba(255,255,255,.88);color:#1A1820;
+  box-shadow:0 2px 10px rgba(40,30,20,.1);
 }
 .player-shell .ctrl.play{
   width:60px;height:60px;border-radius:50%;
@@ -899,9 +909,10 @@ button:disabled{opacity:.35}
 .start-block-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
 .mono-label.muted{opacity:.55;font-weight:500}
 .start-card-strength{
-  background:linear-gradient(165deg,#2A6B7C 0%,#5A3A6A 48%,#8B3A5C 100%);
+  /* Deep indigo → periwinkle → lilac (ref set 1 BR), white ink */
+  background:linear-gradient(165deg,#2A3878 0%,#3A4898 35%,#4A58A8 60%,#5868B8 82%,#6A70B8 100%);
   color:#FFFFFF;
-  box-shadow:0 14px 36px rgba(90,58,106,.28);
+  box-shadow:0 14px 36px rgba(42,56,120,.28);
 }
 .start-card-strength .start-kicker,
 .start-card-strength .start-meta{opacity:.85}
@@ -1403,14 +1414,14 @@ const STRENGTH_THEMES = [
 const STRENGTH_FOCUS_IDS = STRENGTH_THEMES.map(t=>t.id);
 
 const STRENGTH_VISUAL = {
-  // dark themes: every stop L low enough for white ink ≥4.5 (brightest inhale still saturated, never pale)
-  'pull-grip':{sky:'linear-gradient(180deg,#2A1030 0%,#5A2848 50%,#8C3F64 100%)',line1:'Pull &',line2:'Grip',foot:'Climb · ~20 min',swatch:'#8C3F64',light:false,bg:'#1A0C20'},
-  'paddle-power':{sky:'linear-gradient(180deg,#082028 0%,#1A4850 50%,#227269 100%)',line1:'Paddle',line2:'Power',foot:'Surf · ~20 min',swatch:'#1A6870',light:false,bg:'#061418'},
-  'popup-explosive':{sky:'linear-gradient(180deg,#3A1014 0%,#6A2820 50%,#8C472A 100%)',line1:'Pop-up &',line2:'Explosive',foot:'Surf · ~20 min',swatch:'#8C472A',light:false,bg:'#280C10'},
-  'running-legs':{sky:'linear-gradient(180deg,#0E1C14 0%,#1E4030 50%,#347233 100%)',line1:'Running',line2:'Legs',foot:'Run · ~20 min',swatch:'#2A6030',light:false,bg:'#0A1410'},
-  'core-stability':{sky:'linear-gradient(180deg,#181830 0%,#3A2A5A 50%,#653F8C 100%)',line1:'Core &',line2:'Stability',foot:'All · ~20 min',swatch:'#4A3A7A',light:false,bg:'#101020'},
-  'balance-ankles':{sky:'linear-gradient(180deg,#081820 0%,#1A4050 55%,#33726B 100%)',line1:'Balance &',line2:'Ankles',foot:'Surf · Run',swatch:'#2A6870',light:false,bg:'#061018'},
-  'full-circuit':{sky:'linear-gradient(180deg,#2A1020 0%,#5A2840 45%,#8C563F 100%)',line1:'Full-Body',line2:'Circuit',foot:'All · ~20 min',swatch:'#8C563F',light:false,bg:'#180C18'}
+  // Soft hazy skies from gradient refs; light=false → white ink on deep indigo family
+  'pull-grip':{sky:'linear-gradient(180deg,#2A3878 0%,#3A4898 28%,#4A58A8 55%,#5868B8 78%,#6A70B8 100%)',line1:'Pull &',line2:'Grip',foot:'Climb · ~20 min',swatch:'#4A58A8',light:false,bg:'#1A2458'},
+  'paddle-power':{sky:'linear-gradient(180deg,#A8D8E0 0%,#C0E4E4 35%,#D8ECE4 65%,#E8F0DC 100%)',line1:'Paddle',line2:'Power',foot:'Surf · ~20 min',swatch:'#A8D8E0',light:true,bg:'#E8F0EC'},
+  'popup-explosive':{sky:'linear-gradient(180deg,#E8D0C0 0%,#F4D0B0 40%,#F4C498 70%,#ECC090 100%)',line1:'Pop-up &',line2:'Explosive',foot:'Surf · ~20 min',swatch:'#F4C498',light:true,bg:'#F4E8DC'},
+  'running-legs':{sky:'linear-gradient(180deg,#A8D0EC 0%,#B8D4E8 35%,#C8D4D0 65%,#D0D0B8 100%)',line1:'Running',line2:'Legs',foot:'Run · ~20 min',swatch:'#A8D0EC',light:true,bg:'#E8ECE4'},
+  'core-stability':{sky:'linear-gradient(180deg,#2E3A80 0%,#3A4898 30%,#4A58A8 58%,#5868B8 80%,#6A70B8 100%)',line1:'Core &',line2:'Stability',foot:'All · ~20 min',swatch:'#4A58A8',light:false,bg:'#1A2458'},
+  'balance-ankles':{sky:'linear-gradient(180deg,#A0D4E4 0%,#C8DCE0 40%,#E4D4C4 70%,#F0D0B0 100%)',line1:'Balance &',line2:'Ankles',foot:'Surf · Run',swatch:'#A0D4E4',light:true,bg:'#E8F0EC'},
+  'full-circuit':{sky:'linear-gradient(180deg,#B0C8E0 0%,#C8C0D0 40%,#D0B4C0 70%,#C8A8B4 100%)',line1:'Full-Body',line2:'Circuit',foot:'All · ~20 min',swatch:'#C8A8B4',light:true,bg:'#E8E0E4'}
 };
 
 function strengthExById(id){return STRENGTH_EXERCISES.find(e=>e.id===id)}
@@ -1555,15 +1566,15 @@ const {
 }=window.YogaStrength;
 
 const THEME_VISUAL={
-  // light themes: every stop bright enough for dark ink ≥4.5; still saturated (no near-white)
-  'hips-popup':{sky:'linear-gradient(180deg,#B299CC 0%,#CCA17A 55%,#E59144 100%)',line1:'Hips &',line2:'Pop-up',foot:'Surf · 15 min',swatch:'#E59144',light:true},
-  'shoulders-paddle':{sky:'linear-gradient(180deg,#E5C267 0%,#E5A367 50%,#E57544 100%)',line1:'Shoulders',line2:'& Paddle',foot:'Surf · 15 min',swatch:'#E57544',light:true},
-  'climbers-hips':{sky:'linear-gradient(180deg,#A37ACC 0%,#E589B5 55%,#F291BF 100%)',line1:"Climber's",line2:'Hips',foot:'Climb · 15 min',swatch:'#E589B5',light:true},
-  'forearms-wrists':{sky:'linear-gradient(180deg,#7A91CC 0%,#A37ACC 50%,#C8ACE5 100%)',line1:'Forearms',line2:'& Wrists',foot:'Climb · Surf',swatch:'#A37ACC',light:true},
-  'full-body':{sky:'linear-gradient(180deg,#F2AE91 0%,#E58D67 55%,#E57544 100%)',line1:'Full Body',line2:'Flow',foot:'Surf · Climb',swatch:'#E57544',light:true},
-  'spine-twists':{sky:'linear-gradient(180deg,#0E2030 0%,#1A4850 48%,#227269 100%)',line1:'Spine &',line2:'Twists',foot:'Surf · Climb',swatch:'#1A6870',light:false},
-  'slow-recovery':{sky:'linear-gradient(180deg,#C8ACE5 0%,#B299CC 50%,#9C85B2 100%)',line1:'Slow',line2:'Recovery',foot:'Rest · soft',swatch:'#9C85B2',light:true},
-  'surprise':{sky:'linear-gradient(180deg,#E5C7AC 0%,#E5ACC7 50%,#ACBCE5 100%)',line1:'Surprise',line2:'Me',foot:'Mixed · 15 min',swatch:'#E5ACC7',light:true}
+  // Soft overexposed sky gradients sampled from Soren's refs (Pillow)
+  'hips-popup':{sky:'linear-gradient(180deg,#B8D0DC 0%,#D4C8C0 35%,#F0D2B8 55%,#F6E8D4 80%,#F3EDE4 100%)',line1:'Hips &',line2:'Pop-up',foot:'Surf · 15 min',swatch:'#F0D2B8',light:true},
+  'shoulders-paddle':{sky:'linear-gradient(180deg,#C8E8EC 0%,#D8EEE8 35%,#E8F0E0 65%,#F6F2DC 100%)',line1:'Shoulders',line2:'& Paddle',foot:'Surf · 15 min',swatch:'#C8E8EC',light:true},
+  'climbers-hips':{sky:'linear-gradient(180deg,#A8C0DC 0%,#B8D0E8 35%,#D0E0F4 65%,#E4ECF6 100%)',line1:"Climber's",line2:'Hips',foot:'Climb · 15 min',swatch:'#A8C0DC',light:true},
+  'forearms-wrists':{sky:'linear-gradient(180deg,#D8D0E8 0%,#E0D4DC 40%,#E8D4C8 70%,#ECD8C4 100%)',line1:'Forearms',line2:'& Wrists',foot:'Climb · Surf',swatch:'#D8D0E8',light:true},
+  'full-body':{sky:'linear-gradient(180deg,#B8D8E4 0%,#E8D0B8 40%,#F4C898 70%,#ECC098 100%)',line1:'Full Body',line2:'Flow',foot:'Surf · Climb',swatch:'#F4C898',light:true},
+  'spine-twists':{sky:'linear-gradient(180deg,#98D0E4 0%,#D8C8D0 40%,#F0C0B8 70%,#E8B8B0 100%)',line1:'Spine &',line2:'Twists',foot:'Surf · Climb',swatch:'#98D0E4',light:true},
+  'slow-recovery':{sky:'linear-gradient(180deg,#D8D0E4 0%,#E0D4D8 40%,#E4D4C8 70%,#E0D0C0 100%)',line1:'Slow',line2:'Recovery',foot:'Rest · soft',swatch:'#D8D0E4',light:true},
+  'surprise':{sky:'linear-gradient(180deg,#F0ECE8 0%,#F8F0D4 40%,#F8E4B0 70%,#F4D898 100%)',line1:'Surprise',line2:'Me',foot:'Mixed · 15 min',swatch:'#F8E4B0',light:true}
 };
 function themeColor(id){return THEME_VISUAL[id]||STRENGTH_VISUAL[id]||THEME_VISUAL['surprise']}
 
@@ -1583,8 +1594,8 @@ function stackHeadline(text){
 function applySky(el, themeId){
   if(!el) return;
   const v=themeColor(themeId);
-  const ink = v.light ? '#1F1F1F' : '#FFFFFF';
-  const muted = v.light ? 'rgba(31,31,31,0.88)' : 'rgba(255,255,255,0.88)';
+  const ink = v.light ? '#1A1820' : '#FFFFFF';
+  const muted = v.light ? 'rgba(26,24,32,0.86)' : 'rgba(255,255,255,0.88)';
   el.style.background=v.sky;
   el.style.setProperty('--theme-sky', v.sky);
   el.style.setProperty('--sky-ink', ink);
@@ -1600,22 +1611,22 @@ function applySky(el, themeId){
   el.style.setProperty('--theme-sky-end', endCol);
   // Breath inhale = brighter but still saturated sister (never near-white) so one ink works both ends
   const BREATH_BRIGHT={
-    // inhale = brighter sister within same ink-safe luminance band
-    'hips-popup':'linear-gradient(180deg,#C8ACE5 0%,#E5B589 50%,#F29A48 100%)',
-    'shoulders-paddle':'linear-gradient(180deg,#F2CC6D 0%,#F2AC6D 50%,#F27B48 100%)',
-    'climbers-hips':'linear-gradient(180deg,#C191F2 0%,#F291BF 50%,#F2B5D2 100%)',
-    'forearms-wrists':'linear-gradient(180deg,#89A3E5 0%,#B789E5 50%,#D3B5F2 100%)',
-    'full-body':'linear-gradient(180deg,#F2C7B5 0%,#F2946D 50%,#E59144 100%)',
-    'spine-twists':'linear-gradient(180deg,#142838 0%,#1E5860 50%,#287A70 100%)',
-    'slow-recovery':'linear-gradient(180deg,#D3B5F2 0%,#C8ACE5 50%,#B299CC 100%)',
-    'surprise':'linear-gradient(180deg,#F2D2B5 0%,#F2B5D2 50%,#B5C6F2 100%)',
-    'pull-grip':'linear-gradient(180deg,#3A1838 0%,#6A3050 50%,#8C3F64 100%)',
-    'paddle-power':'linear-gradient(180deg,#0C2830 0%,#1E5860 50%,#287A70 100%)',
-    'popup-explosive':'linear-gradient(180deg,#4A1418 0%,#7A3028 50%,#8C472A 100%)',
-    'running-legs':'linear-gradient(180deg,#12241A 0%,#244838 50%,#347233 100%)',
-    'core-stability':'linear-gradient(180deg,#201838 0%,#4A3068 50%,#653F8C 100%)',
-    'balance-ankles':'linear-gradient(180deg,#0C2030 0%,#1E5060 55%,#33726B 100%)',
-    'full-circuit':'linear-gradient(180deg,#301828 0%,#683048 45%,#8C563F 100%)'
+    // inhale = neighbouring soft sky (colour/opacity crossfade only)
+    'hips-popup':'linear-gradient(180deg,#C8DCE6 0%,#E8D0C0 35%,#F6D8C0 55%,#F8ECD8 80%,#F5F0E8 100%)',
+    'shoulders-paddle':'linear-gradient(180deg,#D4F0F4 0%,#E0F2EA 35%,#F0F4E4 65%,#FAF6E4 100%)',
+    'climbers-hips':'linear-gradient(180deg,#B8D0E8 0%,#C8DCF0 35%,#DCE8F6 65%,#E8EEF4 100%)',
+    'forearms-wrists':'linear-gradient(180deg,#E0D8EE 0%,#E8D8E0 40%,#F0DCD0 70%,#F0E0D0 100%)',
+    'full-body':'linear-gradient(180deg,#C8E0E8 0%,#F0D8C0 40%,#F8D0A8 70%,#F0C8A0 100%)',
+    'spine-twists':'linear-gradient(180deg,#A8D8E8 0%,#E4D0D4 40%,#F4C8C0 70%,#F0C0B8 100%)',
+    'slow-recovery':'linear-gradient(180deg,#E0D8EA 0%,#E8DCD8 40%,#ECDCC8 70%,#E8D8C8 100%)',
+    'surprise':'linear-gradient(180deg,#F4F0EC 0%,#FAF4DC 40%,#FAE8BC 70%,#F8E0A8 100%)',
+    'pull-grip':'linear-gradient(180deg,#344090 0%,#4458A8 30%,#5468B8 58%,#5E6CB8 80%,#6A68A8 100%)',
+    'paddle-power':'linear-gradient(180deg,#B8E0E8 0%,#D0ECE8 35%,#E0F0E4 65%,#F0F4E0 100%)',
+    'popup-explosive':'linear-gradient(180deg,#F0D8C8 0%,#F8D8B8 40%,#F8D0A8 70%,#F0C898 100%)',
+    'running-legs':'linear-gradient(180deg,#B8D8F0 0%,#C8DCE8 35%,#D4D8D4 65%,#D8D4C0 100%)',
+    'core-stability':'linear-gradient(180deg,#384898 0%,#4858A8 30%,#5868B8 58%,#6270B8 80%,#6A68A8 100%)',
+    'balance-ankles':'linear-gradient(180deg,#B0DCE8 0%,#D4E4E4 40%,#ECDCC8 70%,#F4D8B8 100%)',
+    'full-circuit':'linear-gradient(180deg,#C0D4E8 0%,#D4C8D8 40%,#D8BCC8 70%,#D0B0BC 100%)'
   };
   const bright=BREATH_BRIGHT[themeId]||(v.light
     ? 'linear-gradient(180deg,#C8B0E0 0%,#FFB878 50%,#F07040 100%)'
