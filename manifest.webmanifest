@@ -1,0 +1,16 @@
+{
+  "name": "Surf & Climb Yoga",
+  "short_name": "Stretch",
+  "description": "15-minute guided yoga for surfing and climbing",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F3F1EE",
+  "theme_color": "#FFB07A",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
