@@ -76,7 +76,7 @@ button:disabled{opacity:.35}
   --sky-ink:#fff; --sky-muted:rgba(255,255,255,.85);
   color:var(--sky-ink);
 }
-.sky-dots{display:flex;gap:7px;margin-bottom:18px}
+.sky-dots{display:flex;gap:7px;margin-bottom:14px}
 .sky-dots span{width:8px;height:8px;border-radius:50%;display:block}
 .sky-dots .d1{background:var(--scarlet)}
 .sky-dots .d2{background:var(--orange)}
@@ -89,29 +89,27 @@ button:disabled{opacity:.35}
   min-height:0;
 }
 
-/* Home */
-#screen-home .sky{min-height:38vh}
+/* Home — plain hero, no sky gradient */
+#screen-home{background:var(--bg)}
+.home-hero{
+  background:var(--panel);
+  padding:calc(18px + var(--safe-top)) 20px 8px;
+  flex-shrink:0;
+}
 .home-title{
   font-weight:800;font-size:clamp(2.85rem,12vw,3.6rem);
   letter-spacing:-0.04em;line-height:0.9;
-  position:relative;z-index:1;margin-bottom:4px;
+  position:relative;z-index:1;margin:4px 0 12px;
 }
 .home-title .ink{color:#1F1F1F}
-.home-title .sky-soft{color:rgba(255,255,255,0.78);text-shadow:0 1px 0 rgba(0,0,0,.06)}
+.home-title .sky-soft{color:var(--ink-mid)}
 .home-title .soft{opacity:.75}
-.sun-row{
-  position:relative;z-index:1;margin-top:14px;
-  display:grid;grid-template-columns:1fr 1fr;gap:16px;
-}
-.sun-block .mono-label{color:rgba(255,255,255,.75)}
-.sun-block .big-num{color:#fff;font-size:1.85rem;margin-top:4px}
-.sun-block .big-num .unit{color:rgba(255,255,255,.65)}
-.golden-line{
-  position:relative;z-index:1;margin-top:14px;
-  font-family:var(--mono);font-size:.65rem;letter-spacing:0.08em;
-  color:rgba(255,255,255,.85);
-}
-.sun-icon{width:28px;height:28px;margin-bottom:6px;opacity:.9}
+
+
+
+
+
+
 
 .panel-head{
   display:flex;justify-content:space-between;align-items:baseline;
@@ -183,11 +181,12 @@ button:disabled{opacity:.35}
 .preview-hero .sunburst{position:absolute;left:8px;bottom:4px;opacity:.45;color:var(--sky-ink,#fff);pointer-events:none}
 .preview-hero .preview-fig{
   width:min(42vw,150px);height:min(42vw,150px);
-  background:rgba(247,245,242,0.62);border-radius:24px;
-  box-shadow:0 6px 24px rgba(40,30,20,0.08);
+  background:#FAD7BA;border-radius:24px;
+  box-shadow:0 6px 24px rgba(40,30,20,0.10);
   display:grid;place-items:center;position:relative;z-index:1;
+  overflow:hidden;
 }
-.preview-hero .preview-fig svg{width:96%;height:96%;display:block}
+.preview-hero .preview-fig img{width:100%;height:100%;display:block;object-fit:contain;object-position:center;border-radius:24px}
 .preview-head h2{
   font-weight:800;font-size:clamp(2.2rem,9vw,2.9rem);
   letter-spacing:-0.04em;line-height:0.92;margin:6px 0;
@@ -200,8 +199,8 @@ button:disabled{opacity:.35}
   display:flex;gap:12px;align-items:center;
   padding:10px 0;border-bottom:1px solid rgba(0,0,0,.06);
 }
-.pose-row .thumb{width:52px;height:52px;flex-shrink:0;border-radius:14px;overflow:hidden}
-.pose-row .thumb svg{width:100%;height:100%;display:block}
+.pose-row .thumb{width:52px;height:52px;flex-shrink:0;border-radius:14px;overflow:hidden;background:#FAD7BA}
+.pose-row .thumb img{width:100%;height:100%;display:block;object-fit:contain;object-position:center}
 .pose-row .t{font-family:var(--mono);font-size:.68rem;color:var(--ink-mid);width:36px}
 .pose-row .n{font-weight:400;font-size:.98rem;letter-spacing:-0.02em}
 .pose-row .c{font-size:.78rem;font-weight:300;color:var(--ink-mid);margin-top:2px}
@@ -234,12 +233,20 @@ button:disabled{opacity:.35}
 .player-shell .sky .pose-fig-wrap{
   width:min(68vw,260px);height:min(68vw,260px);
   margin:4px auto 0;position:relative;z-index:1;
-  background:rgba(247,245,242,0.72);border-radius:32px;
-  box-shadow:0 8px 32px rgba(40,30,20,0.08);
+  background:#FAD7BA;border-radius:24px;
+  box-shadow:0 8px 32px rgba(40,30,20,0.10);
   display:grid;place-items:center;overflow:hidden;
 }
-.player-shell .sky .pose-fig-wrap svg{width:100%;height:100%;display:block}
-.player-shell .panel{padding-bottom:calc(18px + var(--safe-bot))}
+.player-shell .sky .pose-fig-wrap img{width:100%;height:100%;display:block;object-fit:contain;object-position:center;border-radius:24px}
+.player-shell .panel{
+  padding-bottom:calc(18px + var(--safe-bot));
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  min-height:0;
+}
+.player-shell .panel .timer,
+.player-shell .panel .progress-pill,
+.player-shell .panel .player-controls,
+.player-shell .panel .player-actions{flex-shrink:0}
 .player-session{font-family:var(--mono);font-size:.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--sky-ink);font-weight:600;opacity:.92}
 .sky-light .icon-btn{background:rgba(255,255,255,.65);color:var(--sky-ink)}
 .sky .sunburst{color:var(--sky-ink);opacity:.5}
@@ -250,7 +257,7 @@ button:disabled{opacity:.35}
   padding:3px 8px;border:1px solid rgba(0,0,0,.08);border-radius:999px;
 }
 .pose-name{
-  font-weight:800;font-size:clamp(1.9rem,8vw,2.55rem);
+  font-weight:800;font-size:clamp(1.7rem,7vw,2.3rem);
   letter-spacing:-0.04em;line-height:0.92;margin-bottom:8px;
 }
 .pose-name .soft{color:var(--ink-mid);font-weight:800}
@@ -258,9 +265,9 @@ button:disabled{opacity:.35}
 .pose-cues p+p{margin-top:3px}
 .pose-helps{font-family:var(--mono);font-size:.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);margin-top:8px}
 .timer{
-  font-weight:300;font-size:clamp(3.8rem,18vw,5rem);
-  letter-spacing:-0.045em;line-height:.92;margin:14px 0 4px;
-  font-variant-numeric:tabular-nums;
+  font-weight:300;font-size:clamp(3.2rem,15vw,4.4rem);
+  letter-spacing:-0.045em;line-height:.92;margin:10px 0 4px;
+  font-variant-numeric:tabular-nums;flex-shrink:0;
 }
 .timer .unit{font-size:.35em;color:var(--ink-mid);letter-spacing:0.08em;font-family:var(--mono);margin-left:6px;text-transform:uppercase}
 .timer.countdown-warn{color:var(--orange)}
@@ -268,8 +275,10 @@ button:disabled{opacity:.35}
 .next-up{font-family:var(--mono);font-size:.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:12px}
 
 .progress-pill{
-  position:relative;height:48px;border-radius:999px;background:rgba(0,0,0,.06);
+  position:relative;height:48px;min-height:48px;flex-shrink:0;
+  border-radius:999px;background:rgba(0,0,0,.08);
   overflow:hidden;margin:8px 0 16px;
+  display:block;width:100%;
 }
 .progress-pill .fill{
   position:absolute;left:0;top:0;bottom:0;right:auto;
@@ -379,8 +388,7 @@ button:disabled{opacity:.35}
 <body>
 <div class="app" id="app">
   <section class="screen active" id="screen-home">
-    <div class="sky" id="home-sky">
-      <div class="grain"></div>
+    <div class="home-hero" id="home-hero">
       <div class="sky-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
       <div class="home-title">
         <span class="ink">Stretch</span><br/>
@@ -388,25 +396,6 @@ button:disabled{opacity:.35}
         <span class="sky-soft">Surf &amp;</span><br/>
         <span class="sky-soft">Climb</span>
       </div>
-      <div class="sun-row">
-        <div class="sun-block">
-          <svg class="sun-icon" viewBox="0 0 40 40" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round">
-            <path d="M8 28 A12 12 0 0 1 32 28"/>
-            <path d="M20 8 V14 M6 22 H12 M28 22 H34 M10 12 L14 16 M30 12 L26 16"/>
-          </svg>
-          <div class="mono-label">Today's sunrise</div>
-          <div class="big-num" id="sunrise-time">—<span class="unit" id="sunrise-ampm"></span></div>
-        </div>
-        <div class="sun-block">
-          <svg class="sun-icon" viewBox="0 0 40 40" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round">
-            <path d="M8 22 A12 12 0 0 0 32 22"/>
-            <path d="M20 34 V28 M6 22 H12 M28 22 H34 M10 30 L14 26 M30 30 L26 26"/>
-          </svg>
-          <div class="mono-label">Today's sunset</div>
-          <div class="big-num" id="sunset-time">—<span class="unit" id="sunset-ampm"></span></div>
-        </div>
-      </div>
-      <div class="golden-line" id="golden-line">Golden hour —</div>
     </div>
     <div class="panel">
       <div class="panel-head">
@@ -429,10 +418,6 @@ button:disabled{opacity:.35}
       <div class="settings-row">
         <div><div>Sounds</div><div class="sub">Beeps, ticks &amp; chimes</div></div>
         <button class="toggle on" id="tog-sound" type="button" aria-label="Toggle sound"></button>
-      </div>
-      <div class="settings-row">
-        <div><div>Speak pose names</div><div class="sub">Announces the next pose</div></div>
-        <button class="toggle on" id="tog-speech" type="button" aria-label="Toggle speech"></button>
       </div>
     </div>
   </section>
@@ -686,462 +671,6 @@ function validateSession(session){
 }
 
 if(typeof window!=='undefined')window.YogaCore={POSES,THEMES,generateSession,validateSession,signature,hashSeed,mulberry32,stepsDuration,TARGET_SEC};
-/* Colorful Swiss/Bauhaus pose figures — inline SVG, no assets */
-(function (root) {
-  const C = {
-    head: '#FFE08A',
-    torso: '#A9B4E8',
-    armNear: '#E8483A',
-    armFar: '#FF8A4A',
-    legNear: '#C5B4E3',
-    legFar: '#E8C8F0',
-    mat: '#D8D0C8',
-    ink: '#1A1A1A',
-    tile: 'rgba(247,245,242,0.92)',
-    cyan: '#FFB07A',
-    pink: '#FFB07A'
-  };
-
-  // ViewBox 0..100 x 0..100. Side-view default: +x forward (right), +y down.
-  // Joints: H head, N neck, S shoulder, E elbow, A hand (arm), P pelvis/hip, K knee, F foot
-  // For bilateral we store Right-side-leading; mirrorX for Left.
-
-  function capsule(x1, y1, x2, y2, r, fill) {
-    const dx = x2 - x1, dy = y2 - y1;
-    const len = Math.hypot(dx, dy) || 0.001;
-    const ux = dx / len, uy = dy / len;
-    const px = -uy * r, py = ux * r;
-    return (
-      '<path d="M ' + (x1 + px) + ' ' + (y1 + py) +
-      ' L ' + (x2 + px) + ' ' + (y2 + py) +
-      ' A ' + r + ' ' + r + ' 0 0 1 ' + (x2 - px) + ' ' + (y2 - py) +
-      ' L ' + (x1 - px) + ' ' + (y1 - py) +
-      ' A ' + r + ' ' + r + ' 0 0 1 ' + (x1 + px) + ' ' + (y1 + py) +
-      ' Z" fill="' + fill + '"/>'
-    );
-  }
-
-  function circ(x, y, r, fill) {
-    return '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="' + fill + '"/>';
-  }
-
-  function roundRect(x, y, w, h, rr, fill) {
-    return '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + rr + '" fill="' + fill + '"/>';
-  }
-
-  /** Pose defs: { view:'side'|'front'|'arms', joints:{...}, mat?:[y,x1,x2] } */
-  // Coordinates in 0-100 space
-  const POSES = {};
-
-  // —— Standing / warm ——
-  POSES['neck-rolls'] = {
-    view: 'side',
-    j: { H:[52,14], N:[50,22], S:[48,28], E:[62,40], A:[72,48], P:[48,52], K:[50,72], F:[52,92],
-         S2:[44,30], E2:[36,42], A2:[30,52], P2:[44,52], K2:[42,72], F2:[40,92] }
-  };
-  POSES['shoulder-cars'] = {
-    view: 'side',
-    j: { H:[48,12], N:[48,20], S:[50,28], E:[72,22], A:[88,18], P:[48,52], K:[50,72], F:[52,92],
-         S2:[44,30], E2:[28,38], A2:[18,48], P2:[44,52], K2:[42,72], F2:[40,92] }
-  };
-  POSES['chin-tucks'] = {
-    view: 'side',
-    j: { H:[46,16], N:[50,24], S:[50,30], E:[62,42], A:[70,52], P:[50,54], K:[52,72], F:[54,92],
-         S2:[46,32], E2:[38,44], A2:[32,54], P2:[46,54], K2:[44,72], F2:[42,92] }
-  };
-  POSES['wrist-circles'] = {
-    view: 'arms',
-    j: { L_S:[10,40], L_E:[36,34], L_A:[72,28], R_S:[10,66], R_E:[38,70], R_A:[72,76] }
-  };
-  POSES['cat-cow'] = {
-    view: 'side',
-    j: { H:[14,44], N:[24,34], S:[36,38], E:[30,62], A:[26,82], P:[66,36], K:[74,62], F:[82,84],
-         S2:[38,42], E2:[34,66], A2:[30,84], P2:[68,40], K2:[76,66], F2:[84,86] }
-  };
-  POSES['down-dog'] = {
-    view: 'side',
-    j: { H:[18,62], N:[26,54], S:[34,46], E:[26,60], A:[18,78], P:[55,14], K:[72,42], F:[84,80],
-         S2:[36,48], E2:[28,62], A2:[20,80], P2:[57,16], K2:[74,44], F2:[86,82] }
-  };
-  POSES['child-pose'] = {
-    view: 'side',
-    j: { H:[24,78], N:[32,72], S:[42,66], E:[34,74], A:[26,80], P:[66,62], K:[46,76], F:[70,86],
-         S2:[44,68], E2:[36,76], A2:[28,82], P2:[68,64], K2:[48,78], F2:[72,88] }
-  };
-  POSES['child-pose-long'] = {
-    view: 'side',
-    j: { H:[22,70], N:[30,66], S:[40,62], E:[28,58], A:[14,56], P:[66,58], K:[52,72], F:[74,82],
-         S2:[42,64], E2:[30,60], A2:[16,58], P2:[68,60], K2:[54,74], F2:[76,84] }
-  };
-
-  // —— Lunges / hips ——
-  POSES['low-lunge'] = {
-    view: 'side',
-    j: { H:[52,8], N:[52,16], S:[52,26], E:[62,22], A:[68,12], P:[48,48], K:[66,48], F:[76,72],
-         S2:[48,28], E2:[40,24], A2:[36,14], P2:[46,50], K2:[28,70], F2:[20,82] }
-  };
-  POSES['lizard'] = {
-    view: 'side',
-    // front foot outside hand, deeper
-    j: { H:[30,48], N:[36,44], S:[44,48], E:[34,58], A:[26,68], P:[58,50], K:[72,48], F:[82,68],
-         S2:[46,50], E2:[38,60], A2:[30,70], P2:[56,52], K2:[42,72], F2:[36,82] }
-  };
-  POSES['pigeon'] = {
-    view: 'side',
-    j: { H:[40,22], N:[42,30], S:[44,38], E:[38,50], A:[34,60], P:[50,54], K:[62,50], F:[52,64],
-         S2:[46,40], E2:[50,52], A2:[52,62], P2:[54,56], K2:[72,58], F2:[86,62] }
-  };
-  POSES['hip-cars'] = {
-    view: 'side',
-    // half-kneeling, one foot planted, circling hip — show planted + kneeling
-    j: { H:[50,10], N:[50,18], S:[50,26], E:[64,34], A:[74,28], P:[48,50], K:[62,50], F:[70,72],
-         S2:[46,28], E2:[36,36], A2:[30,30], P2:[46,52], K2:[34,68], F2:[28,80] }
-  };
-  POSES['malasana'] = {
-    view: 'front',
-    j: { H:[50,22], N:[50,30], S:[36,38], E:[28,50], A:[32,58], P:[40,62], K:[24,68], F:[28,90],
-         S2:[64,38], E2:[72,50], A2:[68,58], P2:[60,62], K2:[76,68], F2:[72,90] }
-  };
-  POSES['figure-four'] = {
-    view: 'front',
-    // supine, ankle over opposite knee
-    j: { H:[50,12], N:[50,20], S:[34,28], E:[22,34], A:[12,36], P:[42,48], K:[58,42], F:[70,38],
-         S2:[66,28], E2:[78,34], A2:[88,36], P2:[58,48], K2:[58,70], F2:[58,90] }
-  };
-  POSES['happy-baby'] = {
-    view: 'front',
-    j: { H:[50,12], N:[50,20], S:[34,28], E:[24,40], A:[30,56], P:[40,46], K:[22,48], F:[28,58],
-         S2:[66,28], E2:[76,40], A2:[70,56], P2:[60,46], K2:[78,48], F2:[72,58] }
-  };
-  POSES['frog'] = {
-    view: 'front',
-    j: { H:[50,26], N:[50,34], S:[34,42], E:[24,52], A:[18,64], P:[38,56], K:[16,58], F:[10,70],
-         S2:[66,42], E2:[76,52], A2:[82,64], P2:[62,56], K2:[84,58], F2:[90,70] }
-  };
-
-  // —— Hamstrings ——
-  POSES['half-splits'] = {
-    view: 'side',
-    // front leg straight, hips back over rear knee
-    j: { H:[38,28], N:[42,34], S:[46,40], E:[40,50], A:[36,58], P:[52,52], K:[72,52], F:[88,54],
-         S2:[48,42], E2:[52,52], A2:[54,60], P2:[50,54], K2:[40,68], F2:[34,80] }
-  };
-  POSES['forward-fold'] = {
-    view: 'side',
-    j: { H:[62,72], N:[58,60], S:[52,48], E:[58,62], A:[64,76], P:[46,50], K:[48,70], F:[50,90],
-         S2:[48,50], E2:[44,62], A2:[42,74], P2:[44,52], K2:[44,72], F2:[42,90] }
-  };
-  POSES['wide-fold'] = {
-    view: 'front',
-    j: { H:[50,70], N:[50,58], S:[40,48], E:[36,60], A:[34,72], P:[42,52], K:[18,60], F:[10,88],
-         S2:[60,48], E2:[64,60], A2:[66,72], P2:[58,52], K2:[82,60], F2:[90,88] }
-  };
-  POSES['seated-fold'] = {
-    view: 'side',
-    j: { H:[36,42], N:[42,40], S:[48,42], E:[42,50], A:[38,58], P:[52,58], K:[70,58], F:[88,58],
-         S2:[50,44], E2:[46,52], A2:[42,60], P2:[54,60], K2:[72,60], F2:[90,60] }
-  };
-  POSES['janu'] = {
-    view: 'front',
-    // one leg extended, other foot to inner thigh, fold
-    j: { H:[42,36], N:[46,40], S:[40,46], E:[34,54], A:[30,62], P:[48,58], K:[70,58], F:[88,58],
-         S2:[54,46], E2:[58,52], A2:[60,58], P2:[54,58], K2:[48,70], F2:[42,62] }
-  };
-
-  // —— Shoulders / thoracic ——
-  POSES['thread-needle'] = {
-    view: 'side',
-    j: { H:[22,68], N:[32,60], S:[46,52], E:[30,62], A:[12,66], P:[66,48], K:[72,64], F:[78,80],
-         S2:[50,46], E2:[58,32], A2:[64,18], P2:[68,50], K2:[74,66], F2:[80,82] }
-  };
-  POSES['puppy'] = {
-    view: 'side',
-    j: { H:[16,64], N:[26,56], S:[40,48], E:[26,46], A:[10,46], P:[68,36], K:[70,60], F:[74,82],
-         S2:[42,50], E2:[28,48], A2:[12,48], P2:[70,38], K2:[72,62], F2:[76,84] }
-  };
-  POSES['sphinx'] = {
-    view: 'side',
-    j: { H:[28,40], N:[36,44], S:[46,50], E:[34,58], A:[24,64], P:[70,60], K:[80,62], F:[92,64],
-         S2:[48,52], E2:[36,60], A2:[26,66], P2:[72,62], K2:[82,64], F2:[94,66] }
-  };
-  POSES['cobra'] = {
-    view: 'side',
-    j: { H:[26,16], N:[34,24], S:[44,36], E:[42,50], A:[40,64], P:[70,62], K:[80,64], F:[92,66],
-         S2:[46,38], E2:[44,52], A2:[42,66], P2:[72,64], K2:[82,66], F2:[94,68] }
-  };
-  // Eagle: arms crossed & wrapped in front, elbows stacked
-  POSES['eagle-arms'] = {
-    view: 'front',
-    upper: true,
-    j: { H:[50,12], N:[50,24],
-         S:[32,38], E:[68,30], A:[46,48],   // upper wrap across face/chest
-         S2:[68,40], E2:[32,50], A2:[54,54], // lower wrap, elbow stacked under
-         P:[40,88], P2:[60,88] }
-  };
-  // Cow face: one elbow up (hand drops behind head), other elbow down (hand up the back); hands meet at shoulder blades
-  POSES['cow-face-arms'] = {
-    view: 'front',
-    upper: true,
-    j: { H:[50,14], N:[50,26],
-         S:[34,40], E:[26,10], A:[48,42],   // top: elbow up, hand drops behind to shoulder blades
-         S2:[66,42], E2:[76,72], A2:[52,46], // bottom: elbow down, hand climbs to meet
-         P:[40,88], P2:[60,88] }
-  };
-  POSES['chest-opener'] = {
-    view: 'side',
-    // hands clasped behind, chest open
-    j: { H:[52,12], N:[50,20], S:[46,28], E:[38,40], A:[34,52], P:[48,52], K:[50,72], F:[52,92],
-         S2:[50,30], E2:[58,40], A2:[62,52], P2:[50,52], K2:[48,72], F2:[46,92] }
-  };
-  POSES['gate'] = {
-    view: 'front',
-    // kneel, one leg extended side, arm overhead
-    j: { H:[42,14], N:[46,22], S:[40,30], E:[28,22], A:[18,14], P:[48,56], K:[48,72], F:[48,88],
-         S2:[56,32], E2:[64,40], A2:[70,48], P2:[56,56], K2:[72,60], F2:[88,64] }
-  };
-
-  // —— Wrists / forearms close-ups ——
-  POSES['wrist-flexor'] = {
-    view: 'arms',
-    j: { L_S:[12,52], L_E:[42,50], L_A:[78,48], R_S:[50,78], R_E:[68,62], R_A:[82,42], tip:true }
-  };
-  POSES['wrist-extensor'] = {
-    view: 'arms',
-    j: { L_S:[12,52], L_E:[42,50], L_A:[78,52], R_S:[50,22], R_E:[68,40], R_A:[82,60], tip:true }
-  };
-  // Palms pressed together at chest height — clear prayer
-  POSES['prayer-stretch'] = {
-    view: 'arms',
-    j: { L_S:[22,78], L_E:[36,52], L_A:[48,28], R_S:[78,78], R_E:[64,52], R_A:[52,28], press:true }
-  };
-  // Reverse prayer behind the back
-  POSES['reverse-prayer'] = {
-    view: 'arms',
-    j: { L_S:[20,22], L_E:[34,48], L_A:[48,74], R_S:[80,22], R_E:[66,48], R_A:[52,74], press:true }
-  };
-  POSES['forearm-massage'] = {
-    view: 'arms',
-    j: { L_S:[10,55], L_E:[40,52], L_A:[78,48], R_S:[48,78], R_E:[58,58], R_A:[50,44] }
-  };
-  POSES['neck-side'] = {
-    view: 'front',
-    upper: true,
-    // seated neck stretch: head tilted, hand resting gently on side of head
-    j: { H:[36,16], N:[48,28],
-         S:[34,42], E:[22,30], A:[30,18],   // near hand on head
-         S2:[66,42], E2:[78,56], A2:[82,70],
-         P:[40,88], P2:[60,88] }
-  };
-
-  // —— Cool down ——
-  POSES['supine-twist'] = {
-    view: 'front',
-    // on back, knees dropped to one side
-    j: { H:[50,12], N:[50,20], S:[28,28], E:[16,30], A:[8,32], P:[48,50], K:[72,42], F:[82,36],
-         S2:[72,28], E2:[84,30], A2:[92,32], P2:[52,50], K2:[74,48], F2:[84,44] }
-  };
-  POSES['savasana'] = {
-    view: 'front',
-    j: { H:[50,12], N:[50,20], S:[34,28], E:[20,32], A:[10,34], P:[42,50], K:[42,70], F:[42,90],
-         S2:[66,28], E2:[80,32], A2:[90,34], P2:[58,50], K2:[58,70], F2:[58,90] }
-  };
-
-  function mirrorJoints(j) {
-    const out = {};
-    for (const k of Object.keys(j)) {
-      if (typeof j[k] === 'boolean') { out[k] = j[k]; continue; }
-      const [x, y] = j[k];
-      out[k] = [100 - x, y];
-    }
-    // swap side pairs for front/side body
-    const pairs = [['S','S2'],['E','E2'],['A','A2'],['P','P2'],['K','K2'],['F','F2']];
-    for (const [a,b] of pairs) {
-      if (out[a] && out[b]) { const t = out[a]; out[a] = out[b]; out[b] = t; }
-    }
-    return out;
-  }
-
-  function drawBody(j, strokeScale) {
-    const s = strokeScale || 1;
-    const rArm = 4.2 * s, rLeg = 5 * s, rTor = 6.5 * s;
-    let svg = '';
-    // far limbs first
-    if (j.S2 && j.E2) svg += capsule(j.S2[0], j.S2[1], j.E2[0], j.E2[1], rArm * 0.95, C.armFar);
-    if (j.E2 && j.A2) svg += capsule(j.E2[0], j.E2[1], j.A2[0], j.A2[1], rArm * 0.9, C.armFar);
-    if (j.P2 && j.K2) svg += capsule(j.P2[0], j.P2[1], j.K2[0], j.K2[1], rLeg * 0.95, C.legFar);
-    if (j.K2 && j.F2) svg += capsule(j.K2[0], j.K2[1], j.F2[0], j.F2[1], rLeg * 0.9, C.legFar);
-    // torso neck to pelvis
-    if (j.N && j.P) svg += capsule(j.N[0], j.N[1], j.P[0], j.P[1], rTor, C.torso);
-    else if (j.S && j.P) svg += capsule(j.S[0], j.S[1], j.P[0], j.P[1], rTor, C.torso);
-    // near limbs
-    if (j.S && j.E) svg += capsule(j.S[0], j.S[1], j.E[0], j.E[1], rArm, C.armNear);
-    if (j.E && j.A) svg += capsule(j.E[0], j.E[1], j.A[0], j.A[1], rArm * 0.95, C.armNear);
-    if (j.P && j.K) svg += capsule(j.P[0], j.P[1], j.K[0], j.K[1], rLeg, C.legNear);
-    if (j.K && j.F) svg += capsule(j.K[0], j.K[1], j.F[0], j.F[1], rLeg * 0.95, C.legNear);
-    // hands as small circles
-    if (j.A) svg += circ(j.A[0], j.A[1], 3.2 * s, C.pink);
-    if (j.A2) svg += circ(j.A2[0], j.A2[1], 3 * s, C.pink);
-    // feet
-    if (j.F) svg += circ(j.F[0], j.F[1], 3.6 * s, C.cyan);
-    if (j.F2) svg += circ(j.F2[0], j.F2[1], 3.4 * s, C.cyan);
-    // joint dots (shoulders / hips) for readability
-    if (j.S) svg += circ(j.S[0], j.S[1], 2.4 * s, C.cyan);
-    if (j.S2) svg += circ(j.S2[0], j.S2[1], 2.2 * s, C.cyan);
-    if (j.P) svg += circ(j.P[0], j.P[1], 2.6 * s, C.ink);
-    // head last
-    if (j.H) svg += circ(j.H[0], j.H[1], 7.5 * s, C.head);
-    return svg;
-  }
-
-  function drawArmsCloseup(j) {
-    let svg = '';
-    // soft mat panel (smaller so limbs fill the tile)
-    svg += roundRect(10, 28, 80, 48, 14, C.mat);
-    const rU = 7.2, rL = 6.4;
-    if (j.L_S && j.L_E) svg += capsule(j.L_S[0], j.L_S[1], j.L_E[0], j.L_E[1], rU, C.armFar);
-    if (j.L_E && j.L_A) svg += capsule(j.L_E[0], j.L_E[1], j.L_A[0], j.L_A[1], rL, C.armNear);
-    if (j.R_S && j.R_E) svg += capsule(j.R_S[0], j.R_S[1], j.R_E[0], j.R_E[1], rU * 0.95, C.legFar);
-    if (j.R_E && j.R_A) svg += capsule(j.R_E[0], j.R_E[1], j.R_A[0], j.R_A[1], rL * 0.95, C.legNear);
-    // elbow dots for readability
-    if (j.L_E) svg += circ(j.L_E[0], j.L_E[1], 3.2, C.cyan);
-    if (j.R_E) svg += circ(j.R_E[0], j.R_E[1], 3.0, C.cyan);
-    // hands — overlapping for prayer looks intentional
-    if (j.press && j.L_A && j.R_A) {
-      const mx = (j.L_A[0] + j.R_A[0]) / 2, my = (j.L_A[1] + j.R_A[1]) / 2;
-      svg += circ(mx - 3, my, 6.5, C.head);
-      svg += circ(mx + 3, my, 6.5, C.pink);
-      svg += circ(mx, my, 3.2, C.ink);
-    } else {
-      if (j.L_A) svg += circ(j.L_A[0], j.L_A[1], 6.5, C.head);
-      if (j.R_A) svg += circ(j.R_A[0], j.R_A[1], 6, C.pink);
-    }
-    return svg;
-  }
-
-  function drawUpperBody(j, strokeScale) {
-    const s = strokeScale || 1;
-    const rArm = 5.4 * s, rTor = 7.5 * s;
-    let svg = '';
-    const px = j.P ? j.P[0] : 40, py = j.P ? j.P[1] : 88;
-    const px2 = j.P2 ? j.P2[0] : 60;
-    const midX = (px + px2) / 2;
-    svg += roundRect(midX - 20, py - 2, 40, 8, 4, C.mat);
-    if (j.S2 && j.E2) svg += capsule(j.S2[0], j.S2[1], j.E2[0], j.E2[1], rArm * 0.95, C.armFar);
-    if (j.E2 && j.A2) svg += capsule(j.E2[0], j.E2[1], j.A2[0], j.A2[1], rArm * 0.88, C.armFar);
-    if (j.N) svg += capsule(j.N[0], j.N[1], midX, py - 6, rTor, C.torso);
-    if (j.S && j.S2) svg += capsule(j.S[0], j.S[1], j.S2[0], j.S2[1], 4 * s, C.torso);
-    if (j.S && j.E) svg += capsule(j.S[0], j.S[1], j.E[0], j.E[1], rArm, C.armNear);
-    if (j.E && j.A) svg += capsule(j.E[0], j.E[1], j.A[0], j.A[1], rArm * 0.9, C.armNear);
-    if (j.A2) svg += circ(j.A2[0], j.A2[1], 4.4 * s, C.pink);
-    if (j.A) svg += circ(j.A[0], j.A[1], 4.6 * s, C.pink);
-    if (j.S) svg += circ(j.S[0], j.S[1], 3 * s, C.cyan);
-    if (j.S2) svg += circ(j.S2[0], j.S2[1], 2.8 * s, C.cyan);
-    if (j.E) svg += circ(j.E[0], j.E[1], 3 * s, C.cyan);
-    if (j.E2) svg += circ(j.E2[0], j.E2[1], 2.8 * s, C.cyan);
-    if (j.H) svg += circ(j.H[0], j.H[1], 7.5 * s, C.head);
-    if (j.N) svg += circ(midX, (j.N[1] + py) / 2, 2 * s, '#fff');
-    return svg;
-  }
-
-  /** Approximate joint bbox including limb thickness, for fit-to-tile */
-  function jointsBBox(j, kind) {
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    function add(x, y, r) {
-      if (x == null || y == null || isNaN(x) || isNaN(y)) return;
-      minX = Math.min(minX, x - r); maxX = Math.max(maxX, x + r);
-      minY = Math.min(minY, y - r); maxY = Math.max(maxY, y + r);
-    }
-    function addSeg(a, b, r) {
-      if (!a || !b) return;
-      add(a[0], a[1], r); add(b[0], b[1], r);
-      add((a[0]+b[0])/2, (a[1]+b[1])/2, r);
-    }
-    const keys = Object.keys(j);
-    for (let i = 0; i < keys.length; i++) {
-      const k = keys[i], v = j[k];
-      if (!v || typeof v === 'boolean' || !v.length) continue;
-      let r = 6;
-      if (k === 'H' || k === 'H2') r = 9;
-      else if (k === 'A' || k === 'A2' || k === 'L_A' || k === 'R_A') r = 6.5;
-      else if (k === 'F' || k === 'F2') r = 5;
-      else if (k[0] === 'E' || k === 'L_E' || k === 'R_E') r = 7.5;
-      else if (k[0] === 'S' || k === 'L_S' || k === 'R_S') r = 7.5;
-      else if (k[0] === 'P' || k === 'N') r = 8.5;
-      add(v[0], v[1], r);
-    }
-    // limb corridors
-    const rLimb = kind === 'arms' ? 9 : 8.5;
-    addSeg(j.S, j.E, rLimb); addSeg(j.E, j.A, rLimb);
-    addSeg(j.S2, j.E2, rLimb); addSeg(j.E2, j.A2, rLimb);
-    addSeg(j.P, j.K, rLimb); addSeg(j.K, j.F, rLimb);
-    addSeg(j.P2, j.K2, rLimb); addSeg(j.K2, j.F2, rLimb);
-    addSeg(j.N, j.P, 9); addSeg(j.S, j.S2, 5);
-    addSeg(j.L_S, j.L_E, 8); addSeg(j.L_E, j.L_A, 8);
-    addSeg(j.R_S, j.R_E, 8); addSeg(j.R_E, j.R_A, 8);
-    if (kind === 'arms') {
-      add(10, 28, 2); add(90, 28, 2); add(10, 76, 2); add(90, 76, 2); // mat panel corners
-    }
-    if (kind === 'body') {
-      add(50, 91, 4); // mat bar
-    }
-    if (!isFinite(minX)) { minX = 10; minY = 10; maxX = 90; maxY = 90; }
-    return { minX: minX, minY: minY, maxX: maxX, maxY: maxY, w: Math.max(1, maxX - minX), h: Math.max(1, maxY - minY) };
-  }
-
-  function fitGroup(content, bbox, padding) {
-    padding = padding == null ? 12 : padding;
-    const avail = 100 - 2 * padding;
-    const s = Math.min(avail / bbox.w, avail / bbox.h);
-    const cx = (bbox.minX + bbox.maxX) / 2;
-    const cy = (bbox.minY + bbox.maxY) / 2;
-    return '<g transform="translate(50 50) scale(' + s.toFixed(4) + ') translate(' + (-cx).toFixed(2) + ' ' + (-cy).toFixed(2) + ')">' + content + '</g>';
-  }
-
-  function renderPoseSVG(poseId, opts) {
-    opts = opts || {};
-    const def = POSES[poseId];
-    const size = opts.size || 200;
-    const side = opts.side;
-    const thumb = !!opts.thumb;
-    if (!def) {
-      return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="' + size + '" height="' + size + '">' +
-        roundRect(10, 10, 80, 80, 16, C.tile) + circ(50, 50, 12, C.head) + '</svg>';
-    }
-    let j = Object.assign({}, def.j);
-    if (side === 'Left' && def.view !== 'arms') j = mirrorJoints(j);
-
-    let tile = '';
-    if (!opts.noTile) {
-      tile += roundRect(4, 4, 92, 92, thumb ? 14 : 18, C.tile);
-    }
-
-    const stroke = thumb ? 0.95 : 1;
-    let fig = '';
-    let kind = 'body';
-    if (def.view === 'arms') {
-      kind = 'arms';
-      fig = drawArmsCloseup(j);
-    } else if (def.upper) {
-      kind = 'upper';
-      fig = drawUpperBody(j, stroke);
-    } else {
-      fig = roundRect(12, 88, 76, 6, 3, C.mat) + drawBody(j, stroke);
-    }
-
-    const pad = thumb ? 14 : (opts.noTile ? 14 : 14);
-    const bbox = jointsBBox(j, kind);
-    // include mat line for full-body
-    if (kind === 'body') { bbox.maxY = Math.max(bbox.maxY, 94); bbox.h = bbox.maxY - bbox.minY; }
-    const fitted = fitGroup(fig, bbox, pad);
-
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="' + size + '" height="' + size + '" class="pose-fig" aria-hidden="true">' + tile + fitted + '</svg>';
-  }
-
-  function listPoseIds() { return Object.keys(POSES); }
-
-  root.YogaFigures = { renderPoseSVG, listPoseIds, POSES, C, jointsBBox, fitGroup };
-  if (typeof module !== 'undefined') module.exports = root.YogaFigures;
-})(typeof window !== 'undefined' ? window : global);
 (function(){
 'use strict';
 const {POSES,THEMES,generateSession,hashSeed}=window.YogaCore;
@@ -1193,100 +722,28 @@ function applySky(el, themeId){
   el.classList.toggle('sky-light', !!v.light);
 }
 
-/* —— Solar times (NOAA-style, offline) —— */
-function toRad(d){return d*Math.PI/180}
-function toDeg(r){return r*180/Math.PI}
-function solarEvent(date, lat, lon, rising){
-  // NOAA approximate sunrise/sunset for local calendar day
-  const y=date.getFullYear(), m=date.getMonth()+1, day=date.getDate();
-  // Day of year
-  const N1=Math.floor(275*m/9), N2=Math.floor((m+9)/12), N3=1+Math.floor((y-4*Math.floor(y/4)+2)/3);
-  const N=N1-(N2*N3)+day-30;
-  const lngHour=lon/15;
-  const t = rising ? N+((6-lngHour)/24) : N+((18-lngHour)/24);
-  const M=0.9856*t-3.289;
-  let L=M+1.916*Math.sin(toRad(M))+0.020*Math.sin(toRad(2*M))+282.634;
-  L=((L%360)+360)%360;
-  let RA=toDeg(Math.atan(0.91764*Math.tan(toRad(L))));
-  RA=((RA%360)+360)%360;
-  const Lquad=Math.floor(L/90)*90, RAquad=Math.floor(RA/90)*90;
-  RA=RA+Lquad-RAquad; RA=RA/15;
-  const sinDec=0.39782*Math.sin(toRad(L));
-  const cosDec=Math.cos(Math.asin(sinDec));
-  const cosH=(Math.sin(toRad(-0.833))-(sinDec*Math.sin(toRad(lat))))/(cosDec*Math.cos(toRad(lat)));
-  if(cosH>1||cosH<-1) return null;
-  let H=rising ? 360-toDeg(Math.acos(cosH)) : toDeg(Math.acos(cosH));
-  H=H/15;
-  const T=H+RA-0.06571*t-6.622;
-  let UT=T-lngHour;
-  UT=((UT%24)+24)%24;
-  const hr=Math.floor(UT), mn=Math.round((UT-hr)*60);
-  // Build as UTC then OK — actually UT is UTC hours
-  const result=new Date(Date.UTC(y, m-1, day, hr, mn===60?0:mn, 0));
-  if(mn===60) result.setUTCHours(hr+1);
-  return result;
-}
-function formatSunClock(dt){
-  if(!dt) return {t:'—', amp:''};
-  let h=dt.getHours(), m=dt.getMinutes();
-  const amp=h>=12?'pm':'am';
-  h=h%12; if(h===0)h=12;
-  return {t:h+':'+String(m).padStart(2,'0'), amp:amp};
-}
-function goldenHourInfo(now, sunrise, sunset){
-  if(!sunrise||!sunset) return 'Golden hour —';
-  // morning golden: sunrise to +60m; evening: sunset-60m to sunset
-  const mornEnd=new Date(sunrise.getTime()+60*60000);
-  const eveStart=new Date(sunset.getTime()-60*60000);
-  if(now<sunrise){
-    const mins=Math.round((sunrise-now)/60000);
-    return 'Sunrise in '+Math.floor(mins/60)+'h '+String(mins%60).padStart(2,'0')+'m';
-  }
-  if(now<mornEnd) return 'Morning golden hour now';
-  if(now<eveStart){
-    const mins=Math.round((eveStart-now)/60000);
-    return 'Golden hour in '+Math.floor(mins/60)+'h '+String(mins%60).padStart(2,'0')+'m';
-  }
-  if(now<sunset) return 'Evening golden hour now';
-  return 'Sunset has passed';
-}
-function skyForTimeOfDay(now){
-  const h=now.getHours()+now.getMinutes()/60;
-  if(h>=5 && h<9) return 'linear-gradient(180deg,#C5B4E3 0%,#FFB07A 55%,#FF9A6A 100%)'; // dawn
-  if(h>=9 && h<16) return 'linear-gradient(180deg,#A9B4E8 0%,#FFD0A8 60%,#FFB07A 100%)'; // day
-  if(h>=16 && h<20) return 'linear-gradient(180deg,#7A9AD4 0%,#FF8A4A 55%,#E8483A 100%)'; // dusk
-  return 'linear-gradient(180deg,#3A4A78 0%,#A978C8 50%,#E87868 100%)'; // night
-}
-let sunCache={lat:51.2154, lon:2.9287}; // Ostend default
-function updateSunUI(){
+function updateHomeDate(){
   const now=new Date();
-  const rise=solarEvent(now, sunCache.lat, sunCache.lon, true);
-  const set=solarEvent(now, sunCache.lat, sunCache.lon, false);
-  const r=formatSunClock(rise), s=formatSunClock(set);
-  const rt=document.getElementById('sunrise-time');
-  const st=document.getElementById('sunset-time');
-  if(rt) rt.innerHTML=r.t+'<span class="unit">'+(r.amp||'')+'</span>';
-  if(st) st.innerHTML=s.t+'<span class="unit">'+(s.amp||'')+'</span>';
-  const g=document.getElementById('golden-line');
-  if(g) g.textContent=goldenHourInfo(now, rise, set);
-  const sky=document.getElementById('home-sky');
-  if(sky) sky.style.background=skyForTimeOfDay(now);
   const hd=document.getElementById('home-date');
   if(hd) hd.textContent=(now.getMonth()+1)+'/'+now.getDate()+'/'+now.getFullYear();
 }
-function initGeolocation(){
-  updateSunUI();
-  if(!navigator.geolocation) return;
-  navigator.geolocation.getCurrentPosition(pos=>{
-    sunCache={lat:pos.coords.latitude, lon:pos.coords.longitude};
-    updateSunUI();
-  }, ()=>{}, {maximumAge:86400000, timeout:4000});
-}
 
+function poseArtSrc(poseId, thumb){
+  return thumb ? './poses/thumbs/'+poseId+'.webp' : './poses/'+poseId+'.webp';
+}
+function poseNameOf(poseId){
+  const p=POSES.find(x=>x.id===poseId);
+  return (p&&p.name)||poseId;
+}
 function renderFig(poseId, side, opts){
   opts = opts || {};
-  if(!window.YogaFigures) return '';
-  return window.YogaFigures.renderPoseSVG(poseId, {size: opts.size||200, side: side||null, thumb: !!opts.thumb, noTile: !!opts.noTile, scale: opts.scale||1});
+  if(!poseId) return '';
+  const thumb = !!opts.thumb;
+  const size = opts.size || (thumb ? 52 : 260);
+  const src = poseArtSrc(poseId, thumb);
+  const alt = escapeHtml(poseNameOf(poseId));
+  const loading = thumb ? ' loading="lazy"' : '';
+  return '<img class="pose-art'+(thumb?' pose-art-thumb':'')+'" src="'+src+'" width="'+size+'" height="'+size+'" alt="'+alt+'"'+loading+' decoding="async"/>';
 }
 function setPlayerFigure(step){
   const wrap=document.getElementById('pose-fig-wrap');
@@ -1304,7 +761,7 @@ const LAST_SIG_KEY='surfClimbYoga.lastSig.v1';
 const params=new URLSearchParams(location.search);
 const SPEED=Math.max(1,parseFloat(params.get('speed')||'1')||1);
 const DEMO=params.get('demo')==='1';
-function loadSettings(){try{const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');return{sound:s.sound!==false,speech:s.speech!==false}}catch(e){return{sound:true,speech:true}}}
+function loadSettings(){try{const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');return{sound:s.sound!==false}}catch(e){return{sound:true}}}
 function saveSettings(){if(!DEMO)localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings))}
 const settings=loadSettings();
 function loadLastSigs(){try{return JSON.parse(localStorage.getItem(LAST_SIG_KEY)||'{}')}catch(e){return{}}}
@@ -1349,12 +806,11 @@ function soundEnd(){if(!settings.sound)return;tone(392,0.18,0.11,'sine');setTime
 function soundTick(){if(!settings.sound)return;tone(660,0.06,0.055,'sine');vibe(25)}
 function soundComplete(){if(!settings.sound)return;tone(523,0.14,0.1,'sine');setTimeout(()=>tone(659,0.14,0.1,'sine'),150);setTimeout(()=>tone(784,0.14,0.1,'sine'),300);setTimeout(()=>tone(1047,0.28,0.09,'triangle'),460);vibe([40,50,40,50,120])}
 function vibe(pattern){if(navigator.vibrate){try{navigator.vibrate(pattern)}catch(e){}}}
-function speak(text){if(!settings.speech||!window.speechSynthesis)return;try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=1;u.pitch=1;u.volume=0.9;const voices=window.speechSynthesis.getVoices();const pref=voices.find(v=>/en(-|_)GB/i.test(v.lang))||voices.find(v=>/^en/i.test(v.lang));if(pref)u.voice=pref;window.speechSynthesis.speak(u)}catch(e){}}
 let wakeLock=null;
 async function requestWake(){if(!('wakeLock' in navigator))return;try{wakeLock=await navigator.wakeLock.request('screen')}catch(e){}}
 async function releaseWake(){try{if(wakeLock){await wakeLock.release();wakeLock=null}}catch(e){}}
 let toastTimer=null;
-function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200)}
+function toast(msg){const el=document.getElementById('toast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200)}
 let draft=null;
 function freshSeed(themeId){return hashSeed(themeId+'|'+Date.now()+'|'+Math.random())}
 function makeDraft(themeId){const avoid=DEMO?null:(loadLastSigs()[themeId]||null);return generateSession(themeId,freshSeed(themeId),avoid)}
@@ -1403,7 +859,7 @@ const player={session:null,stepIndex:0,mode:'transition',playing:false,raf:null,
 window.__player=player;window.__renderPlayer=()=>renderPlayer();
 function currentStep(){return player.session&&player.session.steps[player.stepIndex]}
 function segRemaining(){if(!player.playing)return Math.max(0,player.segDur-player.segElapsedPaused);const wall=(performance.now()-player.segStartPerf)/1000*SPEED;return Math.max(0,player.segDur-player.segElapsedPaused-wall)}
-function beginSegment(mode,dur){player.mode=mode;player.segDur=dur;player.segElapsedPaused=0;player.segStartPerf=performance.now();player.lastTickCeil=null;if(mode==='transition'){const step=currentStep();speak(step.name+(step.side?', '+step.side:''))}if(mode==='hold')soundStart();renderPlayer()}
+function beginSegment(mode,dur){player.mode=mode;player.segDur=dur;player.segElapsedPaused=0;player.segStartPerf=performance.now();player.lastTickCeil=null;if(mode==='hold')soundStart();renderPlayer()}
 function enterStep(index){player.stepIndex=index;const step=currentStep();if(!step){finishSession(true);return}beginSegment('transition',step.transition||6)}
 function advanceFromSegment(){if(player.mode==='transition'){beginSegment('hold',currentStep().dur);return}soundEnd();player.holdElapsedTotal+=currentStep().dur;const next=player.stepIndex+1;if(next>=player.session.steps.length){finishSession(true);return}enterStep(next)}
 function play(){if(player.finished)return;unlockAudio();player.playing=true;player.segStartPerf=performance.now();requestWake();renderPlayer();loop()}
@@ -1438,10 +894,10 @@ function renderPlayer(){
   document.getElementById('icon-play').style.display=player.playing?'none':'block';
   document.getElementById('icon-pause').style.display=player.playing?'block':'none';
 }
-function startPlayerFromDraft(){unlockAudio();if(window.speechSynthesis)window.speechSynthesis.getVoices();player.session=draft;player.stepIndex=0;player.finished=false;player.holdElapsedTotal=0;player.playing=false;saveLastSig(draft.themeId,draft.signature);showScreen('player');enterStep(0);play()}
+function startPlayerFromDraft(){unlockAudio();player.session=draft;player.stepIndex=0;player.finished=false;player.holdElapsedTotal=0;player.playing=false;saveLastSig(draft.themeId,draft.signature);showScreen('player');enterStep(0);play()}
 function skip(){if(player.finished)return;if(player.mode==='transition'){beginSegment('hold',currentStep().dur);if(player.playing)player.segStartPerf=performance.now();return}soundEnd();const rem=segRemaining();player.holdElapsedTotal+=Math.max(0,currentStep().dur-rem);const next=player.stepIndex+1;if(next>=player.session.steps.length){finishSession(true);return}enterStep(next);if(player.playing)player.segStartPerf=performance.now()}
 function back(){if(player.finished)return;if(player.mode==='hold'){beginSegment('transition',currentStep().transition||6);if(player.playing)player.segStartPerf=performance.now();return}if(player.stepIndex<=0){beginSegment('transition',currentStep().transition||6);if(player.playing)player.segStartPerf=performance.now();return}player.stepIndex-=1;let elapsed=0;for(let i=0;i<player.stepIndex;i++)elapsed+=player.session.steps[i].dur;player.holdElapsedTotal=elapsed;beginSegment('transition',currentStep().transition||6);if(player.playing)player.segStartPerf=performance.now()}
-function finishSession(completed){player.playing=false;player.finished=true;if(player.raf)cancelAnimationFrame(player.raf);releaseWake();if(window.speechSynthesis)try{window.speechSynthesis.cancel()}catch(e){}let minutes=Math.max(1,Math.round(player.holdElapsedTotal/60));if(completed){minutes=Math.max(minutes,Math.round(player.session.totalSec/60));soundComplete();speak('Session complete. Nice work.')}logSession(player.session,minutes);toast(completed?'Session complete — nice work':'Session saved');showScreen('history');renderHistory();renderHome()}
+function finishSession(completed){player.playing=false;player.finished=true;if(player.raf)cancelAnimationFrame(player.raf);releaseWake();let minutes=Math.max(1,Math.round(player.holdElapsedTotal/60));if(completed){minutes=Math.max(minutes,Math.round(player.session.totalSec/60));soundComplete()}logSession(player.session,minutes);toast(completed?'Session complete — nice work':'Session saved');showScreen('history');renderHistory();renderHome()}
 function logSession(session,minutes){const entry={id:uid(),datetime:new Date().toISOString(),sessionId:session.themeId,sessionName:session.name,minutes,poses:session.poseIds.slice(),signature:session.signature,seed:session.seed};if(DEMO){demoCache=getEntries();demoCache.unshift(entry);return}const entries=loadHistory();entries.unshift(entry);saveHistory(entries)}
 function deleteEntry(id){if(DEMO){demoCache=getEntries().filter(e=>e.id!==id);renderHistory();renderHome();return}saveHistory(loadHistory().filter(e=>e.id!==id));renderHistory();renderHome()}
 function showScreen(name){
@@ -1462,7 +918,7 @@ function showScreen(name){
 }
 function renderHome(){
   const entries=getEntries(),last=lastDoneMap(entries),today=suggestTheme(entries);
-  updateSunUI();
+  updateHomeDate();
   const navS=document.getElementById('nav-sessions-count');
   const navH=document.getElementById('nav-history-count');
   if(navS) navS.textContent=String(THEMES.length);
@@ -1517,7 +973,7 @@ function renderHeatmap(entries){
 }
 function exportData(){const data={version:2,exportedAt:new Date().toISOString(),history:DEMO?getEntries():loadHistory()};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='yoga-history.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Exported')}
 function importData(file){const reader=new FileReader();reader.onload=()=>{try{const data=JSON.parse(reader.result);const hist=Array.isArray(data)?data:(data.history||[]);const cleaned=hist.filter(e=>e&&e.datetime&&e.sessionName).map(e=>({id:e.id||uid(),datetime:e.datetime,sessionId:e.sessionId||'',sessionName:e.sessionName,minutes:Number(e.minutes)||0,poses:Array.isArray(e.poses)?e.poses:[],signature:e.signature||'',seed:e.seed}));if(DEMO)demoCache=cleaned.sort((a,b)=>b.datetime.localeCompare(a.datetime));else saveHistory(cleaned.sort((a,b)=>b.datetime.localeCompare(a.datetime)));renderHistory();renderHome();toast('Imported '+cleaned.length+' sessions')}catch(err){toast('Import failed')}};reader.readAsText(file)}
-function syncToggles(){document.getElementById('tog-sound').classList.toggle('on',settings.sound);document.getElementById('tog-speech').classList.toggle('on',settings.speech)}
+function syncToggles(){const el=document.getElementById('tog-sound'); if(el) el.classList.toggle('on',settings.sound)}
 document.getElementById('btn-play').addEventListener('click',()=>{unlockAudio();if(player.finished)return;if(player.playing)pause();else play()});
 document.getElementById('btn-skip').addEventListener('click',()=>{unlockAudio();skip()});
 document.getElementById('btn-back').addEventListener('click',back);
@@ -1529,13 +985,11 @@ document.getElementById('btn-begin').addEventListener('click',()=>{unlockAudio()
 document.getElementById('btn-settings').addEventListener('click',()=>{syncToggles();showScreen('settings')});
 document.getElementById('btn-settings-back').addEventListener('click',()=>showScreen('home'));
 document.getElementById('tog-sound').addEventListener('click',()=>{settings.sound=!settings.sound;saveSettings();syncToggles();if(settings.sound){unlockAudio();soundStart()}});
-document.getElementById('tog-speech').addEventListener('click',()=>{settings.speech=!settings.speech;saveSettings();syncToggles();if(settings.speech)speak('Pose names on')});
 document.getElementById('btn-export').addEventListener('click',exportData);
 document.getElementById('btn-import').addEventListener('click',()=>document.getElementById('import-file').click());
 document.getElementById('import-file').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f)importData(f);e.target.value=''});
-document.querySelectorAll('#main-nav button').forEach(btn=>btn.addEventListener('click',()=>{const n=btn.dataset.nav;showScreen(n);if(n==='home')renderHome();if(n==='history')renderHistory()}));
+document.querySelectorAll('#main-nav button[data-nav]').forEach(btn=>btn.addEventListener('click',()=>{const n=btn.dataset.nav;showScreen(n);if(n==='home')renderHome();if(n==='history')renderHistory()}));
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&player.playing)requestWake()});
-if('speechSynthesis' in window)speechSynthesis.onvoiceschanged=function(){};
 if('serviceWorker' in navigator&&!DEMO){navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{})}
 syncToggles();renderHome();if(DEMO)renderHistory();
 window.__yoga={THEMES,POSES,get draft(){return draft},player,SPEED,DEMO,settings,openPreview,makeDraft,getEntries,generateSession:window.YogaCore.generateSession,validateSession:window.YogaCore.validateSession};
