@@ -44,7 +44,7 @@ button:disabled{opacity:.35}
 
 .app{
   flex:1 0 auto;display:flex;flex-direction:column;min-height:100dvh;
-  padding-bottom:calc(72px + var(--safe-bot));
+  padding-bottom:0;
   background:var(--bg);
 }
 .app.immersive{
@@ -118,8 +118,9 @@ button:disabled{opacity:.35}
 }
 .panel-head .date{font-family:var(--mono);font-size:.68rem;letter-spacing:0.12em;color:var(--ink-mid)}
 
-.home-panel{justify-content:flex-start;flex:1 0 auto;padding-bottom:28px}
-#screen-home.active{flex:1 0 auto}
+.home-panel{justify-content:flex-start;flex:1 1 auto;padding-bottom:0;min-height:0}
+#screen-home.active{flex:1 1 auto;min-height:0}
+.home-cards{display:flex;flex-direction:column;gap:14px;flex:1 1 auto;justify-content:center;}
 .app:has(#screen-home.active){background:var(--panel)}
 .deck-dots{
   display:flex;gap:8px;align-items:center;margin:0 0 18px;
@@ -147,13 +148,13 @@ button:disabled{opacity:.35}
 
 .start-card{
   position:relative;display:block;width:100%;
-  border-radius:28px;min-height:168px;overflow:hidden;
+  border-radius:28px;min-height:156px;overflow:hidden;
   text-align:left;color:#1F1F1F;
   background:linear-gradient(165deg,#F0C098 0%,#FF8A4A 42%,#E8483A 100%);
   box-shadow:0 14px 36px rgba(232,72,58,.22);
   margin-top:4px;
 }
-.start-card:active{transform:scale(.985)}
+.start-card:active{opacity:.92}
 .start-card .grain{opacity:.22}
 .start-card-inner{position:relative;z-index:1;padding:26px 22px 24px}
 .start-kicker{
@@ -176,7 +177,7 @@ button:disabled{opacity:.35}
   pointer-events:none;
   opacity:.92;
 }
-.start-card.done:active{transform:none}
+
 .start-card.done .grain{opacity:.12}
 .start-card.done .start-title{max-width:14ch}
 .start-card .done-check{
@@ -204,7 +205,7 @@ button:disabled{opacity:.35}
   -webkit-backdrop-filter:blur(8px);
   box-shadow:0 16px 40px rgba(40,20,10,.18);
   display:flex;flex-direction:column;justify-content:center;
-  transition:transform .2s ease, background .3s;
+  transition:background .3s ease, opacity .28s ease;
 }
 .reveal-slot.landed{
   background:rgba(255,255,255,.22);
@@ -213,9 +214,8 @@ button:disabled{opacity:.35}
   animation:reveal-settle .48s cubic-bezier(0.34, 1.45, 0.64, 1) both;
 }
 @keyframes reveal-settle{
-  0%{transform:scale(0.97) translateY(4px)}
-  55%{transform:scale(1.04) translateY(-2px)}
-  100%{transform:scale(1) translateY(0)}
+  0%{opacity:.88;transform:translateY(8px)}
+  100%{opacity:1;transform:translateY(0)}
 }
 @media (prefers-reduced-motion: reduce){
   .reveal-slot.settle{animation:none}
@@ -284,24 +284,157 @@ button:disabled{opacity:.35}
 }
 
 
-/* Nav */
-.nav{
-  position:fixed;left:50%;transform:translateX(-50%);
-  bottom:0;width:100%;max-width:430px;
-  display:flex;align-items:center;justify-content:center;gap:28px;
-  background:rgba(247,245,242,.92);backdrop-filter:blur(10px);
-  border-top:1px solid rgba(0,0,0,.05);
-  padding:12px 20px calc(12px + var(--safe-bot));z-index:50;
+/* Nav removed in v17 — History is a quiet home link */
+.nav{display:none!important}
+
+/* Home footer */
+.home-footer{
+  margin-top:auto;padding:22px 0 calc(10px + var(--safe-bot));
+  display:flex;align-items:center;justify-content:center;gap:18px;
 }
-.nav .tab{
+.home-history-link{
   font-family:var(--mono);font-size:.72rem;letter-spacing:0.14em;
-  text-transform:uppercase;color:var(--ink-faint);font-weight:500;
+  text-transform:uppercase;color:var(--ink-mid);font-weight:500;
+  padding:10px 8px;background:none;border:none;cursor:pointer;
 }
-.nav .tab.active{color:var(--ink)}
-.nav .tab .sup{font-size:.58rem;vertical-align:super;margin-left:2px;letter-spacing:0}
-.nav .icon-btn{position:absolute;right:14px;top:50%;transform:translateY(-55%);width:36px;height:36px;display:grid;place-items:center;opacity:.55}
-.nav .icon-btn svg{width:18px;height:18px}
-.nav-back{display:none}
+.home-history-link:focus-visible{outline:2px solid var(--peri);outline-offset:3px;border-radius:8px}
+.home-settings-btn{
+  width:36px;height:36px;border-radius:12px;display:grid;place-items:center;
+  opacity:.5;color:var(--ink);
+}
+.home-settings-btn:focus-visible{outline:2px solid var(--peri);outline-offset:2px}
+.home-settings-btn svg{width:18px;height:18px}
+
+.start-card .start-affordance{
+  margin-top:16px;display:flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:.68rem;letter-spacing:0.14em;
+  text-transform:uppercase;opacity:.8;
+}
+.start-card .start-affordance .arrow{font-size:1.1em;line-height:1}
+.start-card:focus-visible{
+  outline:3px solid rgba(26,26,26,.45);outline-offset:3px;
+}
+.start-card-strength:focus-visible{
+  outline:3px solid rgba(255,255,255,.55);outline-offset:3px;
+}
+
+/* History top chrome + rounds */
+.hist-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:calc(12px + var(--safe-top)) 16px 0;gap:12px;
+}
+.hist-rounds{
+  padding:8px 20px 4px;display:flex;flex-direction:column;gap:14px;
+}
+.hist-round-block .lbl{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--ink-mid);margin-bottom:8px;
+}
+.hist-rounds .deck-dots{margin:0}
+
+/* Reveal secondary text link */
+.reveal-see{
+  display:block;margin:14px auto 0;padding:8px 12px;
+  font-family:var(--mono);font-size:.68rem;letter-spacing:0.12em;
+  text-transform:uppercase;color:inherit;opacity:.7;text-align:center;
+  background:none;border:none;cursor:pointer;
+}
+.reveal-see:active{opacity:.45}
+.reveal-actions .reveal-see{width:100%;flex-basis:100%;order:3}
+
+/* Session bottom sheet */
+.session-sheet{
+  position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;justify-content:flex-end;
+  pointer-events:none;opacity:0;transition:opacity .28s ease;
+}
+.session-sheet.open{pointer-events:auto;opacity:1}
+.session-sheet[hidden]{display:none!important}
+.sheet-backdrop{
+  position:absolute;inset:0;background:rgba(20,16,12,.45);
+  opacity:0;transition:opacity .28s ease;
+}
+.session-sheet.open .sheet-backdrop{opacity:1}
+.sheet-panel{
+  position:relative;z-index:1;
+  width:100%;max-width:430px;margin:0 auto;
+  max-height:min(78dvh,640px);
+  background:var(--panel,#F7F5F2);color:var(--ink);
+  border-radius:24px 24px 0 0;
+  box-shadow:0 -12px 40px rgba(0,0,0,.18);
+  display:flex;flex-direction:column;min-height:0;
+  transform:translateY(18px);
+  transition:transform .32s cubic-bezier(.22,.61,.36,1);
+  padding-bottom:var(--safe-bot);
+}
+.session-sheet.open .sheet-panel{transform:translateY(0)}
+.sheet-handle-row{
+  display:flex;justify-content:center;padding:10px 0 4px;flex-shrink:0;cursor:grab;
+}
+.sheet-handle{
+  width:40px;height:4px;border-radius:999px;background:rgba(0,0,0,.18);
+}
+.sheet-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  padding:4px 18px 10px;flex-shrink:0;
+}
+.sheet-head h2{
+  font-weight:800;font-size:clamp(1.55rem,6.5vw,1.9rem);
+  letter-spacing:-0.04em;line-height:0.95;margin:0;
+}
+.sheet-head h2 .soft{opacity:.65;font-weight:800}
+.sheet-meta{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--ink-mid);margin-top:6px;
+}
+.sheet-close{
+  width:40px;height:40px;border-radius:12px;flex-shrink:0;
+  display:grid;place-items:center;background:rgba(0,0,0,.06);
+}
+.sheet-list{
+  flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:0 14px 8px;
+}
+.sheet-list .pose-row{
+  display:flex;flex-direction:row;align-items:center;gap:12px;
+  width:100%;box-sizing:border-box;
+  padding:10px 12px;margin:0 0 6px;border-radius:16px;
+  background:rgba(0,0,0,.04);
+}
+.sheet-list .pose-row .thumb{
+  width:44px;height:44px;flex-shrink:0;border-radius:12px;overflow:hidden;
+  background:#FAD7BA;display:grid;place-items:center;
+}
+.sheet-list .pose-row .thumb img{width:100%;height:100%;object-fit:contain;display:block}
+.sheet-list .pose-row .nwrap{flex:1;min-width:0}
+.sheet-list .pose-row .n{
+  font-size:.95rem;font-weight:600;letter-spacing:-0.02em;line-height:1.15;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.sheet-list .pose-row .t{
+  flex:0 0 auto;font-family:var(--mono);font-size:.68rem;opacity:.65;min-width:2.6em;text-align:right;
+}
+.sheet-list .pose-row.strength-row .thumb{display:none}
+.sheet-list .pose-row.is-done{opacity:.42}
+.sheet-list .pose-row.is-current{
+  background:rgba(232,72,58,.12);
+  box-shadow:inset 0 0 0 1.5px rgba(232,72,58,.35);
+}
+.sheet-list .phase-tag{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--ink-mid);margin:12px 4px 4px;
+}
+.sheet-footer{
+  flex-shrink:0;display:flex;gap:10px;padding:12px 16px 16px;
+}
+.sheet-footer .btn{border-radius:999px}
+.sheet-footer[hidden]{display:none!important}
+
+.next-up{
+  cursor:pointer;text-decoration:underline;text-underline-offset:3px;
+  text-decoration-color:rgba(255,255,255,.35);
+}
+.player-shell.sky-light .next-up{text-decoration-color:rgba(31,31,31,.3)}
+.next-up:focus-visible{outline:2px solid currentColor;outline-offset:4px;border-radius:6px}
 
 /* Shared buttons / chrome (needed by preview + player) */
 .btn{
@@ -310,7 +443,7 @@ button:disabled{opacity:.35}
   font-family:var(--mono);font-size:.72rem;letter-spacing:0.14em;
   text-transform:uppercase;font-weight:500;flex:1;
 }
-.btn:active{transform:scale(.97)}
+.btn:active{opacity:.85}
 .btn-primary{background:var(--ink);color:#fff}
 .btn-secondary{background:#fff;color:var(--ink);border:1px solid rgba(0,0,0,.06)}
 .icon-btn{
@@ -593,7 +726,10 @@ button:disabled{opacity:.35}
 .player-shell.sky-light .timer.countdown-warn{color:#C04830}
 .player-shell .timer.transition{opacity:.6}
 .player-shell .next-up{
+  appearance:none;border:0;background:none;cursor:pointer;
+  display:block;width:100%;text-align:left;
   color:var(--sky-ink);opacity:.65;margin-bottom:4px;flex-shrink:0;
+  font:inherit;padding:0;
 }
 .progress-slim{
   position:relative;height:3px;width:100%;flex-shrink:0;
@@ -666,7 +802,7 @@ button:disabled{opacity:.35}
 }
 
 /* History */
-#screen-history{overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);padding-top:var(--safe-top)}
+#screen-history{overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);padding-top:0;position:relative;z-index:2}
 .hist-mega{padding:24px 20px 8px}
 .hist-mega h1{font-weight:800;font-size:clamp(2.85rem,12vw,3.6rem);letter-spacing:-0.04em;line-height:0.9}
 .hist-mega h1 .ink{color:var(--ink)}
@@ -739,6 +875,24 @@ button:disabled{opacity:.35}
 .hidden-file{display:none}
 
 #screen-settings{padding-top:var(--safe-top)}
+
+/* Fit home on short phones */
+@media (max-height:700px){
+  .home-hero{padding:calc(10px + var(--safe-top)) 20px 0}
+  .home-title{font-size:clamp(2.2rem,10vw,2.85rem);margin:6px 0 8px}
+  .start-card{min-height:140px;border-radius:24px}
+  .start-card-inner{padding:18px 18px 16px}
+  .start-title{font-size:clamp(1.55rem,6.5vw,1.9rem)}
+  .start-meta{margin-top:10px}
+  .start-card .start-affordance{margin-top:10px}
+  .home-cards{gap:10px;justify-content:flex-start}
+  .home-footer{padding:12px 0 calc(8px + var(--safe-bot))}
+  .home-panel{padding:10px 20px 0}
+}
+@media (max-height:700px) and (max-width:400px){
+  .home-title{font-size:2.15rem;line-height:0.88}
+  .start-card{min-height:128px}
+}
 
 /* Strength home */
 .start-block{margin-top:14px}
@@ -813,42 +967,30 @@ button:disabled{opacity:.35}
       </div>
     </div>
     <div class="panel home-panel">
-      <div class="panel-head">
-        <div class="mono-label" id="home-date-label">Today</div>
-        <div class="date" id="home-date"></div>
-      </div>
-      <div class="home-celebrate" id="home-celebrate" hidden>
-        <div class="celebrate-burst" aria-hidden="true"></div>
-        <div class="celebrate-text">Round complete — every focus done</div>
-      </div>
-      <div class="start-block">
-        <div class="start-block-head">
-          <div class="mono-label">Stretch</div>
-          <div class="mono-label muted" id="home-round-label">Round 1 · 0 of 7</div>
-        </div>
-        <div class="deck-dots" id="deck-dots" aria-label="Stretch round progress"></div>
-        <button class="start-card" id="btn-start-today" type="button">
+      <div class="home-cards">
+        <button class="start-card" id="btn-start-today" type="button" aria-label="Start stretch roulette">
           <div class="grain"></div>
           <div class="start-card-inner">
-            <div class="start-kicker">Ready when you are</div>
-            <div class="start-title">Start today's stretch</div>
+            <div class="start-kicker">Stretch</div>
+            <div class="start-title">Today's stretch</div>
             <div class="start-meta">~15 min</div>
+            <div class="start-affordance"><span class="arrow" aria-hidden="true">→</span> Tap to roll</div>
+          </div>
+        </button>
+        <button class="start-card start-card-strength" id="btn-start-strength" type="button" aria-label="Start strength roulette">
+          <div class="grain"></div>
+          <div class="start-card-inner">
+            <div class="start-kicker">Strength</div>
+            <div class="start-title">Today's strength</div>
+            <div class="start-meta">~20 min</div>
+            <div class="start-affordance"><span class="arrow" aria-hidden="true">→</span> Tap to roll</div>
           </div>
         </button>
       </div>
-      <div class="start-block">
-        <div class="start-block-head">
-          <div class="mono-label">Strength</div>
-          <div class="mono-label muted" id="home-strength-round-label">Round 1 · 0 of 7</div>
-        </div>
-        <div class="deck-dots strength-dots" id="strength-deck-dots" aria-label="Strength round progress"></div>
-        <button class="start-card start-card-strength" id="btn-start-strength" type="button">
-          <div class="grain"></div>
-          <div class="start-card-inner">
-            <div class="start-kicker">Build strength</div>
-            <div class="start-title">Start today's strength training</div>
-            <div class="start-meta">~20 min</div>
-          </div>
+      <div class="home-footer">
+        <button type="button" class="home-history-link" id="btn-home-history">History</button>
+        <button type="button" class="home-settings-btn" id="btn-settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
         </button>
       </div>
       <div id="session-list" hidden></div>
@@ -876,7 +1018,8 @@ button:disabled{opacity:.35}
           </svg>
           <span>Roll again</span>
         </button>
-        <button class="reveal-go" id="btn-reveal-go" type="button">Let's go</button>
+        <button class="reveal-go" id="btn-reveal-go" type="button">Start</button>
+        <button class="reveal-see" id="btn-reveal-see" type="button">See poses</button>
       </div>
       <div class="reveal-tap mono-label" id="reveal-tap-hint">Tap to skip</div>
     </div>
@@ -952,7 +1095,7 @@ button:disabled{opacity:.35}
         <div class="progress-slim" id="progress-pill" aria-label="Session progress">
           <div class="fill" id="progress-fill"></div>
         </div>
-        <div class="next-up" id="next-up"></div>
+        <button class="next-up" id="next-up" type="button" aria-label="Open session list"></button>
         <div class="player-controls">
           <button class="ctrl" id="btn-back" type="button" aria-label="Previous">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -971,9 +1114,26 @@ button:disabled{opacity:.35}
   </section>
 
   <section class="screen" id="screen-history">
+    <div class="hist-top">
+      <button class="icon-btn filled" id="btn-history-back" type="button" aria-label="Back to home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="mono-label">History</div>
+      <div style="width:40px"></div>
+    </div>
     <div class="hist-mega">
       <h1><span class="ink">Your</span><br/><span class="soft">Practice</span></h1>
       <div class="sub">Logged sessions</div>
+    </div>
+    <div class="hist-rounds" id="hist-rounds">
+      <div class="hist-round-block">
+        <div class="lbl" id="hist-stretch-round-label">Stretch · Round 1 · 0 of 7</div>
+        <div class="deck-dots" id="hist-deck-dots" aria-label="Stretch round progress"></div>
+      </div>
+      <div class="hist-round-block">
+        <div class="lbl" id="hist-strength-round-label">Strength · Round 1 · 0 of 7</div>
+        <div class="deck-dots strength-dots" id="hist-strength-deck-dots" aria-label="Strength round progress"></div>
+      </div>
     </div>
     <div class="stats-grid">
       <div class="stat"><div class="lbl">Sessions</div><div class="val" id="stat-sessions">0</div><div class="gbar"></div></div>
@@ -995,13 +1155,28 @@ button:disabled{opacity:.35}
     <div id="history-list"></div>
   </section>
 
-  <nav class="nav" id="main-nav">
-    <button type="button" data-nav="home" class="tab active" aria-label="Today">Today</button>
-    <button type="button" data-nav="history" class="tab" aria-label="History">History<span class="sup" id="nav-history-count">0</span></button>
-    <button type="button" class="icon-btn" id="btn-settings" aria-label="Settings">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-    </button>
-  </nav>
+  <!-- tab bar removed in v17 -->
+
+  <div class="session-sheet" id="session-sheet" hidden>
+    <div class="sheet-backdrop" id="sheet-backdrop" aria-hidden="true"></div>
+    <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title" id="sheet-panel">
+      <div class="sheet-handle-row" id="sheet-handle-row"><div class="sheet-handle" aria-hidden="true"></div></div>
+      <div class="sheet-head">
+        <div>
+          <h2 id="sheet-title">Session</h2>
+          <div class="sheet-meta" id="sheet-meta"></div>
+        </div>
+        <button class="sheet-close" id="btn-sheet-close" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="sheet-list" id="sheet-list"></div>
+      <div class="sheet-footer" id="sheet-footer">
+        <button class="btn btn-secondary" id="btn-sheet-shuffle" type="button">Shuffle</button>
+        <button class="btn btn-primary" id="btn-sheet-begin" type="button">Start</button>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -1915,17 +2090,137 @@ function makeStrengthDraft(themeId){
   sess.type='strength'; sess.kind='strength';
   return sess;
 }
-function openPreview(themeId, mode){
-  sessionMode=mode||sessionMode||'stretch';
+function prepareDraft(themeId, mode){
+  if(mode) sessionMode=mode;
+  sessionMode=sessionMode||'stretch';
   draft=sessionMode==='strength'?makeStrengthDraft(themeId):makeDraft(themeId);
-  renderPreview();showScreen('preview');
+  return draft;
+}
+function openPreview(themeId, mode){
+  // v17: session overview is a bottom sheet (full preview screen kept unused)
+  prepareDraft(themeId, mode);
+  openSessionSheet({context:'preview'});
+}
+
+
+/* —— Session bottom sheet (v17) —— */
+let sheetContext='preview'; // 'preview' | 'player'
+let sheetWasPlaying=false;
+let sheetDrag={active:false,startY:0,lastY:0};
+
+function buildSessionListHtml(opts){
+  opts=opts||{};
+  if(!draft && !(player.session)) return '';
+  const sess = (sheetContext==='player' && player.session) ? player.session : draft;
+  if(!sess) return '';
+  const isStrength=sess.type==='strength'||sessionMode==='strength';
+  const curIdx = (sheetContext==='player') ? player.stepIndex : -1;
+  let html='',lastPhase='',idx=-1;
+  sess.steps.forEach(step=>{
+    idx++;
+    if(step.phase&&step.phase!==lastPhase){
+      lastPhase=step.phase;
+      const label=lastPhase==='warmup'?'Warm-up':(lastPhase==='finisher'||lastPhase==='cooldown')?'Finisher':'Main';
+      html+='<div class="phase-tag">'+label+'</div>';
+    }
+    const title=step.name+(step.side?' · '+step.side:'');
+    const thumb=isStrength
+      ? ''
+      : '<div class="thumb">'+renderFig(step.poseId||step.exerciseId,step.side,{size:44,thumb:true})+'</div>';
+    const cls=['pose-row'];
+    if(isStrength) cls.push('strength-row');
+    if(sheetContext==='player'){
+      if(idx<curIdx) cls.push('is-done');
+      if(idx===curIdx) cls.push('is-current');
+    }
+    html+='<div class="'+cls.join(' ')+'" data-step="'+idx+'">'+thumb+'<div class="nwrap"><div class="n">'+escapeHtml(title)+'</div></div><div class="t">'+fmtTime(step.dur)+'</div></div>';
+  });
+  return html;
+}
+
+function renderSessionSheet(){
+  const sess = (sheetContext==='player' && player.session) ? player.session : draft;
+  if(!sess) return;
+  const isStrength=sess.type==='strength'||sessionMode==='strength';
+  const titleEl=document.getElementById('sheet-title');
+  const metaEl=document.getElementById('sheet-meta');
+  const listEl=document.getElementById('sheet-list');
+  const foot=document.getElementById('sheet-footer');
+  if(titleEl) titleEl.innerHTML=stackHeadline(sess.name);
+  const nMoves=sess.poseIds?sess.poseIds.length:sess.steps.length;
+  if(metaEl) metaEl.textContent='~'+sess.minutes+' min · '+nMoves+' '+(isStrength?'moves':'poses');
+  if(listEl) listEl.innerHTML=buildSessionListHtml();
+  if(foot){
+    const showActions=sheetContext!=='player';
+    foot.hidden=!showActions;
+    if(showActions) foot.removeAttribute('hidden');
+    else foot.setAttribute('hidden','');
+  }
+  // Also keep legacy preview DOM in sync if present
+  try{ renderPreview(); }catch(e){}
+}
+
+function openSessionSheet(opts){
+  opts=opts||{};
+  sheetContext=opts.context||'preview';
+  const sheet=document.getElementById('session-sheet');
+  if(!sheet) return;
+  if(sheetContext==='player'){
+    sheetWasPlaying=!!player.playing;
+    if(player.playing) pause();
+  }else{
+    sheetWasPlaying=false;
+  }
+  renderSessionSheet();
+  sheet.hidden=false; sheet.removeAttribute('hidden');
+  // force reflow for transition
+  void sheet.offsetWidth;
+  sheet.classList.add('open');
+  // scroll current into view
+  if(sheetContext==='player'){
+    requestAnimationFrame(()=>{
+      const cur=document.querySelector('#sheet-list .pose-row.is-current');
+      if(cur) cur.scrollIntoView({block:'center',behavior:'smooth'});
+    });
+  }
+}
+
+function forceCloseSessionSheet(){
+  const sheet=document.getElementById('session-sheet');
+  if(!sheet) return;
+  sheet.classList.remove('open');
+  sheet.hidden=true; sheet.setAttribute('hidden','');
+  const panel=document.getElementById('sheet-panel');
+  if(panel){ panel.style.transform=''; panel.style.transition=''; }
+  sheetWasPlaying=false;
+}
+function closeSessionSheet(skipResume){
+  const sheet=document.getElementById('session-sheet');
+  if(!sheet) return;
+  const wasOpen=sheet.classList.contains('open')||!sheet.hidden;
+  if(!wasOpen) return;
+  const shouldResume=(!skipResume && sheetContext==='player' && sheetWasPlaying);
+  sheet.classList.remove('open');
+  const finish=()=>{
+    sheet.hidden=true; sheet.setAttribute('hidden','');
+    const panel=document.getElementById('sheet-panel');
+    if(panel){ panel.style.transform=''; panel.style.transition=''; }
+  };
+  setTimeout(finish, 300);
+  sheetWasPlaying=false;
+  if(shouldResume) play();
 }
 
 function shuffleDraft(){
   if(!draft)return;
   draft=sessionMode==='strength'?makeStrengthDraft(draft.themeId):makeDraft(draft.themeId);
-  renderPreview();toast('New sequence');
+  if(document.getElementById('session-sheet')&&!document.getElementById('session-sheet').hidden){
+    renderSessionSheet();
+  }
+  try{ renderPreview(); }catch(e){}
+  toast('New sequence');
 }
+
 function renderPreview(){
   if(!draft)return;
   const isStrength=draft.type==='strength'||sessionMode==='strength';
@@ -2081,17 +2376,14 @@ function showScreen(name){
 
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const scr=document.getElementById('screen-'+name); if(scr) scr.classList.add('active');
-  const appEl=document.getElementById('app'),nav=document.getElementById('main-nav');
-  const back=document.getElementById('nav-back');
+  const appEl=document.getElementById('app');
   if(name==='player'||name==='preview'||name==='settings'||name==='reveal'){
     appEl.classList.add('immersive');
-    nav.style.display='none';
   } else {
     appEl.classList.remove('immersive');
-    nav.style.display='';
-    document.querySelectorAll('#main-nav button.tab').forEach(b=>b.classList.toggle('active',b.dataset.nav===name));
-    if(back) back.classList.add('hidden');
     pause();
+    // Never leave the session sheet lingering over home/history
+    forceCloseSessionSheet();
   }
 }
 
@@ -2258,8 +2550,8 @@ function skipStrengthFocusNotToday(){
   saveStrengthDeck(s);
   return s.queue[0];
 }
-function renderStrengthDeckDots(state){
-  const el=document.getElementById('strength-deck-dots');
+function renderStrengthDeckDots(state, elId){
+  const el=document.getElementById(elId||'hist-strength-deck-dots');
   if(!el) return;
   const doneSet=new Set(state.done);
   el.innerHTML=STRENGTH_FOCUS_IDS.map(id=>{
@@ -2269,8 +2561,8 @@ function renderStrengthDeckDots(state){
   }).join('');
 }
 
-function renderDeckDots(state){
-  const el=document.getElementById('deck-dots');
+function renderDeckDots(state, elId){
+  const el=document.getElementById(elId||'hist-deck-dots');
   if(!el) return;
   const doneSet=new Set(state.done);
   el.innerHTML=FOCUS_IDS.map(id=>{
@@ -2318,6 +2610,7 @@ function startReveal(themeId, mode){
   const focusList=(isStrength?STRENGTH_FOCUS_IDS:FOCUS_IDS).map(id=>(isStrength?STRENGTH_THEMES:THEMES).find(t=>t.id===id)).filter(Boolean);
   const hintTitle=document.getElementById('reveal-hint');
   if(hintTitle) hintTitle.textContent=isStrength?"Today's strength":"Today's focus";
+  updateRevealSeeLabel();
 
   const log={chosenId:themeId,landedId:null,changes:[],holdMs:0,spinMs:0,reduced:!!reduceMotion,intervals:[]};
   window.__yogaLastReveal=log;
@@ -2450,7 +2743,19 @@ function onRevealGo(){
   const id=(window.__yogaLastReveal&&window.__yogaLastReveal.landedId)||(sessionMode==='strength'?peekStrengthFocus():peekFocus());
   const sky=document.getElementById('reveal-sky');
   if(sky) sky.onclick=null;
-  openPreview(id, sessionMode);
+  prepareDraft(id, sessionMode);
+  closeSessionSheet(true);
+  startPlayerFromDraft();
+}
+function onRevealSee(){
+  const id=(window.__yogaLastReveal&&window.__yogaLastReveal.landedId)||(sessionMode==='strength'?peekStrengthFocus():peekFocus());
+  prepareDraft(id, sessionMode);
+  openSessionSheet({context:'preview'});
+}
+function updateRevealSeeLabel(){
+  const el=document.getElementById('btn-reveal-see');
+  if(!el) return;
+  el.textContent=sessionMode==='strength'?'See exercises':'See poses';
 }
 
 
@@ -2469,43 +2774,36 @@ function updateStartCard(){
   const kicker=btn.querySelector('.start-kicker');
   const title=btn.querySelector('.start-title');
   const meta=btn.querySelector('.start-meta');
+  const aff=btn.querySelector('.start-affordance');
   if(locked){
-    if(kicker) kicker.textContent='Come back tomorrow';
+    if(kicker) kicker.textContent='Stretch';
     if(title) title.innerHTML='Done for today <span class="done-check" aria-hidden="true">✓</span>';
     if(meta) meta.textContent='See you tomorrow';
+    if(aff) aff.hidden=true;
   }else{
-    if(kicker) kicker.textContent='Ready when you are';
-    if(title) title.textContent="Start today's stretch";
+    if(kicker) kicker.textContent='Stretch';
+    if(title) title.textContent="Today's stretch";
     if(meta) meta.textContent='~15 min';
+    if(aff){ aff.hidden=false; aff.innerHTML='<span class="arrow" aria-hidden="true">→</span> Tap to roll'; }
   }
 }
 
 function renderHome(){
-  const entries=getEntries();
-  const state=loadDeck();
-  const sState=loadStrengthDeck();
   updateHomeDate();
-  const navH=document.getElementById('nav-history-count');
-  if(navH) navH.textContent=String(entries.length);
-  const label=document.getElementById('home-round-label');
-  if(label) label.textContent='Round '+state.round+' · '+state.done.length+' of '+FOCUS_IDS.length;
-  const sLabel=document.getElementById('home-strength-round-label');
-  if(sLabel) sLabel.textContent='Round '+sState.round+' · '+sState.done.length+' of '+STRENGTH_FOCUS_IDS.length;
-  renderDeckDots(state);
-  renderStrengthDeckDots(sState);
-  const cele=document.getElementById('home-celebrate');
-  if(cele){
-    const show=celebrateUntil>0 && Date.now()<celebrateUntil;
-    cele.hidden=!show;
-    if(!show) cele.setAttribute('hidden','');
-    else cele.removeAttribute('hidden');
-  }
   updateStartCard();
 }
 function renderHistory(){
   const entries=getEntries();const totalMin=entries.reduce((a,e)=>a+(e.minutes||0),0);const streaks=computeStreaks(entries);
   const nStretch=entries.filter(e=>(e.type||'stretch')!=='strength').length;
   const nStrength=entries.filter(e=>e.type==='strength').length;
+  const state=loadDeck();
+  const sState=loadStrengthDeck();
+  const stretchLbl=document.getElementById('hist-stretch-round-label');
+  if(stretchLbl) stretchLbl.textContent='Stretch · Round '+state.round+' · '+state.done.length+' of '+FOCUS_IDS.length;
+  const strengthLbl=document.getElementById('hist-strength-round-label');
+  if(strengthLbl) strengthLbl.textContent='Strength · Round '+sState.round+' · '+sState.done.length+' of '+STRENGTH_FOCUS_IDS.length;
+  renderDeckDots(state, 'hist-deck-dots');
+  renderStrengthDeckDots(sState, 'hist-strength-deck-dots');
   const sessVal=document.getElementById('stat-sessions');
   if(sessVal){
     sessVal.textContent=entries.length;
@@ -2516,8 +2814,6 @@ function renderHistory(){
   document.getElementById('stat-minutes').textContent=totalMin;
   document.getElementById('stat-streak').textContent=streaks.current;
   document.getElementById('stat-best').textContent=streaks.best;
-  const navH=document.getElementById('nav-history-count');
-  if(navH) navH.textContent=String(entries.length);
   renderHeatmap(entries);
   const list=document.getElementById('history-list');
   if(!entries.length){list.innerHTML='<div class="empty">No sessions yet. Roll out the mat.</div>';return}
@@ -2556,9 +2852,12 @@ document.getElementById('btn-skip').addEventListener('click',()=>{unlockAudio();
 document.getElementById('btn-back').addEventListener('click',back);
 document.getElementById('btn-close-player').addEventListener('click',()=>{pause();showScreen('home')});
 document.getElementById('btn-mark-done').addEventListener('click',()=>{unlockAudio();if(player.mode==='hold'){const rem=segRemaining();player.holdElapsedTotal+=Math.max(0,currentStep().dur-rem)}finishSession(false)});
-document.getElementById('btn-close-preview').addEventListener('click',()=>showScreen('home'));
-document.getElementById('btn-shuffle').addEventListener('click',shuffleDraft);
-document.getElementById('btn-begin').addEventListener('click',()=>{unlockAudio();startPlayerFromDraft()});
+const btnClosePreview=document.getElementById('btn-close-preview');
+if(btnClosePreview) btnClosePreview.addEventListener('click',()=>showScreen('home'));
+const btnShuffleLegacy=document.getElementById('btn-shuffle');
+if(btnShuffleLegacy) btnShuffleLegacy.addEventListener('click',shuffleDraft);
+const btnBeginLegacy=document.getElementById('btn-begin');
+if(btnBeginLegacy) btnBeginLegacy.addEventListener('click',()=>{unlockAudio();startPlayerFromDraft()});
 function beginRevealFlow(mode){
   sessionMode=mode;
   const id=mode==='strength'?peekStrengthFocus():peekFocus();
@@ -2575,7 +2874,11 @@ const btnRoll=document.getElementById('btn-roll-again');
 if(btnRoll) btnRoll.addEventListener('click',(e)=>{e.stopPropagation();onRollAgain()});
 const btnGo=document.getElementById('btn-reveal-go');
 if(btnGo) btnGo.addEventListener('click',(e)=>{e.stopPropagation();onRevealGo()});
+const btnSee=document.getElementById('btn-reveal-see');
+if(btnSee) btnSee.addEventListener('click',(e)=>{e.stopPropagation();onRevealSee()});
 
+document.getElementById('btn-home-history').addEventListener('click',()=>{showScreen('history');renderHistory()});
+document.getElementById('btn-history-back').addEventListener('click',()=>{showScreen('home');renderHome()});
 document.getElementById('btn-settings').addEventListener('click',()=>{syncToggles();showScreen('settings')});
 document.getElementById('btn-settings-back').addEventListener('click',()=>showScreen('home'));
 document.getElementById('tog-sound').addEventListener('click',()=>{settings.sound=!settings.sound;saveSettings();syncToggles();if(settings.sound){unlockAudio();soundStart()}});
@@ -2585,7 +2888,47 @@ if(togPu) togPu.addEventListener('click',()=>{settings.pullupBar=!settings.pullu
 document.getElementById('btn-export').addEventListener('click',exportData);
 document.getElementById('btn-import').addEventListener('click',()=>document.getElementById('import-file').click());
 document.getElementById('import-file').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f)importData(f);e.target.value=''});
-document.querySelectorAll('#main-nav button[data-nav]').forEach(btn=>btn.addEventListener('click',()=>{const n=btn.dataset.nav;showScreen(n);if(n==='home')renderHome();if(n==='history')renderHistory()}));
+
+/* Session sheet controls */
+document.getElementById('btn-sheet-close').addEventListener('click',()=>closeSessionSheet());
+document.getElementById('sheet-backdrop').addEventListener('click',()=>closeSessionSheet());
+document.getElementById('btn-sheet-shuffle').addEventListener('click',()=>{unlockAudio();shuffleDraft()});
+document.getElementById('btn-sheet-begin').addEventListener('click',()=>{
+  unlockAudio();
+  closeSessionSheet(true);
+  startPlayerFromDraft();
+});
+document.getElementById('next-up').addEventListener('click',()=>{
+  if(!player.session) return;
+  openSessionSheet({context:'player'});
+});
+
+/* Swipe-down to dismiss sheet */
+(function(){
+  const panel=document.getElementById('sheet-panel');
+  const handle=document.getElementById('sheet-handle-row');
+  if(!panel) return;
+  function onStart(y){ sheetDrag.active=true; sheetDrag.startY=y; sheetDrag.lastY=y; }
+  function onMove(y){
+    if(!sheetDrag.active) return;
+    sheetDrag.lastY=y;
+    const dy=Math.max(0, y-sheetDrag.startY);
+    panel.style.transform='translateY('+dy+'px)';
+    panel.style.transition='none';
+  }
+  function onEnd(){
+    if(!sheetDrag.active) return;
+    const dy=sheetDrag.lastY-sheetDrag.startY;
+    sheetDrag.active=false;
+    panel.style.transition='';
+    if(dy>90){ panel.style.transform=''; closeSessionSheet(); }
+    else { panel.style.transform='translateY(0)'; }
+  }
+  const target=handle||panel;
+  target.addEventListener('touchstart',e=>{ if(e.touches[0]) onStart(e.touches[0].clientY); },{passive:true});
+  target.addEventListener('touchmove',e=>{ if(e.touches[0]) onMove(e.touches[0].clientY); },{passive:true});
+  target.addEventListener('touchend',onEnd);
+})();
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&player.playing)requestWake()});
 if('serviceWorker' in navigator&&!DEMO){navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{})}
 syncToggles();renderHome();if(DEMO)renderHistory();
@@ -2601,7 +2944,7 @@ scheduleDailyLockCheck();
 setInterval(updateStartCard, 60000);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')updateStartCard()});
 window.addEventListener('focus', updateStartCard);
-window.__yoga={THEMES,POSES,FOCUS_IDS,STRENGTH_THEMES,STRENGTH_EXERCISES,STRENGTH_FOCUS_IDS,get draft(){return draft},player,SPEED,DEMO,settings,openPreview,makeDraft,makeStrengthDraft,getEntries,generateSession:window.YogaCore.generateSession,validateSession:window.YogaCore.validateSession,generateStrengthSession,validateStrengthSession,loadDeck,saveDeck,peekFocus,advanceDeckOnComplete,skipFocusNotToday,loadStrengthDeck,saveStrengthDeck,peekStrengthFocus,advanceStrengthDeckOnComplete,skipStrengthFocusNotToday,startReveal,reshuffleQueue,defaultDeckState,migrateDeck,get celebrateUntil(){return celebrateUntil},setCelebrate(ms){celebrateUntil=(ms===0||ms===false)?0:(Date.now()+(ms==null?5000:ms))},get lastReveal(){return window.__yogaLastReveal||null},onRollAgain,onRevealGo,didSessionToday,updateStartCard,localTodayKey,dayKey,get UNLOCK_DAILY(){return UNLOCK_DAILY},get DAILY_LIMIT(){return DAILY_LIMIT},setTestToday(k){testTodayKey=k||null;updateStartCard();return localTodayKey()},ROULETTE_VOICES,getRouletteVoice,buildRevealIntervals,buildRevealFocusSeq,scheduleRevealPluck,scheduleRevealLand,scheduleVoiceNote,renderRoulettePreviewBuffer,renderVoicesPreviewBuffer,updatePlayerBreath,freezePlayerBreath,clearPlayerBreathFreeze,unlockAudio,get sessionMode(){return sessionMode},setSessionMode(m){sessionMode=m}};
+window.__yoga={THEMES,POSES,FOCUS_IDS,STRENGTH_THEMES,STRENGTH_EXERCISES,STRENGTH_FOCUS_IDS,get draft(){return draft},player,SPEED,DEMO,settings,openPreview,prepareDraft,openSessionSheet,closeSessionSheet,makeDraft,makeStrengthDraft,getEntries,generateSession:window.YogaCore.generateSession,validateSession:window.YogaCore.validateSession,generateStrengthSession,validateStrengthSession,loadDeck,saveDeck,peekFocus,advanceDeckOnComplete,skipFocusNotToday,loadStrengthDeck,saveStrengthDeck,peekStrengthFocus,advanceStrengthDeckOnComplete,skipStrengthFocusNotToday,startReveal,reshuffleQueue,defaultDeckState,migrateDeck,get celebrateUntil(){return celebrateUntil},setCelebrate(ms){celebrateUntil=(ms===0||ms===false)?0:(Date.now()+(ms==null?5000:ms))},get lastReveal(){return window.__yogaLastReveal||null},onRollAgain,onRevealGo,didSessionToday,updateStartCard,localTodayKey,dayKey,get UNLOCK_DAILY(){return UNLOCK_DAILY},get DAILY_LIMIT(){return DAILY_LIMIT},setTestToday(k){testTodayKey=k||null;updateStartCard();return localTodayKey()},ROULETTE_VOICES,getRouletteVoice,buildRevealIntervals,buildRevealFocusSeq,scheduleRevealPluck,scheduleRevealLand,scheduleVoiceNote,renderRoulettePreviewBuffer,renderVoicesPreviewBuffer,updatePlayerBreath,freezePlayerBreath,clearPlayerBreathFreeze,unlockAudio,get sessionMode(){return sessionMode},setSessionMode(m){sessionMode=m}};
 })();
 
 </script>
