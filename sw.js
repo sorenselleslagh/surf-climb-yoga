@@ -1,5 +1,5 @@
 /* Surf & Climb Yoga — offline cache (subpath-safe relative URLs) */
-const CACHE = 'yoga-v10';
+const CACHE = 'yoga-v11';
 const ASSETS = [
   './',
   './index.html',
