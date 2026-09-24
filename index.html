@@ -919,7 +919,8 @@ const FOCUS_IDS=['hips-popup','shoulders-paddle','climbers-hips','forearms-wrist
 const params=new URLSearchParams(location.search);
 const SPEED=Math.max(1,parseFloat(params.get('speed')||'1')||1);
 const DEMO=params.get('demo')==='1';
-const UNLOCK_DAILY=params.get('unlock')==='1';
+const DAILY_LIMIT=false; // set true to lock Start after one session per day
+const UNLOCK_DAILY=!DAILY_LIMIT||params.get('unlock')==='1';
 let testTodayKey=null; // test override for local date
 function loadSettings(){try{const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');return{sound:s.sound!==false}}catch(e){return{sound:true}}}
 function saveSettings(){if(!DEMO)localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings))}
