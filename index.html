@@ -959,15 +959,181 @@ function formatLastDoneLong(iso){if(!iso)return'Never done';const s=formatLastDo
 function fmtTime(sec){sec=Math.max(0,Math.ceil(sec));const m=Math.floor(sec/60),s=sec%60;return m+':'+String(s).padStart(2,'0')}
 function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 let audioCtx=null;
-function ensureAudio(){if(!audioCtx){try{audioCtx=new(window.AudioContext||window.webkitAudioContext)()}catch(e){return null}}if(audioCtx.state==='suspended')audioCtx.resume().catch(()=>{});return audioCtx}
-function unlockAudio(){const ctx=ensureAudio();if(!ctx)return;try{const buf=ctx.createBuffer(1,1,22050);const src=ctx.createBufferSource();src.buffer=buf;src.connect(ctx.destination);src.start(0)}catch(e){}if(ctx.state==='suspended')ctx.resume()}
-function tone(freq,dur,gain,type){if(!settings.sound)return;const ctx=ensureAudio();if(!ctx)return;const o=ctx.createOscillator(),g=ctx.createGain();o.type=type||'sine';o.frequency.value=freq;const now=ctx.currentTime,vol=gain==null?0.09:gain;g.gain.setValueAtTime(0.0001,now);g.gain.exponentialRampToValueAtTime(vol,now+0.015);g.gain.exponentialRampToValueAtTime(0.0001,now+dur);o.connect(g);g.connect(ctx.destination);o.start(now);o.stop(now+dur+0.02)}
+function ensureAudio(){
+  if(!audioCtx){
+    try{audioCtx=new(window.AudioContext||window.webkitAudioContext)()}catch(e){return null}
+  }
+  if(audioCtx&&audioCtx.state==='suspended'){
+    try{audioCtx.resume()}catch(e){}
+  }
+  if(audioCtx) ensureYogaBus(audioCtx);
+  return audioCtx;
+}
+function unlockAudio(){
+  const ctx=ensureAudio();
+  if(!ctx) return null;
+  try{
+    const buf=ctx.createBuffer(1,1,22050);
+    const src=ctx.createBufferSource();
+    src.buffer=buf; src.connect(ctx.destination); src.start(0);
+  }catch(e){}
+  if(ctx.state==='suspended'){
+    try{ctx.resume()}catch(e){}
+  }
+  return ctx;
+}
+function ensureYogaBus(ctx){
+  if(!ctx) return null;
+  if(ctx._yogaBus) return ctx._yogaBus;
+  const master=ctx.createGain();
+  master.gain.value=0.9;
+  const comp=ctx.createDynamicsCompressor();
+  comp.threshold.value=-20;
+  comp.knee.value=14;
+  comp.ratio.value=3.2;
+  comp.attack.value=0.004;
+  comp.release.value=0.18;
+  // Short, quiet delay "reverb" for warmth
+  const delay=ctx.createDelay(0.4);
+  delay.delayTime.value=0.048;
+  const dFilt=ctx.createBiquadFilter();
+  dFilt.type='lowpass'; dFilt.frequency.value=2200; dFilt.Q.value=0.5;
+  const dGain=ctx.createGain(); dGain.gain.value=0.11;
+  const fb=ctx.createGain(); fb.gain.value=0.18;
+  master.connect(comp);
+  comp.connect(ctx.destination);
+  master.connect(dFilt);
+  dFilt.connect(delay);
+  delay.connect(dGain);
+  dGain.connect(comp);
+  delay.connect(fb); fb.connect(delay);
+  ctx._yogaBus={master,comp};
+  return ctx._yogaBus;
+}
+function tone(freq,dur,gain,type){
+  if(!settings.sound)return;
+  const ctx=ensureAudio(); if(!ctx)return;
+  const bus=ensureYogaBus(ctx);
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.type=type||'sine'; o.frequency.value=freq;
+  const now=ctx.currentTime,vol=gain==null?0.09:gain;
+  g.gain.setValueAtTime(0.0001,now);
+  g.gain.exponentialRampToValueAtTime(vol,now+0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001,now+dur);
+  o.connect(g); g.connect(bus?bus.master:ctx.destination);
+  o.start(now); o.stop(now+dur+0.02);
+}
 function soundStart(){if(!settings.sound)return;tone(880,0.12,0.1,'sine');setTimeout(()=>tone(1175,0.16,0.09,'sine'),70);setTimeout(()=>tone(1568,0.18,0.07,'triangle'),150);vibe([30,40,60])}
 function soundEnd(){if(!settings.sound)return;tone(392,0.18,0.11,'sine');setTimeout(()=>tone(294,0.22,0.09,'triangle'),100);vibe(50)}
 function soundTick(){if(!settings.sound)return;tone(660,0.06,0.055,'sine');vibe(25)}
 function soundComplete(){if(!settings.sound)return;tone(523,0.14,0.1,'sine');setTimeout(()=>tone(659,0.14,0.1,'sine'),150);setTimeout(()=>tone(784,0.14,0.1,'sine'),300);setTimeout(()=>tone(1047,0.28,0.09,'triangle'),460);vibe([40,50,40,50,120])}
-function soundRevealTick(){if(!settings.sound)return;tone(720,0.025,0.022,'sine')}
-function soundRevealLand(){if(!settings.sound)return;tone(523,0.11,0.055,'sine');setTimeout(()=>tone(784,0.16,0.045,'triangle'),70);vibe(16)}
+
+/* —— Soft synth roulette (works with AudioContext + OfflineAudioContext) —— */
+const REVEAL_PENT=[261.63,293.66,329.63,392.00,440.00,523.25,587.33,659.25,783.99,880.00]; // C maj pent ~2 oct
+function buildRevealIntervals(){
+  const STEPS=14, FIRST_I=68, LAST_I=400, r=1.2;
+  const B=(LAST_I-FIRST_I)/(Math.pow(r,STEPS-1)-1);
+  const A=FIRST_I-B;
+  const intervals=[];
+  for(let i=0;i<STEPS;i++) intervals.push(A+B*Math.pow(r,i));
+  return intervals;
+}
+function revealPluckFreq(stepIndex){
+  const n=REVEAL_PENT.length;
+  const wave=Math.floor(stepIndex/n)%2;
+  const i=stepIndex%n;
+  return REVEAL_PENT[wave===0?i:(n-1-i)];
+}
+function scheduleRevealPluck(ctx, when, stepIndex, intervalMs){
+  if(!ctx) return;
+  const bus=ensureYogaBus(ctx);
+  if(!bus) return;
+  const f=revealPluckFreq(stepIndex|0);
+  const ms=intervalMs==null?90:intervalMs;
+  // Longer decay as the spin slows (80–140ms)
+  const decay=Math.min(0.14, Math.max(0.08, 0.07 + (ms/450)*0.07));
+  const peak=0.095;
+  const filter=ctx.createBiquadFilter();
+  filter.type='lowpass'; filter.Q.value=0.65;
+  const startCut=1800, endCut=520;
+  filter.frequency.setValueAtTime(startCut, when);
+  filter.frequency.exponentialRampToValueAtTime(endCut, when+decay);
+  const g=ctx.createGain();
+  g.gain.setValueAtTime(0.0001, when);
+  g.gain.exponentialRampToValueAtTime(peak, when+0.004);
+  g.gain.exponentialRampToValueAtTime(0.0001, when+decay);
+  const o1=ctx.createOscillator(); o1.type='sine'; o1.frequency.value=f;
+  const o2=ctx.createOscillator(); o2.type='triangle';
+  o2.frequency.value=f*Math.pow(2, 5/1200); // ~5 cents
+  const g2=ctx.createGain(); g2.gain.value=0.32;
+  o1.connect(filter); o2.connect(g2); g2.connect(filter);
+  filter.connect(g); g.connect(bus.master);
+  o1.start(when); o2.start(when);
+  o1.stop(when+decay+0.06); o2.stop(when+decay+0.06);
+}
+function scheduleRevealLand(ctx, when){
+  if(!ctx) return;
+  const bus=ensureYogaBus(ctx);
+  if(!bus) return;
+  // Warm Cmaj7: C3 E3 G3 B3 (+ soft C4)
+  const freqs=[130.81,164.81,196.00,246.94,261.63];
+  const attack=0.055, release=1.45;
+  freqs.forEach((f,i)=>{
+    const o=ctx.createOscillator();
+    o.type=i%2===0?'sine':'triangle';
+    o.frequency.value=f;
+    const det=ctx.createOscillator();
+    det.type='sine'; det.frequency.value=f*Math.pow(2, 3/1200);
+    const dg=ctx.createGain(); dg.gain.value=0.22;
+    const filter=ctx.createBiquadFilter();
+    filter.type='lowpass'; filter.Q.value=0.5;
+    filter.frequency.setValueAtTime(1600, when);
+    filter.frequency.exponentialRampToValueAtTime(420, when+release);
+    const g=ctx.createGain();
+    const peak=0.038 - i*0.003;
+    g.gain.setValueAtTime(0.0001, when);
+    g.gain.linearRampToValueAtTime(Math.max(0.012, peak), when+attack);
+    g.gain.exponentialRampToValueAtTime(0.0001, when+release);
+    o.connect(filter); det.connect(dg); dg.connect(filter);
+    filter.connect(g); g.connect(bus.master);
+    o.start(when); det.start(when);
+    o.stop(when+release+0.12); det.stop(when+release+0.12);
+  });
+}
+function soundRevealTick(stepIndex, intervalMs){
+  if(!settings.sound) return;
+  const ctx=ensureAudio(); if(!ctx) return;
+  scheduleRevealPluck(ctx, ctx.currentTime+0.001, stepIndex|0, intervalMs);
+}
+function soundRevealLand(){
+  if(!settings.sound) return;
+  const ctx=ensureAudio(); if(!ctx) return;
+  scheduleRevealLand(ctx, ctx.currentTime+0.001);
+  vibe(16);
+}
+/** Offline render of one full spin + landing (same interval schedule as the UI). */
+async function renderRoulettePreviewBuffer(sampleRate){
+  const sr=sampleRate||44100;
+  const intervals=buildRevealIntervals();
+  const spinSec=intervals.reduce((a,b)=>a+b,0)/1000;
+  const totalSec=spinSec+1.7;
+  const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  const ctx=new Offline(2, Math.ceil(sr*totalSec), sr);
+  ensureYogaBus(ctx);
+  let t=0;
+  for(let i=0;i<intervals.length;i++){
+    t+=intervals[i]/1000;
+    if(i<intervals.length-1) scheduleRevealPluck(ctx, t, i, intervals[i]);
+    else scheduleRevealLand(ctx, t);
+  }
+  const buf=await ctx.startRendering();
+  let peak=0;
+  for(let c=0;c<buf.numberOfChannels;c++){
+    const d=buf.getChannelData(c);
+    for(let i=0;i<d.length;i++){ const a=Math.abs(d[i]); if(a>peak) peak=a; }
+  }
+  return {buffer:buf, peak:peak, peakDb: peak>0?20*Math.log10(peak):-Infinity, intervals:intervals.map(x=>Math.round(x*10)/10), durationSec:totalSec};
+}
 function vibe(pattern){if(navigator.vibrate){try{navigator.vibrate(pattern)}catch(e){}}}
 let wakeLock=null;
 async function requestWake(){if(!('wakeLock' in navigator))return;try{wakeLock=await navigator.wakeLock.request('screen')}catch(e){}}
@@ -1339,7 +1505,7 @@ function startReveal(themeId){
       const isLast=step===seq.length-1;
       const now=performance.now();
       paint(th,{skipHint:true});
-      if(!isLast) soundRevealTick();
+      if(!isLast) soundRevealTick(step, intervals[step]);
       log.changes.push({t:Math.round(now-log._t0), id:th.id});
       step++;
       if(isLast){
@@ -1353,8 +1519,8 @@ function startReveal(themeId){
 }
 
 function onRollAgain(){
+  unlockAudio();
   const next=skipFocusNotToday();
-  soundRevealTick();
   startReveal(next);
 }
 function onRevealGo(){
@@ -1453,7 +1619,7 @@ document.getElementById('btn-mark-done').addEventListener('click',()=>{unlockAud
 document.getElementById('btn-close-preview').addEventListener('click',()=>showScreen('home'));
 document.getElementById('btn-shuffle').addEventListener('click',shuffleDraft);
 document.getElementById('btn-begin').addEventListener('click',()=>{unlockAudio();startPlayerFromDraft()});
-document.getElementById('btn-start-today').addEventListener('click',()=>{if(didSessionToday())return;unlockAudio();startReveal(peekFocus())});
+document.getElementById('btn-start-today').addEventListener('click',()=>{if(didSessionToday())return;const ctx=unlockAudio();if(ctx&&ctx.state==='suspended'){ctx.resume().then(()=>startReveal(peekFocus())).catch(()=>startReveal(peekFocus()));return}startReveal(peekFocus())});
 const btnRoll=document.getElementById('btn-roll-again');
 if(btnRoll) btnRoll.addEventListener('click',(e)=>{e.stopPropagation();onRollAgain()});
 const btnGo=document.getElementById('btn-reveal-go');
@@ -1481,7 +1647,7 @@ scheduleDailyLockCheck();
 setInterval(updateStartCard, 60000);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')updateStartCard()});
 window.addEventListener('focus', updateStartCard);
-window.__yoga={THEMES,POSES,FOCUS_IDS,get draft(){return draft},player,SPEED,DEMO,settings,openPreview,makeDraft,getEntries,generateSession:window.YogaCore.generateSession,validateSession:window.YogaCore.validateSession,loadDeck,saveDeck,peekFocus,advanceDeckOnComplete,skipFocusNotToday,startReveal,reshuffleQueue,defaultDeckState,migrateDeck,get celebrateUntil(){return celebrateUntil},setCelebrate(ms){celebrateUntil=(ms===0||ms===false)?0:(Date.now()+(ms==null?5000:ms))},get lastReveal(){return window.__yogaLastReveal||null},onRollAgain,onRevealGo,didSessionToday,updateStartCard,localTodayKey,dayKey,get UNLOCK_DAILY(){return UNLOCK_DAILY},setTestToday(k){testTodayKey=k||null;updateStartCard();return localTodayKey()}};
+window.__yoga={THEMES,POSES,FOCUS_IDS,get draft(){return draft},player,SPEED,DEMO,settings,openPreview,makeDraft,getEntries,generateSession:window.YogaCore.generateSession,validateSession:window.YogaCore.validateSession,loadDeck,saveDeck,peekFocus,advanceDeckOnComplete,skipFocusNotToday,startReveal,reshuffleQueue,defaultDeckState,migrateDeck,get celebrateUntil(){return celebrateUntil},setCelebrate(ms){celebrateUntil=(ms===0||ms===false)?0:(Date.now()+(ms==null?5000:ms))},get lastReveal(){return window.__yogaLastReveal||null},onRollAgain,onRevealGo,didSessionToday,updateStartCard,localTodayKey,dayKey,get UNLOCK_DAILY(){return UNLOCK_DAILY},get DAILY_LIMIT(){return DAILY_LIMIT},setTestToday(k){testTodayKey=k||null;updateStartCard();return localTodayKey()},buildRevealIntervals,scheduleRevealPluck,scheduleRevealLand,renderRoulettePreviewBuffer,unlockAudio};
 })();
 
 </script>
