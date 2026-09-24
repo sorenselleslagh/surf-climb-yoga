@@ -47,9 +47,21 @@ button:disabled{opacity:.35}
   padding-bottom:calc(72px + var(--safe-bot));
   background:var(--bg);
 }
-.app.immersive{padding-bottom:0}
+.app.immersive{
+  padding-bottom:0;
+  height:100dvh;height:100svh;
+  max-height:100dvh;max-height:100svh;
+  overflow:hidden;
+}
 .screen{display:none;flex:1;flex-direction:column;min-height:0}
 .screen.active{display:flex}
+#screen-preview.active,
+#screen-player.active,
+#screen-reveal.active{
+  height:100%;
+  max-height:100%;
+  overflow:hidden;
+}
 
 .mono-label{
   font-family:var(--mono);font-size:.68rem;font-weight:500;
@@ -291,364 +303,367 @@ button:disabled{opacity:.35}
 .nav .icon-btn svg{width:18px;height:18px}
 .nav-back{display:none}
 
-/* Preview */
-#screen-preview{background:var(--bg)}
-#screen-preview .sky{min-height:32vh;display:flex;flex-direction:column}
-#screen-preview .panel{overflow:hidden}
-.preview-hero{
-  position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;
-  gap:8px;min-height:120px;margin-top:4px;
-}
-.preview-hero .sunburst{position:absolute;left:8px;bottom:4px;opacity:.45;color:var(--sky-ink,#fff);pointer-events:none}
-.preview-hero .preview-fig{
-  width:min(42vw,150px);height:min(42vw,150px);
-  background:#FAD7BA;border-radius:24px;
-  box-shadow:0 6px 24px rgba(40,30,20,0.10);
-  display:grid;place-items:center;position:relative;z-index:1;
-  overflow:hidden;
-}
-.preview-hero .preview-fig img{width:100%;height:100%;display:block;object-fit:contain;object-position:center;border-radius:24px}
-.preview-head h2{
-  font-weight:800;font-size:clamp(2.2rem,9vw,2.9rem);
-  letter-spacing:-0.04em;line-height:0.92;margin:6px 0;
-}
-.preview-head h2 .soft{color:var(--ink-mid);font-weight:800}
-.preview-head .meta{font-weight:300;color:var(--ink-mid);font-size:.9rem}
-.pose-list{flex:1;overflow-y:auto;margin:8px 0 10px;-webkit-overflow-scrolling:touch}
-.phase-tag{font-family:var(--mono);font-size:.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-mid);margin:14px 0 6px}
-.pose-row{
-  display:flex;gap:12px;align-items:center;
-  padding:10px 0;border-bottom:1px solid rgba(0,0,0,.06);
-}
-.pose-row .thumb{width:52px;height:52px;flex-shrink:0;border-radius:14px;overflow:hidden;background:#FAD7BA}
-.pose-row .thumb img{width:100%;height:100%;display:block;object-fit:contain;object-position:center}
-.pose-row .t{font-family:var(--mono);font-size:.68rem;color:var(--ink-mid);width:36px}
-.pose-row .n{font-weight:400;font-size:.98rem;letter-spacing:-0.02em}
-.pose-row .c{font-size:.78rem;font-weight:300;color:var(--ink-mid);margin-top:2px}
-
-.btn-row{display:flex;gap:10px;margin-top:auto;padding-top:8px}
+/* Shared buttons / chrome (needed by preview + player) */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
-  min-height:50px;padding:12px 18px;border-radius:999px;
+  min-height:50px;padding:12px 20px;border-radius:999px;
   font-family:var(--mono);font-size:.72rem;letter-spacing:0.14em;
   text-transform:uppercase;font-weight:500;flex:1;
 }
 .btn:active{transform:scale(.97)}
 .btn-primary{background:var(--ink);color:#fff}
 .btn-secondary{background:#fff;color:var(--ink);border:1px solid rgba(0,0,0,.06)}
-
 .icon-btn{
   width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
-  background:rgba(255,255,255,.35);color:var(--ink);flex-shrink:0;
+  background:rgba(255,255,255,.4);color:var(--ink);flex-shrink:0;
 }
-.icon-btn.filled{background:#fff}
 .icon-btn svg{width:20px;height:20px}
-.top-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px;position:relative;z-index:2}
-
-/* Player */
-.player-shell{flex:1;display:flex;flex-direction:column;min-height:100dvh;background:var(--bg)}
-.player-shell .sky{
-  min-height:42vh;display:flex;flex-direction:column;
-  padding-bottom:12px;
-}
-/* Breathing sky — obvious but calm: 4s inhale / 6s exhale */
-.player-shell .sky .sky-breath-bright,
-.player-shell .sky .sky-breath-glow{
-  pointer-events:none;position:absolute;z-index:0;
-  will-change:transform, opacity;
-}
-/* Brighter sunrise wash crossfades over the deep theme sky */
-.player-shell .sky .sky-breath-bright{
-  inset:0;
-  background:var(--breath-bright, linear-gradient(180deg,#F7F0FF 0%,#FFE6CC 48%,#FFD0A8 100%));
-  opacity:0;
-  transition:opacity .9s ease;
-}
-/* Soft warm glow behind the pose — grows from ~35% to fill the sky */
-.player-shell .sky .sky-breath-glow{
-  left:50%; top:48%;
-  width:100%; height:100%;
-  transform:translate(-50%,-50%) scale(0.35);
-  border-radius:50%;
-  background:radial-gradient(circle,
-    var(--breath-glow-core, rgba(255,244,230,0.92)) 0%,
-    var(--breath-glow-mid, rgba(255,220,185,0.70)) 42%,
-    rgba(255,210,170,0.20) 68%,
-    transparent 78%);
-  opacity:0;
-  transition:transform .9s ease, opacity .9s ease;
-}
-.player-shell .sky .grain{z-index:1}
-.player-shell .sky .top-row{position:relative;z-index:3}
-.player-shell .sky .pose-fig-wrap{position:relative;z-index:2}
-/* Soft halo ring around the pose card (wrap overflow must allow it) */
-.player-shell .sky .pose-fig-wrap::after{
-  content:'';
-  position:absolute;
-  inset:-14px;
-  border-radius:36px;
-  pointer-events:none;
-  z-index:-1;
-  opacity:0;
-  box-shadow:
-    0 0 0 2px rgba(255,255,255,0.15),
-    0 0 18px 6px rgba(255,230,200,0.20);
-  transform:scale(0.94);
-  transition:opacity .9s ease, transform .9s ease, box-shadow .9s ease;
-  will-change:transform, opacity, box-shadow;
-}
-.player-shell .sky.breath-active .sky-breath-bright{
-  transition:none;
-  animation:sky-breathe-bright 10s ease-in-out infinite;
-}
-.player-shell .sky.breath-active .sky-breath-glow{
-  transition:none;
-  animation:sky-breathe-glow 10s ease-in-out infinite;
-}
-.player-shell .sky.breath-active .pose-fig-wrap::after{
-  transition:none;
-  animation:sky-breathe-halo 10s ease-in-out infinite;
-}
-.player-shell .sky.breath-active.breath-paused .sky-breath-bright,
-.player-shell .sky.breath-active.breath-paused .sky-breath-glow,
-.player-shell .sky.breath-active.breath-paused .pose-fig-wrap::after{
-  animation-play-state:paused;
-}
-/* 0% exhale bottom → 40% (=4s) inhale peak → 100% exhale */
-@keyframes sky-breathe-bright{
-  0%{opacity:0}
-  40%{opacity:0.85}
-  100%{opacity:0}
-}
-@keyframes sky-breathe-glow{
-  0%{transform:translate(-50%,-50%) scale(0.35); opacity:0.30}
-  40%{transform:translate(-50%,-50%) scale(1.08); opacity:0.92}
-  100%{transform:translate(-50%,-50%) scale(0.35); opacity:0.30}
-}
-@keyframes sky-breathe-halo{
-  0%{
-    opacity:0.12;
-    transform:scale(0.94);
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.18),
-      0 0 14px 4px rgba(255,230,200,0.18);
-  }
-  40%{
-    opacity:1;
-    transform:scale(1.1);
-    box-shadow:
-      0 0 0 3px rgba(255,255,255,0.55),
-      0 0 40px 18px rgba(255,232,200,0.70),
-      0 0 72px 28px rgba(255,210,170,0.35);
-  }
-  100%{
-    opacity:0.12;
-    transform:scale(0.94);
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.18),
-      0 0 14px 4px rgba(255,230,200,0.18);
-  }
+.top-row{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-bottom:4px;position:relative;z-index:5;
 }
 
-/* Static poses for screenshots / pause scrubbing */
-.player-shell .sky.breath-pose-inhale .sky-breath-bright{
-  animation:none !important; opacity:0.85 !important;
+/* Preview — full-screen gradient + sticky Start */
+#screen-preview{
+  background:transparent;
+  position:relative;
 }
-.player-shell .sky.breath-pose-inhale .sky-breath-glow{
-  animation:none !important;
-  transform:translate(-50%,-50%) scale(1.08) !important;
-  opacity:0.95 !important;
-}
-.player-shell .sky.breath-pose-inhale .pose-fig-wrap::after{
-  animation:none !important;
-  opacity:1 !important;
-  transform:scale(1.1) !important;
-  box-shadow:
-    0 0 0 3px rgba(255,255,255,0.55),
-    0 0 40px 18px rgba(255,232,200,0.70),
-    0 0 72px 28px rgba(255,210,170,0.35) !important;
-}
-.player-shell .sky.breath-pose-exhale .sky-breath-bright{
-  animation:none !important; opacity:0 !important;
-}
-.player-shell .sky.breath-pose-exhale .sky-breath-glow{
-  animation:none !important;
-  transform:translate(-50%,-50%) scale(0.35) !important;
-  opacity:0.28 !important;
-}
-.player-shell .sky.breath-pose-exhale .pose-fig-wrap::after{
-  animation:none !important;
-  opacity:0.1 !important;
-  transform:scale(0.94) !important;
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.15),
-    0 0 12px 3px rgba(255,230,200,0.15) !important;
-}
-@media (prefers-reduced-motion: reduce){
-  .player-shell .sky.breath-active .sky-breath-bright{
-    animation:sky-breathe-bright-soft 10s ease-in-out infinite;
-  }
-  .player-shell .sky.breath-active .sky-breath-glow{
-    animation:sky-breathe-glow-soft 10s ease-in-out infinite;
-    transform:translate(-50%,-50%) scale(0.85) !important;
-  }
-  .player-shell .sky.breath-active .pose-fig-wrap::after{
-    animation:sky-breathe-halo-soft 10s ease-in-out infinite;
-    transform:none !important;
-  }
-  @keyframes sky-breathe-bright-soft{
-    0%,100%{opacity:0}
-    40%{opacity:0.45}
-  }
-  @keyframes sky-breathe-glow-soft{
-    0%,100%{opacity:0.2}
-    40%{opacity:0.55}
-  }
-  @keyframes sky-breathe-halo-soft{
-    0%,100%{opacity:0.1}
-    40%{opacity:0.45}
-  }
-}
-.player-shell .sky .pose-fig-wrap{position:relative;z-index:2}
-.player-shell .sky.breath-active .sky-breath{
-  transition:none;
-  animation:sky-breathe-swell 10s ease-in-out infinite;
-}
-.player-shell .sky.breath-active .sky-breath-veil{
-  transition:none;
-  animation:sky-breathe-veil 10s ease-in-out infinite;
-}
-.player-shell .sky.breath-active.breath-paused .sky-breath,
-.player-shell .sky.breath-active.breath-paused .sky-breath-veil{
-  animation-play-state:paused;
-}
-@keyframes sky-breathe-swell{
-  0%{transform:scale(1);opacity:.42}
-  40%{transform:scale(1.18);opacity:1} /* 4s inhale of 10s */
-  100%{transform:scale(1);opacity:.42} /* 6s exhale */
-}
-@keyframes sky-breathe-veil{
-  0%{opacity:0}
-  40%{opacity:.62}
-  100%{opacity:0}
-}
-@media (prefers-reduced-motion: reduce){
-  .player-shell .sky.breath-active .sky-breath{
-    animation:sky-breathe-soft 10s ease-in-out infinite;
-    transform:none !important;
-  }
-  .player-shell .sky.breath-active .sky-breath-veil{
-    animation:sky-breathe-veil-soft 10s ease-in-out infinite;
-  }
-  @keyframes sky-breathe-soft{
-    0%,100%{opacity:.4}
-    40%{opacity:.7}
-  }
-  @keyframes sky-breathe-veil-soft{
-    0%,100%{opacity:0}
-    40%{opacity:.22}
-  }
-}
-.player-shell .sky .pose-fig-wrap{
-  width:min(68vw,260px);height:min(68vw,260px);
-  margin:4px auto 0;position:relative;z-index:2;
-  background:#FAD7BA;border-radius:24px;
-  box-shadow:0 8px 32px rgba(40,30,20,0.10);
-  display:grid;place-items:center;overflow:visible;
-}
-.player-shell .sky .pose-fig-wrap img{
-  border-radius:24px;
+.preview-shell{
+  position:relative;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  min-height:0;
+  padding:calc(12px + var(--safe-top)) 18px 0;
+  color:var(--sky-ink,#fff);
   overflow:hidden;
 }
-.player-shell .sky .pose-fig-wrap:has(.strength-fig),
-.player-shell .sky .pose-fig-wrap.strength-mode{
-  background:transparent;
-  box-shadow:none;
-  width:min(78vw,300px);height:min(78vw,300px);
+.preview-shell .grain{z-index:1;opacity:.2}
+.preview-shell .top-row{z-index:3;margin-bottom:8px}
+.preview-shell .player-session{color:var(--sky-ink);opacity:.85}
+.preview-shell.sky-light .icon-btn{background:rgba(255,255,255,.55);color:#1F1F1F}
+.preview-body{
+  position:relative;z-index:2;
+  flex:1;min-height:0;
+  display:flex;flex-direction:column;
+  overflow:hidden;
 }
-.player-shell .sky .pose-fig-wrap .strength-fig{
+.preview-head{flex-shrink:0;margin-bottom:10px}
+.preview-head h2{
+  font-weight:800;font-size:clamp(2.4rem,10vw,3.2rem);
+  letter-spacing:-0.045em;line-height:0.9;margin:4px 0 8px;
+  color:var(--sky-ink);
+  text-shadow:0 1px 12px rgba(0,0,0,.12);
+}
+.preview-head h2 .soft{opacity:.72;font-weight:800;color:inherit}
+.preview-head .meta{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:0.12em;
+  text-transform:uppercase;opacity:.8;font-weight:500;
+  color:var(--sky-ink);
+}
+.preview-shell .pose-list{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  margin:0;padding:0 0 12px;
+  mask-image:linear-gradient(180deg,#000 0%,#000 92%,transparent 100%);
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 92%,transparent 100%);
+}
+.preview-shell .phase-tag{
+  color:var(--sky-ink);opacity:.65;margin:12px 0 4px;
+}
+.preview-shell .pose-row{
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  box-sizing:border-box;
+  padding:10px 12px;
+  margin:0 0 6px;
+  border-radius:16px;
+  border-bottom:0;
+  background:rgba(255,255,255,.14);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+.preview-shell.sky-light .pose-row{
+  background:rgba(255,255,255,.38);
+}
+.preview-shell .pose-row .thumb{
+  width:44px;height:44px;flex-shrink:0;
+  border-radius:12px;overflow:hidden;
+  background:rgba(255,255,255,.28);
+  display:grid;place-items:center;
+}
+.preview-shell .pose-row .thumb img{
+  width:100%;height:100%;object-fit:contain;display:block;
+}
+.preview-shell.sky-light .pose-row .thumb{background:rgba(250,215,186,.95)}
+.preview-shell .pose-row .nwrap{
+  flex:1 1 auto;min-width:0;
+  display:flex;align-items:center;
+}
+.preview-shell .pose-row .n{
+  color:var(--sky-ink);font-size:.95rem;font-weight:600;
+  letter-spacing:-0.02em;line-height:1.15;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.preview-shell .pose-row .t{
+  flex:0 0 auto;margin-left:auto;
+  color:var(--sky-ink);opacity:.72;
+  font-family:var(--mono);font-size:.68rem;letter-spacing:0.04em;
+  text-align:right;width:auto;min-width:2.6em;
+}
+.preview-shell .pose-row .c{display:none}
+.preview-shell .pose-row.strength-row .thumb{display:none}
+.preview-shell .pose-row.strength-row{gap:0}
+.preview-footer{
+  position:relative;z-index:4;
+  flex-shrink:0;
+  display:flex;gap:10px;align-items:center;
+  padding:14px 0 calc(14px + var(--safe-bot));
+}
+.preview-footer .btn{
+  min-height:52px;
+  border-radius:999px !important;
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+}
+.preview-footer .btn-primary{
+  background:#1A1A1A;color:#fff;flex:1.55;
+  border-radius:999px !important;
+}
+.preview-shell.sky-light .preview-footer .btn-primary{background:#1F1F1F}
+.preview-footer .btn-secondary{
+  background:rgba(255,255,255,.28);color:var(--sky-ink);
+  border:1.5px solid rgba(255,255,255,.4);backdrop-filter:blur(8px);
+  flex:0.9;border-radius:999px !important;
+}
+.preview-shell.sky-light .preview-footer .btn-secondary{
+  background:rgba(255,255,255,.7);color:#1F1F1F;border-color:rgba(0,0,0,.08);
+}
+
+/* Player — full-screen gradient, simplified */
+#screen-player{background:transparent}
+.player-shell{
+  position:relative;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  min-height:0;
+  overflow:hidden;
+  color:var(--sky-ink,#fff);
+  background:var(--theme-sky);
+}
+.player-shell .sky-breath-deep,
+.player-shell .sky-breath-bright{
+  pointer-events:none;position:absolute;inset:0;z-index:0;
+}
+.player-shell .sky-breath-deep{
+  background:var(--theme-sky);
+  opacity:1;
+}
+.player-shell .sky-breath-bright{
+  background:var(--breath-bright, linear-gradient(180deg,#C8B0E0 0%,#FFB878 50%,#F07040 100%));
+  opacity:0;
+  will-change:opacity;
+  transition:opacity .85s ease;
+}
+.player-shell .grain{z-index:1;opacity:.2}
+.player-content{
+  position:relative;z-index:2;
+  flex:1;min-height:0;
+  display:flex;flex-direction:column;
+  padding:calc(12px + var(--safe-top)) 18px calc(14px + var(--safe-bot));
+  text-shadow:0 1px 2px rgba(0,0,0,.25), 0 2px 16px rgba(0,0,0,.18);
+}
+.player-shell .top-row{
+  margin-bottom:6px;flex-shrink:0;z-index:6;
+}
+.player-shell .top-row .icon-btn{
+  width:44px;height:44px;border-radius:14px;
+  background:rgba(255,255,255,.38);
+  color:var(--sky-ink);
+  box-shadow:0 2px 12px rgba(0,0,0,.16);
+}
+.player-shell.sky-light .top-row .icon-btn{
+  background:rgba(255,255,255,.82);color:#1F1F1F;
+}
+.player-shell .player-session{
+  position:absolute;left:50%;transform:translateX(-50%);
+  max-width:60%;text-align:center;
+  pointer-events:none;
+}
+.player-shell .player-session{
+  color:var(--sky-ink);opacity:.9;font-weight:600;
+}
+.preview-shell .icon-btn{
+  background:rgba(255,255,255,.32);color:var(--sky-ink);
+  box-shadow:0 2px 10px rgba(0,0,0,.12);
+}
+.preview-shell.sky-light .icon-btn{
+  background:rgba(255,255,255,.75);color:#1F1F1F;
+}
+.player-shell .pose-fig-wrap{
+  width:min(72vw,300px);height:min(72vw,300px);
+  max-width:300px;max-height:300px;
+  margin:auto auto 8px;position:relative;z-index:2;
+  flex:1 1 auto; /* soak free space so layout isn't top-heavy */
+  align-self:center;
+  background:#FAD7BA;border-radius:24px;
+  box-shadow:0 12px 32px rgba(40,30,20,0.18);
+  display:grid;place-items:center;overflow:hidden;
+}
+.player-shell .pose-fig-wrap img{
+  width:100%;height:100%;display:block;object-fit:contain;object-position:center;border-radius:22px;
+}
+.player-shell .pose-fig-wrap:has(.strength-fig),
+.player-shell .pose-fig-wrap.strength-mode{
+  background:transparent;box-shadow:none;
+  width:min(72vw,300px);height:min(72vw,300px);
+}
+.player-shell .pose-fig-wrap .strength-fig{
   width:100%;height:100%;aspect-ratio:auto;margin:0;
-  color:#FFFFFF;
-  background:rgba(255,255,255,.18);
+  color:var(--sky-ink);
+  background:rgba(255,255,255,.2);
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
-  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.35);
+  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4);
 }
-.sky-light .pose-fig-wrap .strength-fig{
+.player-shell.sky-light .pose-fig-wrap .strength-fig{
   color:#1A1A1A;
-  background:rgba(255,255,255,.42);
-  box-shadow:inset 0 0 0 1.5px rgba(31,31,31,.2);
+  background:rgba(255,255,255,.5);
+  box-shadow:inset 0 0 0 1.5px rgba(31,31,31,.18);
 }
-.player-shell .sky .pose-fig-wrap img{width:100%;height:100%;display:block;object-fit:contain;object-position:center;border-radius:24px}
-.player-shell .panel{
-  padding-bottom:calc(18px + var(--safe-bot));
-  overflow-y:auto;-webkit-overflow-scrolling:touch;
-  min-height:0;
+@media (max-height:700px){
+  .player-shell .pose-fig-wrap{
+    width:min(48vw,168px);height:min(48vw,168px);max-width:168px;max-height:168px;
+    margin:4px auto 6px;flex:0 0 auto;
+  }
+  .player-shell .pose-fig-wrap:has(.strength-fig),
+  .player-shell .pose-fig-wrap.strength-mode{
+    width:min(48vw,168px);height:min(48vw,168px);max-width:168px;max-height:168px;flex:0 0 auto;
+  }
+  .player-shell .pose-name{font-size:clamp(1.7rem,7.2vw,2.1rem)!important;margin-bottom:4px}
+  .player-shell .timer{font-size:clamp(2.35rem,10.5vw,3rem);margin:6px 0 2px}
+  .player-shell .pose-cues{font-size:.8rem;margin-bottom:2px}
+  .player-content{gap:0}
 }
-.player-shell .panel .timer,
-.player-shell .panel .progress-pill,
-.player-shell .panel .player-controls,
-.player-shell .panel .player-actions{flex-shrink:0}
-.player-session{font-family:var(--mono);font-size:.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--sky-ink);font-weight:600;opacity:.92}
-.sky-light .icon-btn{background:rgba(255,255,255,.65);color:var(--sky-ink)}
-.sky .sunburst{color:var(--sky-ink);opacity:.5}
-.phase-label{font-family:var(--mono);font-size:.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-mid);margin-bottom:6px}
-.pose-side{
-  display:inline-block;font-family:var(--mono);font-size:.62rem;letter-spacing:0.14em;
-  text-transform:uppercase;color:var(--ink-mid);margin-bottom:6px;
-  padding:3px 8px;border:1px solid rgba(0,0,0,.08);border-radius:999px;
+.player-shell .phase-label{
+  color:var(--sky-ink);opacity:.75;margin-bottom:4px;flex-shrink:0;
 }
-.pose-name{
-  font-weight:800;font-size:clamp(1.7rem,7vw,2.3rem);
-  letter-spacing:-0.04em;line-height:0.92;margin-bottom:8px;
+.player-shell .pose-side{
+  color:var(--sky-ink);opacity:.8;border-color:rgba(255,255,255,.35);
+  margin-bottom:4px;flex-shrink:0;
 }
-.pose-name .soft{color:var(--ink-mid);font-weight:800}
-.pose-cues{font-weight:300;color:var(--ink-mid);font-size:.92rem;max-width:34ch;margin-bottom:4px}
-.pose-cues p+p{margin-top:3px}
-.pose-helps{font-family:var(--mono);font-size:.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);margin-top:8px}
-.timer{
-  font-weight:300;font-size:clamp(3.2rem,15vw,4.4rem);
-  letter-spacing:-0.045em;line-height:.92;margin:10px 0 4px;
-  font-variant-numeric:tabular-nums;flex-shrink:0;
+.player-shell.sky-light .pose-side{border-color:rgba(0,0,0,.14)}
+.player-shell .strength-target{
+  display:block;
+  color:var(--sky-ink);opacity:.9;margin-bottom:2px;flex-shrink:0;
 }
-.timer .unit{font-size:.35em;color:var(--ink-mid);letter-spacing:0.08em;font-family:var(--mono);margin-left:6px;text-transform:uppercase}
-.timer.countdown-warn{color:var(--orange)}
-.timer.transition{opacity:.55}
-.next-up{font-family:var(--mono);font-size:.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:12px}
-
-.progress-pill{
-  position:relative;height:48px;min-height:48px;flex-shrink:0;
-  border-radius:999px;background:rgba(0,0,0,.08);
-  overflow:hidden;margin:8px 0 16px;
-  display:block;width:100%;
+.player-shell .strength-target[hidden]{display:none!important}
+.player-shell .pose-name{
+  color:var(--sky-ink);
+  font-weight:900;
+  font-size:clamp(2.75rem,12.5vw,3.25rem); /* ~44–52px on 390 */
+  letter-spacing:-0.05em;
+  line-height:0.95;
+  margin:4px 0 8px;flex-shrink:0;
+  text-shadow:0 1px 14px rgba(0,0,0,.18);
 }
-.progress-pill .fill{
-  position:absolute;left:0;top:0;bottom:0;right:auto;
-  width:0%;
-  border-radius:999px;
+.player-shell .pose-name .soft{opacity:.72;color:inherit;font-weight:900}
+.player-shell .pose-cues{
+  color:var(--sky-ink);opacity:.88;font-size:.9rem;
+  max-width:36ch;margin-bottom:2px;flex-shrink:0;
+  font-weight:400;
+}
+.player-shell .pose-cues p{margin:0}
+.player-shell .pose-helps{display:none!important}
+.player-shell .timer{
+  color:var(--sky-ink);
+  font-size:clamp(2.8rem,13vw,3.8rem);
+  margin:10px 0 4px;flex-shrink:0;
+  font-weight:300;
+}
+.player-shell .timer .unit{
+  color:var(--sky-ink);opacity:.6;
+  font-size:0.28em;vertical-align:super;margin-left:4px;
+}
+.player-shell .timer.countdown-warn{color:#FFE08A}
+.player-shell.sky-light .timer.countdown-warn{color:#C04830}
+.player-shell .timer.transition{opacity:.6}
+.player-shell .next-up{
+  color:var(--sky-ink);opacity:.65;margin-bottom:4px;flex-shrink:0;
+}
+.progress-slim{
+  position:relative;height:3px;width:100%;flex-shrink:0;
+  border-radius:999px;background:rgba(255,255,255,.22);
+  overflow:hidden;margin:2px 0 10px;
+}
+.player-shell.sky-light .progress-slim{background:rgba(0,0,0,.12)}
+.progress-slim .fill{
+  position:absolute;left:0;top:0;bottom:0;
+  width:0%;border-radius:999px;
   background:linear-gradient(90deg,var(--yellow),var(--peri));
-  transition:none;
-  z-index:0;
-  box-sizing:border-box;
 }
-.progress-pill .pct{
-  position:absolute;left:18px;top:50%;transform:translateY(-50%);
-  font-family:var(--mono);font-size:.85rem;letter-spacing:0.06em;color:var(--ink);font-weight:600;
-  pointer-events:none;z-index:2;
-  text-shadow:0 0 6px rgba(247,245,242,.9);
+.progress-pill{display:none!important} /* retired */
+.player-shell .player-controls{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  padding:12px 0 0;margin-top:8px;flex-shrink:0;
 }
-.progress-track{display:none} /* legacy hidden */
+.player-shell .ctrl{
+  width:48px;height:48px;border-radius:14px;
+  background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.3);
+  color:var(--sky-ink);display:grid;place-items:center;
+  backdrop-filter:blur(8px);
+}
+.player-shell.sky-light .ctrl{
+  background:rgba(255,255,255,.7);border-color:rgba(0,0,0,.08);color:#1F1F1F;
+}
+.player-shell .ctrl.play{
+  width:60px;height:60px;border-radius:50%;
+  background:#1A1A1A;color:#fff;border:0;
+}
+.player-shell .ctrl svg{width:20px;height:20px}
+.player-shell .ctrl.play svg{width:26px;height:26px}
+.player-shell .btn-mark-text{
+  appearance:none;border:0;background:none;cursor:pointer;
+  font-family:var(--mono);font-size:.62rem;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--sky-ink);opacity:.75;
+  padding:8px 6px;margin-left:4px;
+}
+.player-shell .btn-mark-text:active{opacity:.45}
+.player-actions{display:none!important}
 
-.player-controls{display:flex;align-items:center;justify-content:center;gap:16px;padding:4px 0 12px}
-.ctrl{
-  width:52px;height:52px;border-radius:16px;background:#fff;
-  border:1px solid rgba(0,0,0,.06);display:grid;place-items:center;
+/* Breath — colour crossfade only (no scale / glow / halo) */
+.player-shell.breath-active .sky-breath-bright{
+  transition:none;
+  animation:sky-breathe-colour 10s ease-in-out infinite;
 }
-.ctrl.play{width:64px;height:64px;border-radius:50%;background:#2A2A2A;color:#fff;border:0}
-.ctrl svg{width:22px;height:22px}
-.ctrl.play svg{width:28px;height:28px}
-.player-actions{display:flex}
-.player-actions .btn{background:#fff;border:1px solid rgba(0,0,0,.06);color:var(--ink)}
+.player-shell.breath-active.breath-paused .sky-breath-bright{
+  animation-play-state:paused;
+}
+@keyframes sky-breathe-colour{
+  0%{opacity:0}
+  40%{opacity:0.72} /* 4s inhale — saturated lift, not whiteout */
+  100%{opacity:0}    /* 6s exhale */
+}
+.player-shell.breath-pose-inhale .sky-breath-bright{
+  animation:none !important; opacity:0.72 !important;
+}
+.player-shell.breath-pose-exhale .sky-breath-bright{
+  animation:none !important; opacity:0 !important;
+}
+@media (prefers-reduced-motion: reduce){
+  .player-shell.breath-active .sky-breath-bright{
+    animation:sky-breathe-colour-soft 10s ease-in-out infinite;
+  }
+  @keyframes sky-breathe-colour-soft{
+    0%,100%{opacity:0}
+    40%{opacity:0.4}
+  }
+  .player-shell.breath-pose-inhale .sky-breath-bright{opacity:0.4 !important}
+}
 
 /* History */
 #screen-history{overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);padding-top:var(--safe-top)}
@@ -888,61 +903,56 @@ button:disabled{opacity:.35}
   </section>
 
   <section class="screen" id="screen-preview">
-    <div class="sky" id="preview-sky">
+    <div class="preview-shell sky" id="preview-sky">
       <div class="grain"></div>
       <div class="top-row">
-        <button class="icon-btn" id="btn-close-preview" type="button" aria-label="Close">
+        <button class="icon-btn" id="btn-close-preview" type="button" aria-label="Back">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
         <div class="player-session" id="preview-theme">Preview</div>
         <div style="width:40px"></div>
       </div>
-      <div class="preview-hero" id="preview-hero"></div>
-    </div>
-    <div class="panel">
-      <div class="preview-head">
-        <div class="mono-label" id="preview-label">Session</div>
-        <h2 id="preview-name"></h2>
-        <p class="meta" id="preview-meta"></p>
+      <div class="preview-body">
+        <div class="preview-head">
+          <div class="mono-label" id="preview-label" hidden>Session</div>
+          <h2 id="preview-name"></h2>
+          <p class="meta" id="preview-meta"></p>
+        </div>
+        <div class="pose-list" id="preview-list"></div>
       </div>
-      <div class="pose-list" id="preview-list"></div>
-      <div class="btn-row">
+      <div class="preview-footer">
         <button class="btn btn-secondary" id="btn-shuffle" type="button">Shuffle</button>
-        <button class="btn btn-primary" id="btn-begin" type="button" style="flex:1.35">Start</button>
+        <button class="btn btn-primary" id="btn-begin" type="button">Start</button>
       </div>
     </div>
   </section>
 
   <section class="screen" id="screen-player">
-    <div class="player-shell" id="player-shell">
-      <div class="sky" id="player-sky">
-        <div class="sky-breath-bright" aria-hidden="true"></div>
-        <div class="sky-breath-glow" aria-hidden="true"></div>
-        <div class="grain"></div>
+    <div class="player-shell sky" id="player-sky">
+      <div class="sky-breath-deep" aria-hidden="true"></div>
+      <div class="sky-breath-bright" aria-hidden="true"></div>
+      <div class="grain"></div>
+      <div class="player-content">
         <div class="top-row">
           <button class="icon-btn" id="btn-close-player" type="button" aria-label="Close">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
           </button>
           <div class="player-session" id="player-session-name"></div>
-          <div style="width:40px"></div>
+          <div class="top-spacer" style="width:44px;flex-shrink:0" aria-hidden="true"></div>
         </div>
         <div class="pose-fig-wrap" id="pose-fig-wrap"></div>
-      </div>
-      <div class="panel">
         <div class="phase-label" id="phase-label"></div>
         <div class="pose-side" id="pose-side" hidden></div>
         <div class="strength-target" id="strength-target" hidden></div>
         <div class="strength-round" id="strength-round" hidden></div>
         <h2 class="pose-name" id="pose-name">Get ready</h2>
         <div class="pose-cues" id="pose-cues"></div>
-        <div class="pose-helps" id="pose-helps"></div>
+        <div class="pose-helps" id="pose-helps" hidden></div>
         <div class="timer transition" id="timer">0:06<span class="unit">sec</span></div>
-        <div class="next-up" id="next-up"></div>
-        <div class="progress-pill" id="progress-pill" aria-label="Session progress">
+        <div class="progress-slim" id="progress-pill" aria-label="Session progress">
           <div class="fill" id="progress-fill"></div>
-          <span class="pct" id="progress-pct">0%</span>
         </div>
-        <div class="progress-track"><div class="progress-fill" id="progress-fill-legacy"></div></div>
+        <div class="next-up" id="next-up"></div>
         <div class="player-controls">
           <button class="ctrl" id="btn-back" type="button" aria-label="Previous">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -954,9 +964,7 @@ button:disabled{opacity:.35}
           <button class="ctrl" id="btn-skip" type="button" aria-label="Skip">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
-        </div>
-        <div class="player-actions">
-          <button class="btn" id="btn-mark-done" type="button">Mark done</button>
+          <button class="btn-mark-text" id="btn-mark-done" type="button">Done</button>
         </div>
       </div>
     </div>
@@ -1220,13 +1228,14 @@ const STRENGTH_THEMES = [
 const STRENGTH_FOCUS_IDS = STRENGTH_THEMES.map(t=>t.id);
 
 const STRENGTH_VISUAL = {
-  'pull-grip':{sky:'linear-gradient(180deg,#3A1A4A 0%,#8B3A5C 50%,#C45A6A 100%)',line1:'Pull &',line2:'Grip',foot:'Climb · ~20 min',swatch:'#A04868',light:false,bg:'#2A1430'},
-  'paddle-power':{sky:'linear-gradient(180deg,#0A3A4A 0%,#1A6A7A 48%,#2A9AAA 100%)',line1:'Paddle',line2:'Power',foot:'Surf · ~20 min',swatch:'#1A7A8A',light:false,bg:'#0A2830'},
-  'popup-explosive':{sky:'linear-gradient(180deg,#5A1A20 0%,#C04830 50%,#E87840 100%)',line1:'Pop-up &',line2:'Explosive',foot:'Surf · ~20 min',swatch:'#D05838',light:false,bg:'#3A1418'},
-  'running-legs':{sky:'linear-gradient(180deg,#1A3A28 0%,#3A7A48 50%,#6AAA58 100%)',line1:'Running',line2:'Legs',foot:'Run · ~20 min',swatch:'#4A8A50',light:false,bg:'#14281C'},
-  'core-stability':{sky:'linear-gradient(180deg,#2A2A5A 0%,#5A4A9A 50%,#8A6ABA 100%)',line1:'Core &',line2:'Stability',foot:'All · ~20 min',swatch:'#6A5AAA',light:false,bg:'#1A1A38'},
-  'balance-ankles':{sky:'linear-gradient(180deg,#1A4A5A 0%,#3A8A9A 55%,#7AC8C8 100%)',line1:'Balance &',line2:'Ankles',foot:'Surf · Run',swatch:'#3A9AAA',light:true,bg:'#E8F4F4'},
-  'full-circuit':{sky:'linear-gradient(180deg,#4A1840 0%,#A03860 45%,#E07050 100%)',line1:'Full-Body',line2:'Circuit',foot:'All · ~20 min',swatch:'#C04868',light:false,bg:'#2A1028'}
+  // dark themes: every stop L low enough for white ink ≥4.5 (brightest inhale still saturated, never pale)
+  'pull-grip':{sky:'linear-gradient(180deg,#2A1030 0%,#5A2848 50%,#8C3F64 100%)',line1:'Pull &',line2:'Grip',foot:'Climb · ~20 min',swatch:'#8C3F64',light:false,bg:'#1A0C20'},
+  'paddle-power':{sky:'linear-gradient(180deg,#082028 0%,#1A4850 50%,#227269 100%)',line1:'Paddle',line2:'Power',foot:'Surf · ~20 min',swatch:'#1A6870',light:false,bg:'#061418'},
+  'popup-explosive':{sky:'linear-gradient(180deg,#3A1014 0%,#6A2820 50%,#8C472A 100%)',line1:'Pop-up &',line2:'Explosive',foot:'Surf · ~20 min',swatch:'#8C472A',light:false,bg:'#280C10'},
+  'running-legs':{sky:'linear-gradient(180deg,#0E1C14 0%,#1E4030 50%,#347233 100%)',line1:'Running',line2:'Legs',foot:'Run · ~20 min',swatch:'#2A6030',light:false,bg:'#0A1410'},
+  'core-stability':{sky:'linear-gradient(180deg,#181830 0%,#3A2A5A 50%,#653F8C 100%)',line1:'Core &',line2:'Stability',foot:'All · ~20 min',swatch:'#4A3A7A',light:false,bg:'#101020'},
+  'balance-ankles':{sky:'linear-gradient(180deg,#081820 0%,#1A4050 55%,#33726B 100%)',line1:'Balance &',line2:'Ankles',foot:'Surf · Run',swatch:'#2A6870',light:false,bg:'#061018'},
+  'full-circuit':{sky:'linear-gradient(180deg,#2A1020 0%,#5A2840 45%,#8C563F 100%)',line1:'Full-Body',line2:'Circuit',foot:'All · ~20 min',swatch:'#8C563F',light:false,bg:'#180C18'}
 };
 
 function strengthExById(id){return STRENGTH_EXERCISES.find(e=>e.id===id)}
@@ -1371,15 +1380,15 @@ const {
 }=window.YogaStrength;
 
 const THEME_VISUAL={
-  // ink: text on sky/cards. light=true → dark ink for WCAG AA on pale dawn/dusk tiles
-  'hips-popup':{sky:'linear-gradient(180deg,#B8A0D8 0%,#F0A070 55%,#E87850 100%)',line1:'Hips &',line2:'Pop-up',foot:'Surf · 15 min',swatch:'#E87850',light:true},
-  'shoulders-paddle':{sky:'linear-gradient(180deg,#E8C04A 0%,#E89830 50%,#D86820 100%)',line1:'Shoulders',line2:'& Paddle',foot:'Surf · 15 min',swatch:'#E87030',light:true},
-  'climbers-hips':{sky:'linear-gradient(180deg,#9A7AD0 0%,#D878B0 55%,#E890B8 100%)',line1:"Climber's",line2:'Hips',foot:'Climb · 15 min',swatch:'#D878B0',light:false},
-  'forearms-wrists':{sky:'linear-gradient(180deg,#5A7AB8 0%,#8898D0 50%,#A898D0 100%)',line1:'Forearms',line2:'& Wrists',foot:'Climb · Surf',swatch:'#8898D0',light:false},
-  'full-body':{sky:'linear-gradient(180deg,#FF8A3A 0%,#F05830 55%,#D83828 100%)',line1:'Full Body',line2:'Flow',foot:'Surf · Climb',swatch:'#F05830',light:false},
-  'spine-twists':{sky:'linear-gradient(180deg,#1B3A5C 0%,#2A6B7C 48%,#3A9A8E 100%)',line1:'Spine &',line2:'Twists',foot:'Surf · Climb',swatch:'#2F7F8A',light:false},
-  'slow-recovery':{sky:'linear-gradient(180deg,#E4E0EA 0%,#C9C2D4 50%,#A89BB8 100%)',line1:'Slow',line2:'Recovery',foot:'Rest · soft',swatch:'#A89BB8',light:true},
-  'surprise':{sky:'linear-gradient(180deg,#F0C098 0%,#D8A8D0 50%,#98A8D8 100%)',line1:'Surprise',line2:'Me',foot:'Mixed · 15 min',swatch:'#D8A8D0',light:true}
+  // light themes: every stop bright enough for dark ink ≥4.5; still saturated (no near-white)
+  'hips-popup':{sky:'linear-gradient(180deg,#B299CC 0%,#CCA17A 55%,#E59144 100%)',line1:'Hips &',line2:'Pop-up',foot:'Surf · 15 min',swatch:'#E59144',light:true},
+  'shoulders-paddle':{sky:'linear-gradient(180deg,#E5C267 0%,#E5A367 50%,#E57544 100%)',line1:'Shoulders',line2:'& Paddle',foot:'Surf · 15 min',swatch:'#E57544',light:true},
+  'climbers-hips':{sky:'linear-gradient(180deg,#A37ACC 0%,#E589B5 55%,#F291BF 100%)',line1:"Climber's",line2:'Hips',foot:'Climb · 15 min',swatch:'#E589B5',light:true},
+  'forearms-wrists':{sky:'linear-gradient(180deg,#7A91CC 0%,#A37ACC 50%,#C8ACE5 100%)',line1:'Forearms',line2:'& Wrists',foot:'Climb · Surf',swatch:'#A37ACC',light:true},
+  'full-body':{sky:'linear-gradient(180deg,#F2AE91 0%,#E58D67 55%,#E57544 100%)',line1:'Full Body',line2:'Flow',foot:'Surf · Climb',swatch:'#E57544',light:true},
+  'spine-twists':{sky:'linear-gradient(180deg,#0E2030 0%,#1A4850 48%,#227269 100%)',line1:'Spine &',line2:'Twists',foot:'Surf · Climb',swatch:'#1A6870',light:false},
+  'slow-recovery':{sky:'linear-gradient(180deg,#C8ACE5 0%,#B299CC 50%,#9C85B2 100%)',line1:'Slow',line2:'Recovery',foot:'Rest · soft',swatch:'#9C85B2',light:true},
+  'surprise':{sky:'linear-gradient(180deg,#E5C7AC 0%,#E5ACC7 50%,#ACBCE5 100%)',line1:'Surprise',line2:'Me',foot:'Mixed · 15 min',swatch:'#E5ACC7',light:true}
 };
 function themeColor(id){return THEME_VISUAL[id]||STRENGTH_VISUAL[id]||THEME_VISUAL['surprise']}
 
@@ -1405,17 +1414,42 @@ function applySky(el, themeId){
   el.style.setProperty('--theme-sky', v.sky);
   el.style.setProperty('--sky-ink', ink);
   el.style.setProperty('--sky-muted', muted);
-  // Breath wash/glow: warmer light tint for light skies, soft peach for dark
-  if(v.light){
-    el.style.setProperty('--breath-bright', 'linear-gradient(180deg,#FFFCF8 0%,#FFEFD9 45%,#FFD9B0 100%)');
-    el.style.setProperty('--breath-glow-core', 'rgba(255,252,245,0.95)');
-    el.style.setProperty('--breath-glow-mid', 'rgba(255,228,190,0.78)');
-  }else{
-    el.style.setProperty('--breath-bright', 'linear-gradient(180deg,#E8D8F8 0%,#FFD8B8 50%,#FFC090 100%)');
-    el.style.setProperty('--breath-glow-core', 'rgba(255,240,220,0.92)');
-    el.style.setProperty('--breath-glow-mid', 'rgba(255,210,170,0.72)');
+  // Approximate end colour for footer fade (last stop of sky gradient)
+  const endMatch=String(v.sky||'').match(/#([0-9A-Fa-f]{3,8})\s*\d*%?\s*\)/g);
+  let endCol='#000';
+  if(endMatch&&endMatch.length){
+    const last=endMatch[endMatch.length-1];
+    const hm=last.match(/#[0-9A-Fa-f]{3,8}/);
+    if(hm) endCol=hm[0];
   }
+  el.style.setProperty('--theme-sky-end', endCol);
+  // Breath inhale = brighter but still saturated sister (never near-white) so one ink works both ends
+  const BREATH_BRIGHT={
+    // inhale = brighter sister within same ink-safe luminance band
+    'hips-popup':'linear-gradient(180deg,#C8ACE5 0%,#E5B589 50%,#F29A48 100%)',
+    'shoulders-paddle':'linear-gradient(180deg,#F2CC6D 0%,#F2AC6D 50%,#F27B48 100%)',
+    'climbers-hips':'linear-gradient(180deg,#C191F2 0%,#F291BF 50%,#F2B5D2 100%)',
+    'forearms-wrists':'linear-gradient(180deg,#89A3E5 0%,#B789E5 50%,#D3B5F2 100%)',
+    'full-body':'linear-gradient(180deg,#F2C7B5 0%,#F2946D 50%,#E59144 100%)',
+    'spine-twists':'linear-gradient(180deg,#142838 0%,#1E5860 50%,#287A70 100%)',
+    'slow-recovery':'linear-gradient(180deg,#D3B5F2 0%,#C8ACE5 50%,#B299CC 100%)',
+    'surprise':'linear-gradient(180deg,#F2D2B5 0%,#F2B5D2 50%,#B5C6F2 100%)',
+    'pull-grip':'linear-gradient(180deg,#3A1838 0%,#6A3050 50%,#8C3F64 100%)',
+    'paddle-power':'linear-gradient(180deg,#0C2830 0%,#1E5860 50%,#287A70 100%)',
+    'popup-explosive':'linear-gradient(180deg,#4A1418 0%,#7A3028 50%,#8C472A 100%)',
+    'running-legs':'linear-gradient(180deg,#12241A 0%,#244838 50%,#347233 100%)',
+    'core-stability':'linear-gradient(180deg,#201838 0%,#4A3068 50%,#653F8C 100%)',
+    'balance-ankles':'linear-gradient(180deg,#0C2030 0%,#1E5060 55%,#33726B 100%)',
+    'full-circuit':'linear-gradient(180deg,#301828 0%,#683048 45%,#8C563F 100%)'
+  };
+  const bright=BREATH_BRIGHT[themeId]||(v.light
+    ? 'linear-gradient(180deg,#C8B0E0 0%,#FFB878 50%,#F07040 100%)'
+    : 'linear-gradient(180deg,#3A3A6A 0%,#6A5AAA 50%,#9A7ACA 100%)');
+  el.style.setProperty('--breath-bright', bright);
   el.classList.toggle('sky-light', !!v.light);
+  // Keep deep breath layer in sync
+  const deep=el.querySelector('.sky-breath-deep');
+  if(deep) deep.style.background=v.sky;
 }
 
 function updateHomeDate(){
@@ -1442,11 +1476,38 @@ function renderFig(poseId, side, opts){
   return '<img class="pose-art'+(thumb?' pose-art-thumb':'')+'" src="'+src+'" width="'+size+'" height="'+size+'" alt="'+alt+'"'+loading+' decoding="async"/>';
 }
 function strengthFigParts(step){
-  const target=(step&&step.target)?String(step.target).trim():'';
-  const m=target.match(/(\d+)/);
-  const num=m?m[1]:String((step&&step.dur)||40);
-  const label=(target||'work').toUpperCase();
-  return {num,label};
+  const raw=(step&&step.target)?String(step.target).trim():'';
+  const t=raw.toLowerCase();
+  // Range like "20-30 sec/side" → big "20–30s", small "each side"
+  let m=t.match(/^(\d+)\s*[-–]\s*(\d+)\s*(sec|s)?\s*\/?\s*(side)?/);
+  if(m){
+    const unit=(m[3]||(/sec|s\b/.test(t)?'s':(/rep/.test(t)?'':'')));
+    const num=m[1]+'–'+m[2]+(unit==='sec'||unit==='s'?'s':unit||'');
+    const label=m[4]?'each side':(/rep/.test(t)?'reps':(unit?'hold':(raw||'work')));
+    return {num,label:String(label).toUpperCase()};
+  }
+  // "8/side" or "8-10/side"
+  m=t.match(/^(\d+(?:\s*[-–]\s*\d+)?)\s*\/\s*side/);
+  if(m){
+    return {num:m[1].replace(/\s/g,'').replace('-','–'), label:'EACH SIDE'};
+  }
+  // "12-15 reps" / "10 reps"
+  m=t.match(/^(\d+(?:\s*[-–]\s*\d+)?)\s*reps?/);
+  if(m){
+    return {num:m[1].replace(/\s/g,'').replace('-','–'), label:'REPS'};
+  }
+  // "40 sec" / "30s"
+  m=t.match(/^(\d+)\s*(sec|s)\b/);
+  if(m){
+    return {num:m[1]+'s', label:'HOLD'};
+  }
+  // "8 breaths" etc.
+  m=t.match(/^(\d+)\s+(\w+)/);
+  if(m){
+    return {num:m[1], label:m[2].toUpperCase()};
+  }
+  const n=raw.match(/(\d+)/);
+  return {num:n?n[1]:String((step&&step.dur)||40), label:(raw||'work').toUpperCase()};
 }
 function setPlayerFigure(step){
   const wrap=document.getElementById('pose-fig-wrap');
@@ -1869,27 +1930,12 @@ function renderPreview(){
   if(!draft)return;
   const isStrength=draft.type==='strength'||sessionMode==='strength';
   applySky(document.getElementById('preview-sky'), draft.themeId);
-  document.getElementById('preview-theme').textContent=isStrength?'Strength':'Preview';
-  document.getElementById('preview-label').textContent=isStrength?'Strength session':'Session';
+  document.getElementById('preview-theme').textContent=isStrength?'Strength':'Stretch';
+  const pl=document.getElementById('preview-label');
+  if(pl) pl.textContent=isStrength?'Strength session':'Session';
   document.getElementById('preview-name').innerHTML=stackHeadline(draft.name);
-  document.getElementById('preview-meta').textContent=draft.focus+' · ~'+draft.minutes+' min · '+(draft.poseIds?draft.poseIds.length:draft.steps.length)+' moves';
-  const hero=document.getElementById('preview-hero');
-  if(hero){
-    if(isStrength){
-      hero.innerHTML='<div class="strength-fig"><div class="big-num">~'+draft.minutes+'</div><div class="big-label">minutes</div></div>';
-    }else{
-      const first=draft.steps[0];
-      const fig=first?renderFig(first.poseId,first.side,{size:160, noTile:true}):'';
-      hero.innerHTML='<div class="sunburst" aria-hidden="true">'+
-        '<svg viewBox="0 0 120 80" width="120" height="80" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">'+
-        '<path d="M20 58 H100" opacity=".55"/><path d="M28 58 Q60 72 92 58" opacity=".35"/>'+
-        '<circle cx="60" cy="38" r="14" fill="currentColor" opacity=".2" stroke="none"/>'+
-        '<circle cx="60" cy="38" r="10"/>'+
-        '<path d="M60 18v6M60 52v6M38 38h-6M88 38h-6M44 22l4 4M72 50l4 4M44 54l4-4M72 26l4-4"/>'+
-        '</svg></div>'+
-        '<div class="preview-fig">'+fig+'</div>';
-    }
-  }
+  const nMoves=draft.poseIds?draft.poseIds.length:draft.steps.length;
+  document.getElementById('preview-meta').textContent='~'+draft.minutes+' min · '+nMoves+' '+(isStrength?'moves':'poses');
   let html='',lastPhase='',idx=0;
   draft.steps.forEach(step=>{
     idx++;
@@ -1899,26 +1945,20 @@ function renderPreview(){
       html+='<div class="phase-tag">'+label+'</div>';
     }
     const title=step.name+(step.side?' · '+step.side:'');
-    const sub=isStrength
-      ? escapeHtml(step.target||((step.cues&&step.cues[0])||''))+(step.round?(' · Round '+step.round+'/'+step.roundsTotal):'')
-      : escapeHtml((step.cues&&step.cues[0])||'');
+    // Compact rows: stretch = thumb + name + duration; strength = name + duration only
     const thumb=isStrength
-      ? '<div class="thumb">'+String(idx).padStart(2,'0')+'</div>'
-      : '<div class="thumb">'+renderFig(step.poseId||step.exerciseId,step.side,{size:52,thumb:true})+'</div>';
-    html+='<div class="pose-row'+(isStrength?' strength-row':'')+'">'+thumb+'<div class="t">'+fmtTime(step.dur)+'</div><div><div class="n">'+escapeHtml(title)+'</div><div class="c">'+sub+'</div></div></div>';
+      ? ''
+      : '<div class="thumb">'+renderFig(step.poseId||step.exerciseId,step.side,{size:44,thumb:true})+'</div>';
+    html+='<div class="pose-row'+(isStrength?' strength-row':'')+'">'+thumb+'<div class="nwrap"><div class="n">'+escapeHtml(title)+'</div></div><div class="t">'+fmtTime(step.dur)+'</div></div>';
   });
   document.getElementById('preview-list').innerHTML=html;
 }
 
 function applyThemeBleed(themeId){
   const v=themeColor(themeId);
-  const shell=document.getElementById('player-shell');
-  if(shell){
-    shell.style.setProperty('--theme-bg', v.bg);
-    shell.style.background=v.bg;
-    shell.style.color=v.ink;
-  }
-  document.documentElement.style.setProperty('--theme-bg', v.bg);
+  document.documentElement.style.setProperty('--theme-bg', v.bg||'#1A1A1A');
+  // Player shell is the full-screen sky — applySky handles colours
+  applySky(document.getElementById('player-sky'), themeId);
 }
 
 const player={session:null,stepIndex:0,mode:'transition',playing:false,raf:null,segStartPerf:0,segDur:0,segElapsedPaused:0,finished:false,lastTickCeil:null,holdElapsedTotal:0};
@@ -1933,7 +1973,8 @@ function pause(){if(!player.playing)return;const wall=(performance.now()-player.
 function loop(){if(!player.playing)return;const rem=segRemaining(),ceil=Math.ceil(rem);if(player.mode==='hold'&&ceil>=1&&ceil<=3){if(player.lastTickCeil!==ceil){player.lastTickCeil=ceil;soundTick()}}if(rem<=0){advanceFromSegment();if(player.playing&&!player.finished)player.raf=requestAnimationFrame(loop);return}renderPlayer();player.raf=requestAnimationFrame(loop)}
 function renderPlayer(){
   const sess=player.session;if(!sess)return;
-  document.getElementById('player-session-name').textContent=sess.name;applyThemeBleed(sess.themeId);
+  document.getElementById('player-session-name').textContent=sess.name;
+  applyThemeBleed(sess.themeId);
   const step=currentStep();if(!step)return;
   const sideEl=document.getElementById('pose-side');
   if(step.side){sideEl.hidden=false;sideEl.textContent=step.side}else sideEl.hidden=true;
@@ -1941,43 +1982,44 @@ function renderPlayer(){
   const isStrength=sess.type==='strength'||step.kind==='strength';
   const tgt=document.getElementById('strength-target');
   const rnd=document.getElementById('strength-round');
-  // Never duplicate the target above the name — keep it only in the glass card
-  if(tgt){tgt.hidden=true;tgt.textContent='';}
   if(rnd){rnd.hidden=true;rnd.textContent='';}
   if(isStrength){
-    // One line above the name: ROUND x/y, WARM-UP, or FINISHER (get-ready uses transition copy)
     if(player.mode==='transition'){
-      phaseEl.textContent='Get into position';
+      phaseEl.textContent='Rest · Get ready';
     }else if(step.round){
-      phaseEl.textContent='Round '+step.round+'/'+step.roundsTotal;
+      phaseEl.textContent='Work · Round '+step.round+'/'+step.roundsTotal;
     }else if(step.phase==='warmup'){
-      phaseEl.textContent='Warm-up';
+      phaseEl.textContent='Work · Warm-up';
     }else if(step.phase==='finisher'||step.phase==='cooldown'){
-      phaseEl.textContent='Finisher';
+      phaseEl.textContent='Work · Finisher';
     }else{
-      phaseEl.textContent='Strength';
+      phaseEl.textContent='Work';
     }
+    // Target stays in the glass card only (avoid duplicating above the name)
+    if(tgt){tgt.hidden=true;tgt.textContent='';}
   }else{
     const phaseName=step.phase==='warmup'?'Warm-up':step.phase==='cooldown'?'Cool-down':'Main';
     phaseEl.textContent=player.mode==='transition'?'Get into position':phaseName;
+    if(tgt){tgt.hidden=true;tgt.textContent='';}
   }
   if(player.mode==='transition'){nextEl.textContent=isStrength?'Get ready':'Get into position';timerEl.className='timer transition'}
   else{timerEl.className='timer';const ni=player.stepIndex+1;nextEl.textContent=ni<sess.steps.length?('Next: '+sess.steps[ni].name+(sess.steps[ni].side?' ('+sess.steps[ni].side+')':'')):'Next: Finish'}
-  nameEl.innerHTML=stackHeadline(step.name);setPlayerFigure(step);cuesEl.innerHTML=(step.cues||[]).map(c=>'<p>'+escapeHtml(c)+'</p>').join('');helpsEl.textContent=step.helps?('Helps: '+step.helps):'';
+  nameEl.innerHTML=stackHeadline(step.name);
+  setPlayerFigure(step);
+  // One short cue line only
+  const cue0=(step.cues&&step.cues[0])||'';
+  cuesEl.innerHTML=cue0?('<p>'+escapeHtml(cue0)+'</p>'):'';
+  if(helpsEl){helpsEl.hidden=true;helpsEl.textContent='';}
   const rem=segRemaining();timerEl.innerHTML=fmtTime(rem)+'<span class="unit">sec</span>';if(player.mode==='hold'&&rem<=3&&rem>0)timerEl.classList.add('countdown-warn');
   let done=player.holdElapsedTotal;for(let i=0;i<player.stepIndex;i++)done+=(sess.steps[i].transition||0);
   if(player.mode==='transition')done+=(player.segDur-rem);else{done+=(step.transition||0);done+=(player.segDur-rem)}
   const pct=Math.min(100, Math.round((done/sess.totalSec)*100));
   const fill=document.getElementById('progress-fill');
-  const pctEl=document.getElementById('progress-pct');
   if(fill){
     const w=Math.max(0, Math.min(100, pct));
-    fill.style.cssText='position:absolute;left:0;top:0;bottom:0;width:'+w+'%;border-radius:999px;background:linear-gradient(90deg,var(--yellow),var(--peri));z-index:0;';
+    fill.style.width=w+'%';
     fill.setAttribute('data-pct', String(w));
-    fill.textContent='';
   }
-  if(pctEl) pctEl.textContent=pct+'%';
-  applySky(document.getElementById('player-sky'), sess.themeId);
   updatePlayerBreath();
   document.getElementById('icon-play').style.display=player.playing?'none':'block';
   document.getElementById('icon-pause').style.display=player.playing?'block':'none';
@@ -1990,34 +2032,39 @@ function updatePlayerBreath(){
   if(onHold){
     sky.classList.add('breath-active');
     sky.classList.toggle('breath-paused', !player.playing);
+    const bright=sky.querySelector('.sky-breath-bright');
+    if(bright && !sky.classList.contains('breath-pose-inhale') && !sky.classList.contains('breath-pose-exhale')){
+      bright.style.opacity='';
+      bright.style.transition='';
+      bright.style.animation='';
+    }
   }else{
     sky.classList.remove('breath-active','breath-paused','breath-pose-inhale','breath-pose-exhale');
-    // Snap breath layers to rest (no lingering crossfade from a freeze/pose)
-    sky.querySelectorAll('.sky-breath-bright,.sky-breath-glow').forEach(el=>{
-      el.style.animation='none';
-      el.style.opacity='';
-      el.style.transform='';
-    });
+    const bright=sky.querySelector('.sky-breath-bright');
+    if(bright){
+      bright.style.transition='none';
+      bright.style.animation='none';
+      bright.style.opacity='0';
+    }
   }
 }
-/** Freeze breath at inhale peak (progress≈0.4) or exhale bottom (0). For previews. */
+/** Freeze breath at inhale peak (≈0.4) or exhale bottom (0). Colour-only. */
 function freezePlayerBreath(progress){
   const sky=document.getElementById('player-sky');
   if(!sky) return;
   const t=Math.max(0, Math.min(1, progress==null?0:progress));
   sky.classList.add('breath-active','breath-paused');
   sky.classList.remove('breath-pose-inhale','breath-pose-exhale');
-  sky.querySelectorAll('.sky-breath-bright,.sky-breath-glow').forEach(el=>{ el.style.animation='none'; });
-  // Map: >=0.25 → inhale peak pose, else exhale bottom
+  const bright=sky.querySelector('.sky-breath-bright');
+  if(bright) bright.style.animation='none';
   sky.classList.add(t>=0.25?'breath-pose-inhale':'breath-pose-exhale');
 }
 function clearPlayerBreathFreeze(){
   const sky=document.getElementById('player-sky');
   if(!sky) return;
   sky.classList.remove('breath-pose-inhale','breath-pose-exhale');
-  sky.removeAttribute('data-breath-t');
-  sky.style.removeProperty('--breath-delay');
-  sky.querySelectorAll('.sky-breath-bright,.sky-breath-glow').forEach(el=>{ el.style.animation=''; });
+  const bright=sky.querySelector('.sky-breath-bright');
+  if(bright) bright.style.animation='';
 }
 function startPlayerFromDraft(){unlockAudio();if(draft&&draft.type) sessionMode=draft.type;player.session=draft;player.stepIndex=0;player.finished=false;player.holdElapsedTotal=0;player.playing=false;saveLastSig(draft.themeId,draft.signature);showScreen('player');enterStep(0);play()}
 function skip(){if(player.finished)return;if(player.mode==='transition'){beginSegment('hold',currentStep().dur);if(player.playing)player.segStartPerf=performance.now();return}soundEnd();const rem=segRemaining();player.holdElapsedTotal+=Math.max(0,currentStep().dur-rem);const next=player.stepIndex+1;if(next>=player.session.steps.length){finishSession(true);return}enterStep(next);if(player.playing)player.segStartPerf=performance.now()}
